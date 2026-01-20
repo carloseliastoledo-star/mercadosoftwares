@@ -7,6 +7,15 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  nitro: {
+    publicAssets: [
+      {
+        baseURL: '/',
+        dir: resolve(__dirname, 'app/public'),
+      },
+    ],
+  },
+
   alias: {
     '#root': resolve(__dirname),
   },

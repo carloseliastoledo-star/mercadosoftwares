@@ -12,28 +12,28 @@ async function main() {
         slug: "windows-11-pro",
         descricao: "Licença original Windows 11 Pro vitalícia para 1 PC.",
         preco: 149.90,
-        imagem: "/images/windows-11-pro.png"
+        imagem: "/windows-11-pro.jpg"
       },
       {
         nome: "Windows 10 Pro",
         slug: "windows-10-pro",
         descricao: "Windows 10 Pro original vitalício.",
         preco: 129.90,
-        imagem: "/images/windows-10-pro.png"
+        imagem: "/windows-10-pro.jpg"
       },
       {
         nome: "Office 2021 Pro Plus",
         slug: "office-2021-pro-plus",
         descricao: "Pacote Office 2021 completo vitalício.",
         preco: 199.90,
-        imagem: "/images/office-2021.png"
+        imagem: "/office-2021-pro.jpg"
       },
       {
         nome: "Office 365 Familiar",
         slug: "office-365-familiar",
         descricao: "Office 365 para até 6 pessoas.",
         preco: 179.90,
-        imagem: "/images/office-365.png"
+        imagem: "/office-365.jpg"
       }
     ]
   })

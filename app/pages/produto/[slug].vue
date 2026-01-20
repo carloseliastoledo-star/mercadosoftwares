@@ -173,7 +173,7 @@ const safeProduct = computed(() => {
       descricao: '',
       descricaoCurta: '',
       preco: 0,
-      imagem: ''
+      imagem: '/products/placeholder.png'
     }
   }
 
@@ -207,6 +207,7 @@ Se você procura uma solução definitiva, segura e com excelente custo-benefíc
 
   return {
     ...p,
+    imagem: p.image || '/products/placeholder.png',
     descricaoCurta,
     descricao: descricaoLonga
   }
