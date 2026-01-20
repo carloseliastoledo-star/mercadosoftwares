@@ -16,6 +16,8 @@ export default defineEventHandler(async () => {
     description: p.descricao,
     price: p.preco,
     image: p.imagem,        // 👈 CAMPO CRÍTICO
+    tutorialTitle: p.tutorialTitulo,
+    tutorialSubtitle: p.tutorialSubtitulo,
     createdAt: p.criadoEm
   }))
 })

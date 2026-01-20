@@ -105,7 +105,7 @@
 
       <!-- BLOCO AZUL TUTORIAL -->
       <div
-        v-if="data"
+        v-if="data && safeProduct.tutorialTitulo"
         class="mt-12 border border-blue-500 rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-blue-50"
       >
         <div class="flex items-center gap-5">
@@ -115,16 +115,16 @@
 
           <div>
             <h3 class="text-xl font-bold text-blue-700">
-              Tutorial de Ativação
+              {{ safeProduct.tutorialTitulo }}
             </h3>
             <p class="text-blue-700 text-sm mt-1">
-              Aprenda como ativar seu produto passo a passo com nosso guia completo e detalhado.
+              {{ safeProduct.tutorialSubtitulo }}
             </p>
           </div>
         </div>
 
         <NuxtLink
-          to="/tutoriais"
+          :to="`/tutoriais/${safeProduct.slug}`"
           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
         >
           → Ver Tutorial
@@ -208,6 +208,9 @@ Se você procura uma solução definitiva, segura e com excelente custo-benefíc
   return {
     ...p,
     imagem: p.image || '/products/placeholder.png',
+    slug: p.slug,
+    tutorialTitulo: p.tutorialTitle || null,
+    tutorialSubtitulo: p.tutorialSubtitle || 'Aprenda como ativar seu produto passo a passo com nosso guia completo e detalhado.',
     descricaoCurta,
     descricao: descricaoLonga
   }

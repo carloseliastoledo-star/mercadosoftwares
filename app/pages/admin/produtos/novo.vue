@@ -6,7 +6,10 @@ const form = reactive({
   slug: '',
   preco: '',
   descricao: '',
-  imagem: ''
+  imagem: '',
+  tutorialTitulo: '',
+  tutorialSubtitulo: '',
+  tutorialConteudo: ''
 })
 
 async function uploadImagem(event) {
@@ -49,6 +52,25 @@ async function salvar() {
       <textarea
         v-model="form.descricao"
         placeholder="Descrição completa"
+        rows="10"
+        class="w-full border p-3 rounded"
+      />
+
+      <input
+        v-model="form.tutorialTitulo"
+        placeholder="Título do tutorial (ex: Tutorial de Ativação)"
+        class="w-full border p-3 rounded"
+      />
+
+      <input
+        v-model="form.tutorialSubtitulo"
+        placeholder="Subtítulo do tutorial"
+        class="w-full border p-3 rounded"
+      />
+
+      <textarea
+        v-model="form.tutorialConteudo"
+        placeholder="Conteúdo do tutorial (passo a passo)"
         rows="10"
         class="w-full border p-3 rounded"
       />

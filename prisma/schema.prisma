@@ -15,6 +15,9 @@ model Produto {
   descricao String?
   preco     Float
   imagem    String?   // 👈 NOVO CAMPO
+  tutorialTitulo    String?
+  tutorialSubtitulo String?
+  tutorialConteudo  String?   @db.Text
   criadoEm  DateTime  @default(now())
   licencas  Licenca[]
 }
