@@ -63,8 +63,8 @@
 </template>
 
 <script setup>
-function logout() {
-  localStorage.removeItem('admin_token')
+async function logout() {
+  await $fetch('/api/admin/auth/logout', { method: 'POST' })
   navigateTo('/admin/login')
 }
 </script>

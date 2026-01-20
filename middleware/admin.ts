@@ -1,3 +1,5 @@
+import { navigateTo, useNuxtApp } from '#app'
+
 export default defineNuxtRouteMiddleware((to) => {
   // Só protege rotas /admin
   if (to.path.startsWith('/admin')) {
@@ -7,12 +9,11 @@ export default defineNuxtRouteMiddleware((to) => {
 
     // Roda apenas no navegador
     if (import.meta.client) {
-      const token = localStorage.getItem('admin_token')
+      const { $fetch } = useNuxtApp()
 
-      // Se não estiver logado → joga pro login
-      if (!token) {
-        return navigateTo('/admin/login')
-      }
+      return $fetch('/api/admin/auth/me')
+        .then(() => undefined)
+        .catch(() => navigateTo('/admin/login'))
     }
   }
 })
