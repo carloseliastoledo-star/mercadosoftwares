@@ -31,7 +31,7 @@ model Produto {
 
 model Licenca {
   id          String   @id @default(uuid())
-  chave       String   @unique
+  chave       String
   status      String
   produtoId   String
   produto     Produto  @relation(fields: [produtoId], references: [id])

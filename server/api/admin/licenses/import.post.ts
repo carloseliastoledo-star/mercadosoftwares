@@ -25,14 +25,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Produto não encontrado' })
   }
 
-  const licenses = Array.from(
-    new Set(
-      keysRaw
-        .split(/\r?\n/)
-        .map((k: string) => k.trim())
-        .filter((k: string) => k.length > 10)
-    )
-  )
+  const licenses = keysRaw
+    .split(/\r?\n/)
+    .map((k: string) => k.trim())
+    .filter((k: string) => k.length > 10)
 
   if (licenses.length === 0) {
     throw createError({ statusCode: 400, statusMessage: 'Nenhuma licença válida encontrada' })
@@ -45,8 +41,7 @@ export default defineEventHandler(async (event) => {
   }))
 
   const result = await prisma.licenca.createMany({
-    data,
-    skipDuplicates: true
+    data
   })
 
   return {
