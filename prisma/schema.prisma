@@ -60,6 +60,7 @@ model Order {
   mercadoPagoPaymentId String?  @unique
   criadoEm             DateTime @default(now()) @db.DateTime(0)
   pagoEm               DateTime? @db.DateTime(0)
+  emailEnviadoEm       DateTime? @db.DateTime(0)
   licencas             Licenca[]
 }
 
