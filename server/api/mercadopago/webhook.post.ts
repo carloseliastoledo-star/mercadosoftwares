@@ -23,13 +23,43 @@ export default defineEventHandler(async (event) => {
   }
 
   if (status === 'approved') {
-    await prisma.order.update({
-      where: { id: String(orderId) },
-      data: {
-        status: 'PAID',
-        pagoEm: new Date(),
-        mercadoPagoPaymentId: String((mpPayment as any)?.id || dataId)
-      }
+    await prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id: String(orderId) },
+        data: {
+          status: 'PAID',
+          pagoEm: new Date(),
+          mercadoPagoPaymentId: String((mpPayment as any)?.id || dataId)
+        },
+        select: { id: true, produtoId: true, customerId: true }
+      })
+
+      const already = await tx.licenca.findFirst({
+        where: { orderId: order.id },
+        select: { id: true }
+      })
+      if (already) return
+
+      const candidate = await tx.licenca.findFirst({
+        where: {
+          produtoId: order.produtoId,
+          status: 'STOCK',
+          orderId: null,
+          customerId: null
+        },
+        select: { id: true }
+      })
+
+      if (!candidate) return
+
+      await tx.licenca.update({
+        where: { id: candidate.id },
+        data: {
+          status: 'SOLD',
+          orderId: order.id,
+          customerId: order.customerId
+        }
+      })
     })
   } else if (status === 'rejected' || status === 'cancelled') {
     await prisma.order.update({
