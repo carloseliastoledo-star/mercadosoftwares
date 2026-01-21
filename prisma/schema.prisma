@@ -8,6 +8,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum AdminRole {
+  admin
+  editor
+}
+
 model Produto {
   id        String    @id @default(uuid())
   nome      String
@@ -30,4 +35,12 @@ model Licenca {
   produtoId   String
   produto     Produto  @relation(fields: [produtoId], references: [id])
   criadoEm    DateTime @default(now())
+}
+
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(editor)
+  createdAt    DateTime  @default(now())
 }
