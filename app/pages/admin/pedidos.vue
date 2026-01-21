@@ -28,6 +28,7 @@
             <th class="p-3 text-left">Criado</th>
             <th class="p-3 text-left">Pago</th>
             <th class="p-3 text-left">Licenças</th>
+            <th class="p-3 text-left">Ações</th>
           </tr>
         </thead>
 
@@ -63,9 +64,62 @@
                 </div>
               </div>
             </td>
+            <td class="p-3">
+              <div class="flex items-center gap-3">
+                <button class="text-blue-600 hover:text-blue-800" @click="openEditModal(o)">
+                  Editar
+                </button>
+                <button class="text-red-600 hover:text-red-800" @click="deleteOrder(o)">
+                  Apagar
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div v-if="showEdit" class="fixed inset-0 z-50">
+      <div class="absolute inset-0 bg-black/40" @click="closeEditModal" />
+
+      <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xl rounded-xl shadow-lg">
+          <div class="flex items-center justify-between p-5 border-b">
+            <div>
+              <h2 class="text-lg font-semibold">Editar pedido</h2>
+              <p class="text-sm text-gray-600 mt-1 font-mono">{{ editOrder?.id }}</p>
+            </div>
+            <button class="text-gray-500 hover:text-gray-700" @click="closeEditModal">Fechar</button>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <div>
+              <label class="block font-medium mb-2">Status</label>
+              <select v-model="editStatus" class="w-full border rounded-lg p-3">
+                <option value="PENDING">PENDING</option>
+                <option value="PAID">PAID</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+              <p class="text-xs text-gray-500 mt-2">Pedidos com licença vinculada não podem voltar para status diferente de PAID.</p>
+            </div>
+
+            <div v-if="editMessage" class="text-green-700 text-sm font-medium">{{ editMessage }}</div>
+            <div v-if="editError" class="text-red-700 text-sm font-medium">{{ editError }}</div>
+          </div>
+
+          <div class="p-5 border-t flex items-center justify-end gap-3">
+            <button class="px-4 py-2 rounded-lg border" @click="closeEditModal" :disabled="editLoading">Cancelar</button>
+            <button
+              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              @click="saveEdit"
+              :disabled="editLoading"
+            >
+              {{ editLoading ? 'Salvando...' : 'Salvar' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-if="showImport" class="fixed inset-0 z-50">
@@ -183,6 +237,13 @@ const produtos = computed(() => produtosData.value || [])
 
 const orders = computed(() => data.value?.orders || [])
 
+const showEdit = ref(false)
+const editOrder = ref<OrderDto | null>(null)
+const editStatus = ref('PENDING')
+const editLoading = ref(false)
+const editMessage = ref('')
+const editError = ref('')
+
 const showImport = ref(false)
 const importProduct = ref('')
 const importKeys = ref('')
@@ -198,6 +259,54 @@ function openImportModal() {
 
 function closeImportModal() {
   showImport.value = false
+}
+
+function openEditModal(o: OrderDto) {
+  showEdit.value = true
+  editOrder.value = o
+  editStatus.value = String(o.status || 'PENDING')
+  editMessage.value = ''
+  editError.value = ''
+}
+
+function closeEditModal() {
+  showEdit.value = false
+  editOrder.value = null
+}
+
+async function saveEdit() {
+  if (!editOrder.value?.id) return
+
+  editLoading.value = true
+  editMessage.value = ''
+  editError.value = ''
+
+  try {
+    await $fetch(`/api/admin/pedidos/${editOrder.value.id}`, {
+      method: 'PATCH',
+      body: { status: editStatus.value }
+    })
+    editMessage.value = 'Pedido atualizado com sucesso.'
+    await refresh()
+    closeEditModal()
+  } catch (err: any) {
+    editError.value = err?.data?.statusMessage || 'Erro ao atualizar pedido'
+  } finally {
+    editLoading.value = false
+  }
+}
+
+async function deleteOrder(o: OrderDto) {
+  if (!o?.id) return
+
+  if (!confirm('Tem certeza que deseja apagar este pedido?')) return
+
+  try {
+    await $fetch(`/api/admin/pedidos/${o.id}`, { method: 'DELETE' })
+    await refresh()
+  } catch (err: any) {
+    alert(err?.data?.statusMessage || 'Erro ao apagar pedido')
+  }
 }
 
 async function onImportFileChange(e: Event) {
