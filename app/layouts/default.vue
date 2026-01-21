@@ -58,6 +58,9 @@
           <ul class="space-y-2">
             <li><NuxtLink to="/produtos" class="hover:text-blue-600">Produtos</NuxtLink></li>
             <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">Tutoriais</NuxtLink></li>
+            <li v-for="p in paginas" :key="p.slug">
+              <NuxtLink :to="`/paginas/${p.slug}`" class="hover:text-blue-600">{{ p.titulo }}</NuxtLink>
+            </li>
           </ul>
         </div>
 
@@ -77,3 +80,16 @@
 
   </div>
 </template>
+
+<script setup lang="ts">
+type PaginaLinkDto = {
+  titulo: string
+  slug: string
+}
+
+const { data } = await useFetch<{ ok: true; paginas: PaginaLinkDto[] }>('/api/paginas', {
+  server: true
+})
+
+const paginas = computed(() => data.value?.paginas || [])
+</script>
