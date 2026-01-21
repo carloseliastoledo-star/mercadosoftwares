@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from 'fs/promises'
+import { existsSync } from 'fs'
 import { join } from 'path'
 import { createError, defineEventHandler, readMultipartFormData } from 'h3'
 
@@ -16,7 +17,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const fileName = `${Date.now()}-${file.filename}`
-  const uploadsDir = join(process.cwd(), 'app/public/uploads')
+  const outputPublicDir = join(process.cwd(), '.output/public')
+  const uploadsBase = existsSync(outputPublicDir) ? outputPublicDir : join(process.cwd(), 'app/public')
+  const uploadsDir = join(uploadsBase, 'uploads')
   const filePath = join(uploadsDir, fileName)
 
   await mkdir(uploadsDir, { recursive: true })
