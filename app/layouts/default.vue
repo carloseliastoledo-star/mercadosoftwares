@@ -23,6 +23,10 @@
             Tutoriais
           </NuxtLink>
 
+          <NuxtLink to="/minha-conta/login" class="hover:text-blue-600">
+            Minha conta
+          </NuxtLink>
+
           <NuxtLink
             to="/checkout"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
