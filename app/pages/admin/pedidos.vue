@@ -34,9 +34,16 @@
             <td class="p-3">
               <div class="font-medium">{{ o.customer?.email }}</div>
               <div v-if="o.customer?.nome" class="text-xs text-gray-500">{{ o.customer?.nome }}</div>
+              <div v-if="o.customer?.whatsapp" class="text-xs text-gray-500">WhatsApp: {{ o.customer?.whatsapp }}</div>
+              <div v-if="o.customer?.cpf" class="text-xs text-gray-500">CPF: {{ o.customer?.cpf }}</div>
             </td>
             <td class="p-3">
-              <span class="px-2 py-1 rounded bg-gray-100">{{ o.status }}</span>
+              <span
+                class="px-2 py-1 rounded"
+                :class="o.status === 'PAID' ? 'bg-green-100 text-green-800' : 'bg-gray-100'"
+              >
+                {{ o.status }}
+              </span>
             </td>
             <td class="p-3 text-xs text-gray-600">{{ formatDate(o.criadoEm) }}</td>
             <td class="p-3 text-xs text-gray-600">{{ o.pagoEm ? formatDate(o.pagoEm) : '-' }}</td>
