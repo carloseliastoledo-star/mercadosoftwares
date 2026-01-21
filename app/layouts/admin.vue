@@ -18,6 +18,10 @@
           🛒 Produtos
         </NuxtLink>
 
+        <NuxtLink to="/admin/licenses" class="menu">
+          🔑 Licenças
+        </NuxtLink>
+
         <NuxtLink to="/admin/pedidos" class="menu">
           📦 Pedidos
         </NuxtLink>
