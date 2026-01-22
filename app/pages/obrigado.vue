@@ -1,8 +1,28 @@
 <script setup lang="ts">
 const route = useRoute()
+const config = useRuntimeConfig()
 
 const orderId = computed(() => String(route.query.orderId || ''))
 const paymentId = computed(() => String(route.query.paymentId || ''))
+
+const googleAdsConversionId = computed(() => String(config.public.googleAdsConversionId || ''))
+const googleAdsConversionLabel = computed(() => String(config.public.googleAdsConversionLabel || ''))
+
+onMounted(() => {
+  const id = googleAdsConversionId.value
+  const label = googleAdsConversionLabel.value
+
+  if (!id || !label) return
+  if (typeof window === 'undefined') return
+
+  const gtag = (window as any).gtag
+  if (typeof gtag !== 'function') return
+
+  gtag('event', 'conversion', {
+    send_to: `${id}/${label}`,
+    transaction_id: orderId.value || undefined
+  })
+})
 </script>
 
 <template>

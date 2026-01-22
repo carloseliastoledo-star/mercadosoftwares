@@ -6,6 +6,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       mercadopagoPublicKey: process.env.MERCADOPAGO_PUBLIC_KEY || '',
+      googleAdsConversionId: process.env.GOOGLE_ADS_CONVERSION_ID || '',
+      googleAdsConversionLabel: process.env.GOOGLE_ADS_CONVERSION_LABEL || '',
     },
   },
 
