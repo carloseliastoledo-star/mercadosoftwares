@@ -376,7 +376,13 @@ async function payWithCard() {
     })
 
     if (String(res.status || '').toLowerCase() === 'approved') {
-      navigateTo('/sucesso')
+      navigateTo({
+        path: '/obrigado',
+        query: {
+          orderId: res.orderId,
+          paymentId: res.paymentId
+        }
+      })
     } else {
       cardError.value = 'Pagamento enviado para análise. Aguarde a confirmação.'
     }
