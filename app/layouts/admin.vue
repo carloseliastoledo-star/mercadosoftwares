@@ -34,6 +34,10 @@
           📄 Páginas
         </NuxtLink>
 
+        <NuxtLink to="/admin/configuracoes" class="menu">
+          ⚙️ Configurações
+        </NuxtLink>
+
       </nav>
     </aside>
 

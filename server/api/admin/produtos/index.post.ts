@@ -14,6 +14,12 @@ export default defineEventHandler(async (event) => {
       descricao: body.descricao,
       ativo: body.ativo ?? true,
       imagem: body.imagem,
+      googleAdsConversionLabel: body.googleAdsConversionLabel,
+      googleAdsConversionValue:
+        body.googleAdsConversionValue === null || body.googleAdsConversionValue === undefined || body.googleAdsConversionValue === ''
+          ? null
+          : Number(body.googleAdsConversionValue),
+      googleAdsConversionCurrency: body.googleAdsConversionCurrency,
       tutorialTitulo: body.tutorialTitulo,
       tutorialSubtitulo: body.tutorialSubtitulo,
       tutorialConteudo: body.tutorialConteudo

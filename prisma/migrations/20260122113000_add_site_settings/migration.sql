@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE `SiteSettings` (
+    `id` VARCHAR(191) NOT NULL,
+    `googleAdsConversionId` VARCHAR(191) NULL,
+    `googleAdsConversionLabel` VARCHAR(191) NULL,
+    `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

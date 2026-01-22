@@ -13,6 +13,9 @@ const form = reactive({
   descricao: '',
   ativo: true,
   imagem: '',
+  googleAdsConversionLabel: '',
+  googleAdsConversionValue: '',
+  googleAdsConversionCurrency: 'BRL',
   tutorialTitulo: '',
   tutorialSubtitulo: '',
   tutorialConteudo: ''
@@ -31,6 +34,9 @@ watchEffect(() => {
   form.descricao = p.descricao ?? ''
   form.ativo = p.ativo ?? true
   form.imagem = p.imagem ?? ''
+  form.googleAdsConversionLabel = p.googleAdsConversionLabel ?? ''
+  form.googleAdsConversionValue = p.googleAdsConversionValue === null || p.googleAdsConversionValue === undefined ? '' : String(p.googleAdsConversionValue)
+  form.googleAdsConversionCurrency = p.googleAdsConversionCurrency ?? 'BRL'
   form.tutorialTitulo = p.tutorialTitulo ?? ''
   form.tutorialSubtitulo = p.tutorialSubtitulo ?? ''
   form.tutorialConteudo = p.tutorialConteudo ?? ''
@@ -160,6 +166,28 @@ async function salvar() {
           </div>
 
           <img v-if="form.imagem" :src="form.imagem" class="rounded border" />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Google Ads</label>
+
+          <input
+            v-model="form.googleAdsConversionLabel"
+            placeholder="Conversion Label"
+            class="w-full border p-2 rounded"
+          />
+
+          <input
+            v-model="form.googleAdsConversionValue"
+            placeholder="Conversion Value (opcional)"
+            class="w-full border p-2 rounded"
+          />
+
+          <input
+            v-model="form.googleAdsConversionCurrency"
+            placeholder="Currency (ex: BRL)"
+            class="w-full border p-2 rounded"
+          />
         </div>
 
         <button

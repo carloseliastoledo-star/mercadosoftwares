@@ -21,6 +21,9 @@ model Produto {
   preco     Float
   ativo     Boolean   @default(true)
   imagem    String?   // 👈 NOVO CAMPO
+  googleAdsConversionLabel    String?
+  googleAdsConversionValue    Float?
+  googleAdsConversionCurrency String?
   tutorialTitulo    String?
   tutorialSubtitulo String?
   tutorialConteudo  String?   @db.Text
@@ -86,4 +89,12 @@ model AdminUser {
   passwordHash String
   role         AdminRole @default(editor)
   createdAt    DateTime  @default(now()) @db.DateTime(0)
+}
+
+model SiteSettings {
+  id                     String   @id @default(uuid())
+  googleAdsConversionId  String?
+  googleAdsConversionLabel String?
+  createdAt              DateTime @default(now()) @db.DateTime(0)
+  updatedAt              DateTime @updatedAt @db.DateTime(0)
 }

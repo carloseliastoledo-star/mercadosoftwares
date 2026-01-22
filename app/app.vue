@@ -7,7 +7,12 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 
-const googleAdsConversionId = computed(() => String(config.public.googleAdsConversionId || ''))
+const { data: siteSettings } = await useFetch('/api/site-settings')
+
+const googleAdsConversionId = computed(() => {
+  const fromDb = (siteSettings.value as any)?.settings?.googleAdsConversionId
+  return String(fromDb || config.public.googleAdsConversionId || '')
+})
 
 useHead(() => {
   const id = googleAdsConversionId.value

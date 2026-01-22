@@ -2,26 +2,64 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
+const { data: siteSettings } = await useFetch('/api/site-settings')
+
 const orderId = computed(() => String(route.query.orderId || ''))
 const paymentId = computed(() => String(route.query.paymentId || ''))
 
-const googleAdsConversionId = computed(() => String(config.public.googleAdsConversionId || ''))
-const googleAdsConversionLabel = computed(() => String(config.public.googleAdsConversionLabel || ''))
+const googleAdsConversionId = computed(() => {
+  const fromDb = (siteSettings.value as any)?.settings?.googleAdsConversionId
+  return String(fromDb || config.public.googleAdsConversionId || '')
+})
 
-onMounted(() => {
+const googleAdsConversionLabel = computed(() => {
+  const fromDb = (siteSettings.value as any)?.settings?.googleAdsConversionLabel
+  return String(fromDb || config.public.googleAdsConversionLabel || '')
+})
+
+onMounted(async () => {
   const id = googleAdsConversionId.value
-  const label = googleAdsConversionLabel.value
-
-  if (!id || !label) return
+  if (!id) return
   if (typeof window === 'undefined') return
 
   const gtag = (window as any).gtag
   if (typeof gtag !== 'function') return
 
-  gtag('event', 'conversion', {
+  let label = googleAdsConversionLabel.value
+  let value: number | null | undefined = undefined
+  let currency: string | null | undefined = undefined
+
+  try {
+    if (orderId.value) {
+      const res: any = await $fetch('/api/order-conversion', {
+        query: { orderId: orderId.value }
+      })
+      const c = res?.conversion
+
+      if (c?.label) label = String(c.label)
+      value = c?.value
+      currency = c?.currency
+    }
+  } catch {
+    // se falhar, segue com label do runtimeConfig
+  }
+
+  if (!label) return
+
+  const payload: any = {
     send_to: `${id}/${label}`,
     transaction_id: orderId.value || undefined
-  })
+  }
+
+  if (value !== null && value !== undefined) {
+    payload.value = Number(value)
+  }
+
+  if (currency) {
+    payload.currency = String(currency)
+  }
+
+  gtag('event', 'conversion', payload)
 })
 </script>
 

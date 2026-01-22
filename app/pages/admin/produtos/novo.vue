@@ -8,6 +8,9 @@ const form = reactive({
   descricao: '',
   ativo: true,
   imagem: '',
+  googleAdsConversionLabel: '',
+  googleAdsConversionValue: '',
+  googleAdsConversionCurrency: 'BRL',
   tutorialTitulo: '',
   tutorialSubtitulo: '',
   tutorialConteudo: ''
@@ -127,6 +130,28 @@ async function salvar() {
           v-if="form.imagem"
           :src="form.imagem"
           class="mt-2 rounded border"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="text-sm font-semibold">Google Ads</label>
+
+        <input
+          v-model="form.googleAdsConversionLabel"
+          placeholder="Conversion Label (ex: AbCdEfGhIjkLmNoPqRsT)"
+          class="w-full border p-2 rounded"
+        />
+
+        <input
+          v-model="form.googleAdsConversionValue"
+          placeholder="Conversion Value (opcional)"
+          class="w-full border p-2 rounded"
+        />
+
+        <input
+          v-model="form.googleAdsConversionCurrency"
+          placeholder="Currency (ex: BRL)"
+          class="w-full border p-2 rounded"
         />
       </div>
 
