@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '#root/server/db/prisma'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
@@ -9,7 +7,7 @@ export default defineEventHandler(async (event) => {
     where: { slug: String(slug) }
   })
 
-  if (!product) {
+  if (!product || !product.ativo) {
     throw createError({
       statusCode: 404,
       statusMessage: 'Produto não encontrado'

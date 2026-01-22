@@ -19,6 +19,7 @@ model Produto {
   slug      String    @unique
   descricao String?
   preco     Float
+  ativo     Boolean   @default(true)
   imagem    String?   // 👈 NOVO CAMPO
   tutorialTitulo    String?
   tutorialSubtitulo String?

@@ -51,6 +51,7 @@ const produtos = computed(() => data.value || [])
           <th class="p-3 text-left">Nome</th>
           <th class="p-3 text-left">Preço</th>
           <th class="p-3 text-left">Slug</th>
+          <th class="p-3 text-left">Status</th>
           <th class="p-3 text-left">Ações</th>
         </tr>
       </thead>
@@ -64,6 +65,14 @@ const produtos = computed(() => data.value || [])
           <td class="p-3 font-medium">{{ p.nome }}</td>
           <td class="p-3">R$ {{ p.preco }}</td>
           <td class="p-3 text-gray-500">{{ p.slug }}</td>
+          <td class="p-3">
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
+              :class="p.ativo ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+            >
+              {{ p.ativo ? 'Ativo' : 'Inativo' }}
+            </span>
+          </td>
           <td class="p-3">
             <div class="flex items-center gap-4">
               <NuxtLink

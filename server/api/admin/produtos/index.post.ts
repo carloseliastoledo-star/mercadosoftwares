@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       slug: body.slug,
       preco: Number(body.preco),
       descricao: body.descricao,
+      ativo: body.ativo ?? true,
       imagem: body.imagem,
       tutorialTitulo: body.tutorialTitulo,
       tutorialSubtitulo: body.tutorialSubtitulo,

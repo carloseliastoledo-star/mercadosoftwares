@@ -6,11 +6,15 @@ const form = reactive({
   slug: '',
   preco: '',
   descricao: '',
+  ativo: true,
   imagem: '',
   tutorialTitulo: '',
   tutorialSubtitulo: '',
   tutorialConteudo: ''
 })
+
+const uploadLoading = ref(false)
+const uploadError = ref('')
 
 async function uploadImagem(event) {
   const file = event.target.files[0]
@@ -19,12 +23,21 @@ async function uploadImagem(event) {
   const formData = new FormData()
   formData.append('file', file)
 
-  const res = await $fetch('/api/admin/upload', {
-    method: 'POST',
-    body: formData
-  })
+  uploadLoading.value = true
+  uploadError.value = ''
 
-  form.imagem = res.url
+  try {
+    const res = await $fetch('/api/admin/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    form.imagem = res.url
+  } catch (err: any) {
+    uploadError.value = err?.data?.statusMessage || err?.message || 'Erro ao enviar imagem'
+  } finally {
+    uploadLoading.value = false
+  }
 }
 
 async function salvar() {
@@ -90,6 +103,11 @@ async function salvar() {
         placeholder="Preço"
         class="w-full border p-2 rounded"
       />
+
+      <label class="flex items-center gap-2 text-sm">
+        <input v-model="form.ativo" type="checkbox" class="rounded" />
+        Ativo (aparece no site)
+      </label>
 
       <!-- UPLOAD DE IMAGEM -->
       <div>

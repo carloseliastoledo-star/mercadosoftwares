@@ -1,18 +1,17 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:16
+  mysql:
+    image: mysql:8.4
     container_name: casadosoftware-db
     restart: always
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: casadosoftware
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: casadosoftware_dev
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
 
 volumes:
-  pgdata:
+  mysqldata:

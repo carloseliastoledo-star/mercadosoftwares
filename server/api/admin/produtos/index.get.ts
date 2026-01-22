@@ -9,7 +9,8 @@ export default defineEventHandler(async (event) => {
       id: true,
       nome: true,
       slug: true,
-      preco: true
+      preco: true,
+      ativo: true
     },
     orderBy: { criadoEm: 'desc' }
   })
