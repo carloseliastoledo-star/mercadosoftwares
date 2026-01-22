@@ -2,19 +2,22 @@
   <div class="min-h-screen flex flex-col bg-white">
 
     <!-- HEADER -->
-    <header class="border-b bg-white">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header class="border-b bg-white sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <!-- LOGO -->
-        <NuxtLink to="/" class="text-2xl font-bold text-blue-600">
-          Casa do Software
+        <NuxtLink to="/" class="flex items-center gap-3">
+          <img
+            src="/logo-casa-do-software.png"
+            alt="Casa do Software"
+            class="h-10 w-auto"
+          />
+          <span class="text-lg font-extrabold tracking-tight text-gray-900">
+            Casa do Software
+          </span>
         </NuxtLink>
 
         <!-- MENU -->
-        <nav class="flex items-center gap-6 text-sm font-medium text-gray-700">
-          <NuxtLink to="/" class="hover:text-blue-600">
-            Início
-          </NuxtLink>
-
+        <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-700">
           <NuxtLink to="/produtos" class="hover:text-blue-600">
             Produtos
           </NuxtLink>
@@ -23,17 +26,38 @@
             Tutoriais
           </NuxtLink>
 
-          <NuxtLink to="/minha-conta/login" class="hover:text-blue-600">
-            Minha conta
+          <NuxtLink to="/minha-conta" class="hover:text-blue-600">
+            Meus pedidos
           </NuxtLink>
 
           <NuxtLink
             to="/checkout"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+            class="relative inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
           >
-            Carrinho
+            <span class="font-semibold">Carrinho</span>
+            <span
+              v-if="cartCount > 0"
+              class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-bold flex items-center justify-center"
+            >
+              {{ cartCount }}
+            </span>
           </NuxtLink>
         </nav>
+
+        <div class="md:hidden">
+          <NuxtLink
+            to="/checkout"
+            class="relative inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
+          >
+            Carrinho
+            <span
+              v-if="cartCount > 0"
+              class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-bold flex items-center justify-center"
+            >
+              {{ cartCount }}
+            </span>
+          </NuxtLink>
+        </div>
       </div>
     </header>
 
@@ -87,9 +111,13 @@ type PaginaLinkDto = {
   slug: string
 }
 
+const { cart } = useCart()
+
 const { data } = await useFetch<{ ok: true; paginas: PaginaLinkDto[] }>('/api/paginas', {
   server: true
 })
 
 const paginas = computed(() => data.value?.paginas || [])
+
+const cartCount = computed(() => (cart.value || []).length)
 </script>

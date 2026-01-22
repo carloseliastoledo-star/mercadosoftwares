@@ -1,69 +1,52 @@
 <template>
   <section class="bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 pt-12 pb-10">
-      <div class="grid lg:grid-cols-2 gap-10 items-center">
-        <div class="space-y-6">
-          <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold border border-blue-100">
-            <span class="text-blue-600">⚡</span>
-            Entrega imediata por e-mail
+    <div class="bg-gradient-to-br from-[#0b2b6a] via-[#203a7a] to-[#2f4fb4]">
+      <div class="max-w-7xl mx-auto px-6 pt-10 pb-14">
+        <div class="flex flex-col items-center text-center">
+          <div class="text-xs font-semibold tracking-wide text-white/80 border border-white/15 bg-white/10 px-4 py-2 rounded-full">
+            + Milhares de clientes satisfeitos
           </div>
 
-          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Licenças digitais originais de Windows e Office
+          <h1 class="mt-8 text-4xl md:text-6xl font-extrabold tracking-tight text-white">
+            Licenças Digitais
+            <span class="block mt-3">
+              <span class="text-cyan-300">Originais</span>
+              <span class="text-white"> e </span>
+              <span class="text-indigo-300">Instantâneas</span>
+            </span>
           </h1>
 
-          <p class="text-gray-600 text-lg leading-relaxed">
-            Compre com segurança e receba sua chave na hora. Suporte especializado e tutorial de ativação para cada produto.
+          <p class="mt-6 max-w-2xl text-white/80 text-base md:text-lg leading-relaxed">
+            Compre Windows, Office, Adobe e mais com entrega imediata por e-mail e suporte 24/7
           </p>
 
-          <div class="flex flex-col sm:flex-row gap-3">
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
             <NuxtLink
               to="/produtos"
-              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition text-center"
+              class="bg-cyan-400 hover:bg-cyan-300 text-[#0b2b6a] font-bold px-8 py-3 rounded-xl transition text-center"
             >
-              Ver produtos
+              Ver Produtos
             </NuxtLink>
-
             <NuxtLink
               to="/tutoriais"
-              class="border border-blue-600 text-blue-700 hover:bg-blue-50 font-semibold px-6 py-3 rounded-lg transition text-center"
+              class="border border-white/40 text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl transition text-center"
             >
-              Ver tutoriais
+              Como Ativar
             </NuxtLink>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 text-sm text-gray-700 pt-2">
-            <div class="bg-white border rounded-lg p-3">🔒 Compra segura</div>
-            <div class="bg-white border rounded-lg p-3">💳 Pagamento online</div>
-            <div class="bg-white border rounded-lg p-3">⚡ Entrega imediata</div>
-            <div class="bg-white border rounded-lg p-3">💬 Suporte rápido</div>
-          </div>
-        </div>
-
-        <div class="relative">
-          <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 text-white shadow-lg">
-            <div class="text-sm font-semibold text-blue-100">Destaque</div>
-            <div class="mt-2 text-2xl font-extrabold">Ative em poucos minutos</div>
-            <p class="mt-3 text-blue-100">
-              Cada produto possui um tutorial de ativação específico para você seguir passo a passo.
-            </p>
-            <div class="mt-6 grid grid-cols-2 gap-3 text-sm">
-              <div class="bg-white/10 rounded-xl p-4">
-                <div class="font-bold">Windows</div>
-                <div class="text-blue-100 mt-1">10/11 Pro</div>
-              </div>
-              <div class="bg-white/10 rounded-xl p-4">
-                <div class="font-bold">Office</div>
-                <div class="text-blue-100 mt-1">2021 / 365</div>
-              </div>
+          <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-white/85">
+            <div class="flex items-center gap-2">
+              <span class="text-green-300">✔</span>
+              Entrega em 5 minutos
             </div>
-            <div class="mt-6">
-              <NuxtLink
-                to="/produtos"
-                class="inline-flex items-center justify-center w-full bg-white text-blue-700 font-semibold px-6 py-3 rounded-lg hover:bg-blue-50 transition"
-              >
-                Começar agora
-              </NuxtLink>
+            <div class="flex items-center gap-2">
+              <span class="text-green-300">✔</span>
+              100% Original
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-300">✔</span>
+              Suporte 24/7
             </div>
           </div>
         </div>
