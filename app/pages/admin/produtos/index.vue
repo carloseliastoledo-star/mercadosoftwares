@@ -1,7 +1,25 @@
 <script setup>
 definePageMeta({ layout: 'admin' })
 
-const { data } = await useFetch('/api/admin/produtos')
+const { data, refresh } = await useFetch('/api/admin/produtos')
+
+const deletingId = ref('')
+
+async function excluirProduto(id) {
+  const ok = confirm('Tem certeza que deseja excluir este produto?')
+  if (!ok) return
+
+  deletingId.value = id
+
+  try {
+    await $fetch(`/api/admin/produtos/${id}`, {
+      method: 'DELETE'
+    })
+    await refresh()
+  } finally {
+    deletingId.value = ''
+  }
+}
 
 // blindagem SSR
 const produtos = computed(() => data.value || [])
@@ -47,12 +65,23 @@ const produtos = computed(() => data.value || [])
           <td class="p-3">R$ {{ p.preco }}</td>
           <td class="p-3 text-gray-500">{{ p.slug }}</td>
           <td class="p-3">
-            <NuxtLink
-              :to="`/admin/produtos/editar/${p.id}`"
-              class="text-blue-600 hover:underline font-medium"
-            >
-              Editar
-            </NuxtLink>
+            <div class="flex items-center gap-4">
+              <NuxtLink
+                :to="`/admin/produtos/editar/${p.id}`"
+                class="text-blue-600 hover:underline font-medium"
+              >
+                Editar
+              </NuxtLink>
+
+              <button
+                type="button"
+                class="text-red-600 hover:underline font-medium disabled:opacity-50"
+                :disabled="deletingId === p.id"
+                @click="excluirProduto(p.id)"
+              >
+                {{ deletingId === p.id ? 'Excluindo...' : 'Excluir' }}
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>

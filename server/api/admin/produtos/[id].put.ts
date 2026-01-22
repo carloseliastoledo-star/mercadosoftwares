@@ -1,6 +1,9 @@
 import prisma from '../../../db/prisma'
+import { requireAdminSession } from '../../../utils/adminSession'
 
 export default defineEventHandler(async (event) => {
+  requireAdminSession(event)
+
   const id = event.context.params.id
   const body = await readBody(event)
 
