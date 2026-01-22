@@ -135,6 +135,39 @@
 
     <div class="bg-white border-t">
       <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="text-center">
+          <h2 class="text-3xl font-extrabold text-gray-900">O que nossos clientes dizem</h2>
+          <p class="text-gray-600 mt-2">Avaliações reais de quem já comprou conosco</p>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          <div
+            v-for="(t, idx) in testimonials"
+            :key="idx"
+            class="bg-white border rounded-2xl p-6 shadow-sm"
+          >
+            <div class="text-amber-400 text-sm tracking-wide">★★★★★</div>
+            <p class="text-gray-700 mt-4 leading-relaxed">“{{ t.texto }}”</p>
+
+            <div class="mt-6 flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
+                :class="t.cor"
+              >
+                {{ t.inicial }}
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900">{{ t.nome }}</div>
+                <div class="text-xs text-gray-500">{{ t.tempo }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white border-t">
+      <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="grid lg:grid-cols-2 gap-10 items-center">
           <div>
             <h2 class="text-3xl font-extrabold text-gray-900">Como funciona</h2>
@@ -255,6 +288,30 @@ const faqs = [
 ] as const
 
 const openFaq = ref<number | null>(0)
+
+const testimonials = [
+  {
+    texto: 'Comprei o Windows 11 Pro e recebi em menos de 5 minutos! Ativação super simples, suporte excelente. Recomendo!',
+    nome: 'Marcos Silva',
+    tempo: 'há 2 dias',
+    inicial: 'M',
+    cor: 'bg-blue-600'
+  },
+  {
+    texto: 'Melhor preço que encontrei! Office 365 original, suporte me ajudou na instalação. Produto 100% genuíno.',
+    nome: 'Ana Rodrigues',
+    tempo: 'há 1 semana',
+    inicial: 'A',
+    cor: 'bg-violet-600'
+  },
+  {
+    texto: 'Terceira vez que compro aqui. Sempre rápido, sempre confiável. Atendimento nota 10!',
+    nome: 'Carlos Mendes',
+    tempo: 'há 3 dias',
+    inicial: 'C',
+    cor: 'bg-emerald-600'
+  }
+] as const
 
 function toggleFaq(idx: number) {
   openFaq.value = openFaq.value === idx ? null : idx
