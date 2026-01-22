@@ -6,6 +6,17 @@ export default defineEventHandler(async () => {
       where: {
         ativo: true
       },
+      select: {
+        id: true,
+        nome: true,
+        slug: true,
+        descricao: true,
+        preco: true,
+        imagem: true,
+        tutorialTitulo: true,
+        tutorialSubtitulo: true,
+        criadoEm: true
+      },
       orderBy: {
         criadoEm: 'desc'
       }

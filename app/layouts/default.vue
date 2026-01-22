@@ -26,8 +26,8 @@
             Tutoriais
           </NuxtLink>
 
-          <NuxtLink to="/minha-conta" class="hover:text-blue-600">
-            Meus pedidos
+          <NuxtLink to="/minha-conta/login" class="hover:text-blue-600">
+            Minha conta
           </NuxtLink>
 
           <NuxtLink
@@ -44,7 +44,13 @@
           </NuxtLink>
         </nav>
 
-        <div class="md:hidden">
+        <div class="md:hidden flex items-center gap-3">
+          <NuxtLink
+            to="/minha-conta/login"
+            class="text-sm font-semibold text-gray-700 hover:text-blue-600"
+          >
+            Conta
+          </NuxtLink>
           <NuxtLink
             to="/checkout"
             class="relative inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
