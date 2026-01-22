@@ -35,10 +35,12 @@ export default defineEventHandler(async (event) => {
   } catch (err: any) {
     const message = String(err?.message || '')
     throw createError({
-      statusCode: 500,
-      statusMessage: message.includes('Unknown column')
-        ? 'Banco de dados desatualizado (migração pendente). Rode as migrations em produção.'
-        : (err?.message || 'Server Error')
+      statusCode: message.includes('provided value for the column is too long') && message.includes('Column: descricao') ? 400 : 500,
+      statusMessage: message.includes('provided value for the column is too long') && message.includes('Column: descricao')
+        ? 'A descrição está muito grande para o limite do banco atual. Aplique a migração para aumentar o campo (descricao -> TEXT).'
+        : (message.includes('Unknown column')
+            ? 'Banco de dados desatualizado (migração pendente). Rode as migrations em produção.'
+            : (err?.message || 'Server Error'))
     })
   }
 })
