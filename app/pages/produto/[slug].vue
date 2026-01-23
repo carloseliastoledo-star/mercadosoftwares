@@ -180,10 +180,17 @@ const safeProduct = computed(() => {
   const preco = Number((p as any).preco ?? (p as any).price ?? 0)
   const slugValue = (p as any).slug ?? ''
 
-  const descricaoCurta = descricaoBase || ''
+  const descricaoCurtaFromDb =
+    (p as any).descricaoCurta ?? (p as any).shortDescription ?? (p as any).descricao_resumo ?? (p as any).resumo ?? ''
+
+  const descricaoCurtaBase = String(descricaoCurtaFromDb || descricaoBase || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  const descricaoCurta = descricaoCurtaBase.length > 220 ? `${descricaoCurtaBase.slice(0, 220)}...` : descricaoCurtaBase
 
   const descricaoLonga = `
-${descricaoCurta}
+${descricaoBase || descricaoCurta}
 
 O ${nome} é a solução ideal para quem busca desempenho, segurança e confiabilidade.
 Com ativação rápida e compatibilidade total com sistemas atuais, você garante um produto
