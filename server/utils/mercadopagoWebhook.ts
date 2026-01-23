@@ -1,6 +1,7 @@
 import prisma from '../db/prisma'
 import { getMpAccessToken, getMpPayment } from './mercadopago.js'
 import { renderLicenseEmail, sendMail } from './mailer.js'
+import { sendTelegramMessage } from './telegram.js'
 
 export async function processMercadoPagoPayment(dataId: string) {
   try {
@@ -15,9 +16,12 @@ export async function processMercadoPagoPayment(dataId: string) {
     }
 
     if (status === 'approved') {
+      let telegramReservation: { orderId: string; reservedAt: Date } | null = null
+      let telegramPayload: { orderId: string; produtoNome: string; customerEmail: string } | null = null
+
       await prisma.$transaction(async (tx) => {
         let order:
-          | { id: string; produtoId: string; customerId: string; emailEnviadoEm: Date | null }
+          | { id: string; produtoId: string; customerId: string; emailEnviadoEm: Date | null; telegramEnviadoEm: Date | null }
           | null = null
 
         try {
@@ -28,7 +32,7 @@ export async function processMercadoPagoPayment(dataId: string) {
               pagoEm: new Date(),
               mercadoPagoPaymentId: String((mpPayment as any)?.id || dataId)
             },
-            select: { id: true, produtoId: true, customerId: true, emailEnviadoEm: true }
+            select: { id: true, produtoId: true, customerId: true, emailEnviadoEm: true, telegramEnviadoEm: true }
           })
         } catch (err: any) {
           if (String(err?.code || '') === 'P2025') {
@@ -39,6 +43,26 @@ export async function processMercadoPagoPayment(dataId: string) {
         }
 
         if (!order) return
+
+        if (!order.telegramEnviadoEm) {
+          const reservedAt = new Date()
+          await tx.order.update({
+            where: { id: order.id },
+            data: { telegramEnviadoEm: reservedAt },
+            select: { id: true }
+          })
+
+          const [customer, produto] = await Promise.all([
+            tx.customer.findUnique({ where: { id: order.customerId }, select: { email: true } }),
+            tx.produto.findUnique({ where: { id: order.produtoId }, select: { nome: true } })
+          ])
+
+          if (customer?.email && produto?.nome) {
+            telegramReservation = { orderId: order.id, reservedAt }
+            telegramPayload = { orderId: order.id, produtoNome: produto.nome, customerEmail: customer.email }
+          }
+        }
+
         if (order.emailEnviadoEm) return
 
         const already = await tx.licenca.findFirst({
@@ -93,6 +117,27 @@ export async function processMercadoPagoPayment(dataId: string) {
           data: { emailEnviadoEm: new Date() }
         })
       })
+
+      if (telegramReservation && telegramPayload) {
+        try {
+          await sendTelegramMessage(
+            `✅ Venda concluída\n` +
+              `Pedido: ${telegramPayload.orderId}\n` +
+              `Produto: ${telegramPayload.produtoNome}\n` +
+              `Cliente: ${telegramPayload.customerEmail}`
+          )
+        } catch (err) {
+          console.log('[mp webhook] telegram send error', err)
+          try {
+            await prisma.order.updateMany({
+              where: { id: telegramReservation.orderId, telegramEnviadoEm: telegramReservation.reservedAt },
+              data: { telegramEnviadoEm: null }
+            })
+          } catch (revertErr) {
+            console.log('[mp webhook] telegram revert error', revertErr)
+          }
+        }
+      }
     } else if (status === 'rejected' || status === 'cancelled') {
       try {
         await prisma.order.update({
