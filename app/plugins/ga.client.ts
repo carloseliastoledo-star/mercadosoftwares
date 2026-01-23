@@ -9,17 +9,19 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   if (!googleAnalyticsId) return
 
-  const pageView = (path: string) => {
-    const w = window as any
-    if (typeof w.gtag !== 'function') return
+  const w = window as any
+  w.dataLayer = w.dataLayer || []
+  w.gtag = w.gtag || function gtag() { w.dataLayer.push(arguments) }
 
-    w.gtag('event', 'page_view', {
-      send_to: googleAnalyticsId,
+  const pageView = (path: string) => {
+    w.gtag('config', googleAnalyticsId, {
       page_path: path,
       page_location: window.location.href,
       page_title: document.title
     })
   }
+
+  pageView(window.location.pathname + window.location.search + window.location.hash)
 
   nuxtApp.hook('page:finish', () => {
     pageView(window.location.pathname + window.location.search + window.location.hash)
