@@ -116,6 +116,7 @@ model AdminUser {
 
 model SiteSettings {
   id                     String   @id @default(uuid())
+  googleAnalyticsId       String?
   googleAdsConversionId  String?
   googleAdsConversionLabel String?
   createdAt              DateTime @default(now()) @db.DateTime(0)

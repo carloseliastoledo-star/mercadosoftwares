@@ -5,6 +5,7 @@ export default defineEventHandler(async () => {
   const existing = await prisma.siteSettings.findFirst({
     select: {
       id: true,
+      googleAnalyticsId: true,
       googleAdsConversionId: true,
       googleAdsConversionLabel: true
     }
@@ -16,6 +17,7 @@ export default defineEventHandler(async () => {
     data: {},
     select: {
       id: true,
+      googleAnalyticsId: true,
       googleAdsConversionId: true,
       googleAdsConversionLabel: true
     }

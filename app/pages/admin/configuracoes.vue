@@ -2,6 +2,7 @@
 definePageMeta({ layout: 'admin' })
 
 const form = reactive({
+  googleAnalyticsId: '',
   googleAdsConversionId: '',
   googleAdsConversionLabel: ''
 })
@@ -19,6 +20,7 @@ onMounted(async () => {
   try {
     const res: any = await $fetch('/api/admin/settings')
     const s = res?.settings || {}
+    form.googleAnalyticsId = s.googleAnalyticsId ?? ''
     form.googleAdsConversionId = s.googleAdsConversionId ?? ''
     form.googleAdsConversionLabel = s.googleAdsConversionLabel ?? ''
   } catch (err: any) {
@@ -37,6 +39,7 @@ async function salvar() {
     await $fetch('/api/admin/settings', {
       method: 'PUT',
       body: {
+        googleAnalyticsId: form.googleAnalyticsId,
         googleAdsConversionId: form.googleAdsConversionId,
         googleAdsConversionLabel: form.googleAdsConversionLabel
       }
@@ -60,6 +63,11 @@ async function salvar() {
     <div v-if="loading" class="text-gray-500">Carregando...</div>
 
     <div v-else class="bg-white rounded shadow p-6 space-y-4 max-w-2xl">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Google Analytics ID (GA4)</label>
+        <input v-model="form.googleAnalyticsId" class="w-full border p-2 rounded" placeholder="Ex: G-XXXXXXXXXX" />
+      </div>
+
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Google Ads Conversion ID</label>
         <input v-model="form.googleAdsConversionId" class="w-full border p-2 rounded" placeholder="Ex: AW-123456789" />
