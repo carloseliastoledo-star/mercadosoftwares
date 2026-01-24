@@ -1,4 +1,5 @@
 import prisma from '#root/server/db/prisma'
+import { getDefaultProductDescription } from '#root/server/utils/productDescriptionTemplate'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
@@ -14,11 +15,16 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const rawDescription = typeof product.descricao === 'string' ? product.descricao.trim() : ''
+  const description = rawDescription
+    ? rawDescription
+    : getDefaultProductDescription({ nome: product.nome, slug: product.slug })
+
   return {
     id: product.id,
     name: product.nome,
     slug: product.slug,
-    description: product.descricao,
+    description,
     price: product.preco,
     image: product.imagem,   // 👈 CAMPO CRÍTICO
     tutorialTitle: product.tutorialTitulo,
