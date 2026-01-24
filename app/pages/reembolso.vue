@@ -26,7 +26,7 @@
       <div class="rounded-xl border bg-white p-5 space-y-3">
         <h2 class="text-xl font-bold text-gray-900">3. Como solicitar</h2>
         <p class="text-sm">
-          Entre em contato pelo e-mail <a class="text-blue-600 hover:underline" href="mailto:suporte@casadosoftware.com">suporte@casadosoftware.com</a> informando o número do pedido e o motivo.
+          Entre em contato pelo e-mail <a class="text-blue-600 hover:underline" href="mailto:sac@acasadosoftware.com.br">sac@acasadosoftware.com.br</a> informando o número do pedido e o motivo.
         </p>
       </div>
 

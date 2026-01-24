@@ -38,7 +38,7 @@
       <div class="rounded-xl border bg-white p-5 space-y-3">
         <h2 class="text-xl font-bold text-gray-900">5. Contato</h2>
         <p class="text-sm">
-          Para solicitações relacionadas a privacidade: <a class="text-blue-600 hover:underline" href="mailto:suporte@casadosoftware.com">suporte@casadosoftware.com</a>
+          Para solicitações relacionadas a privacidade: <a class="text-blue-600 hover:underline" href="mailto:sac@acasadosoftware.com.br">sac@acasadosoftware.com.br</a>
         </p>
         <p class="text-sm">
           Eletrokeys LTDA — CNPJ 44.694.365/0001-48.

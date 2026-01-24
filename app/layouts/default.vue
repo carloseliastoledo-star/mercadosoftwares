@@ -103,7 +103,7 @@
           <h3 class="font-semibold text-gray-800 mb-2">Suporte</h3>
           <p>Atendimento rápido e especializado</p>
           <p class="mt-2 font-medium text-gray-800">
-            suporte@casadosoftware.com
+            sac@acasadosoftware.com.br
           </p>
           <p class="mt-2 text-xs text-gray-500">
             Eletrokeys LTDA — CNPJ 44.694.365/0001-48
