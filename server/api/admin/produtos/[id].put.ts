@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
     descricao = undefined
   }
 
+  const categoriasProvided = Array.isArray(body.categorias)
+  const categorias = categoriasProvided ? body.categorias.map((s: any) => String(s).trim()).filter(Boolean) : []
+
   try {
     return await prisma.produto.update({
       where: { id },
@@ -35,6 +38,14 @@ export default defineEventHandler(async (event) => {
         ...(descricao !== undefined ? { descricao } : {}),
         ativo: body.ativo,
         imagem: body.imagem,
+        ...(categoriasProvided
+          ? {
+              categorias: {
+                set: [],
+                connect: categorias.map((slug: string) => ({ slug }))
+              }
+            }
+          : {}),
         ...(hasGoogleAds
           ? {
               googleAdsConversionLabel: body.googleAdsConversionLabel,

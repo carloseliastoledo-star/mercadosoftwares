@@ -1,10 +1,13 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
 
+type CategoriaDto = { id: string; nome: string; slug: string }
+
 const form = reactive({
   nome: '',
   slug: '',
   finalUrl: '',
+  categorias: [] as string[],
   preco: '',
   descricao: '',
   ativo: true,
@@ -22,6 +25,12 @@ const uploadError = ref('')
 
 const saving = ref(false)
 const saveError = ref('')
+
+const { data: categoriasData } = await useFetch<{ ok: true; categorias: CategoriaDto[] }>('/api/admin/categorias', {
+  server: false
+})
+
+const categorias = computed(() => categoriasData.value?.categorias || [])
 
 async function uploadImagem(event) {
   const file = event.target.files[0]
@@ -135,6 +144,17 @@ async function salvar() {
         placeholder="Preço"
         class="w-full border p-2 rounded"
       />
+
+      <div class="space-y-2">
+        <label class="text-sm font-semibold">Categorias</label>
+        <div class="space-y-1">
+          <label v-for="c in categorias" :key="c.id" class="flex items-center gap-2 text-sm">
+            <input v-model="form.categorias" type="checkbox" class="rounded" :value="c.slug" />
+            <span class="font-mono text-xs">{{ c.slug }}</span>
+            <span>{{ c.nome }}</span>
+          </label>
+        </div>
+      </div>
 
       <label class="flex items-center gap-2 text-sm">
         <input v-model="form.ativo" type="checkbox" class="rounded" />

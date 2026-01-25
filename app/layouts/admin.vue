@@ -30,6 +30,10 @@
           👤 Clientes
         </NuxtLink>
 
+        <NuxtLink to="/admin/categorias" class="menu">
+          🗂️ Categorias
+        </NuxtLink>
+
         <NuxtLink to="/admin/importar-woocommerce" class="menu">
           🔄 Importar WooCommerce
         </NuxtLink>

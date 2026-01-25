@@ -31,6 +31,7 @@ model Produto {
   criadoEm  DateTime  @default(now()) @db.DateTime(0)
   licencas  Licenca[]
   orders    Order[]
+  categorias Categoria[]
 }
 
 
@@ -59,6 +60,13 @@ model Customer {
   orders    Order[]
   licencas  Licenca[]
   wooOrders WooOrder[]
+}
+
+model Categoria {
+  id       String    @id @default(uuid())
+  nome     String
+  slug     String    @unique
+  produtos Produto[]
 }
 
 model WooImportState {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
 
+type CategoriaDto = { id: string; nome: string; slug: string }
+
 const route = useRoute()
 const id = String(route.params.id)
 
@@ -10,6 +12,7 @@ const form = reactive({
   nome: '',
   slug: '',
   finalUrl: '',
+  categorias: [] as string[],
   preco: '',
   descricao: '',
   ativo: true,
@@ -25,6 +28,12 @@ const form = reactive({
 const uploadLoading = ref(false)
 const uploadError = ref('')
 
+const { data: categoriasData } = await useFetch<{ ok: true; categorias: CategoriaDto[] }>('/api/admin/categorias', {
+  server: false
+})
+
+const categorias = computed(() => categoriasData.value?.categorias || [])
+
 watchEffect(() => {
   const p: any = data.value
   if (!p) return
@@ -36,6 +45,7 @@ watchEffect(() => {
   form.descricao = p.descricao ?? ''
   form.ativo = p.ativo ?? true
   form.imagem = p.imagem ?? ''
+  form.categorias = Array.isArray(p.categorias) ? p.categorias.map((c: any) => c?.slug).filter(Boolean) : []
   form.googleAdsConversionLabel = p.googleAdsConversionLabel ?? ''
   form.googleAdsConversionValue = p.googleAdsConversionValue === null || p.googleAdsConversionValue === undefined ? '' : String(p.googleAdsConversionValue)
   form.googleAdsConversionCurrency = p.googleAdsConversionCurrency ?? 'BRL'
@@ -155,6 +165,17 @@ async function salvar() {
           placeholder="Preço"
           class="w-full border p-2 rounded"
         />
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Categorias</label>
+          <div class="space-y-1">
+            <label v-for="c in categorias" :key="c.id" class="flex items-center gap-2 text-sm">
+              <input v-model="form.categorias" type="checkbox" class="rounded" :value="c.slug" />
+              <span class="font-mono text-xs">{{ c.slug }}</span>
+              <span>{{ c.nome }}</span>
+            </label>
+          </div>
+        </div>
 
         <label class="flex items-center gap-2 text-sm">
           <input v-model="form.ativo" type="checkbox" class="rounded" />

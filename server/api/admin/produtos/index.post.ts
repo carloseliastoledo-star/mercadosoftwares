@@ -15,6 +15,8 @@ export default defineEventHandler(async (event) => {
   const rawFinalUrl = typeof body.finalUrl === 'string' ? body.finalUrl.trim() : ''
   const finalUrl = rawFinalUrl ? rawFinalUrl : null
 
+  const categorias = Array.isArray(body.categorias) ? body.categorias.map((s: any) => String(s).trim()).filter(Boolean) : []
+
   try {
     return await prisma.produto.create({
       data: {
@@ -25,6 +27,13 @@ export default defineEventHandler(async (event) => {
         descricao,
         ativo: body.ativo ?? true,
         imagem: body.imagem,
+        ...(categorias.length
+          ? {
+              categorias: {
+                connect: categorias.map((slug: string) => ({ slug }))
+              }
+            }
+          : {}),
         ...(hasGoogleAds
           ? {
               googleAdsConversionLabel: body.googleAdsConversionLabel,

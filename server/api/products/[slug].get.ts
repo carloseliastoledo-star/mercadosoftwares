@@ -1,11 +1,15 @@
 import prisma from '#root/server/db/prisma'
 import { getDefaultProductDescription } from '#root/server/utils/productDescriptionTemplate'
+import { createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
 
   const product = await prisma.produto.findUnique({
-    where: { slug: String(slug) }
+    where: { slug: String(slug) },
+    include: {
+      categorias: { select: { slug: true } }
+    }
   })
 
   if (!product || !product.ativo) {
@@ -28,6 +32,7 @@ export default defineEventHandler(async (event) => {
     description,
     price: product.preco,
     image: product.imagem,   // 👈 CAMPO CRÍTICO
+    categories: (product.categorias || []).map((c) => c.slug),
     tutorialTitle: product.tutorialTitulo,
     tutorialSubtitle: product.tutorialSubtitulo,
     tutorialContent: product.tutorialConteudo,
