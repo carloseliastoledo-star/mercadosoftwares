@@ -53,10 +53,45 @@ model Customer {
   passwordHash String?
   nome      String?
   whatsapp  String?
+  wcCustomerId Int?
   cpf       String?
   criadoEm  DateTime @default(now()) @db.DateTime(0)
   orders    Order[]
   licencas  Licenca[]
+  wooOrders WooOrder[]
+}
+
+model WooImportState {
+  key       String   @id
+  resource  String
+  after     DateTime? @db.DateTime(0)
+  nextPage  Int      @default(1)
+  done      Boolean  @default(false)
+  updatedAt DateTime @updatedAt @db.DateTime(0)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+}
+
+model WooOrder {
+  id         String   @id @default(uuid())
+  wcOrderId  Int      @unique
+  status     String
+  total      Float?
+  currency   String?
+  criadoEm   DateTime @db.DateTime(0)
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  items      WooOrderItem[]
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  updatedAt  DateTime @updatedAt @db.DateTime(0)
+}
+
+model WooOrderItem {
+  id       String   @id @default(uuid())
+  orderId  String
+  order    WooOrder @relation(fields: [orderId], references: [id])
+  name     String?
+  quantity Int?
+  total    Float?
 }
 
 model Order {
