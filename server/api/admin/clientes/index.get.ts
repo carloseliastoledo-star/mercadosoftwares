@@ -11,8 +11,8 @@ export default defineEventHandler(async (event) => {
     where: q
       ? {
           OR: [
-            { email: { contains: q, mode: 'insensitive' } },
-            { nome: { contains: q, mode: 'insensitive' } }
+            { email: { contains: q } },
+            { nome: { contains: q } }
           ]
         }
       : undefined,
