@@ -17,7 +17,7 @@
           </h1>
 
           <p class="mt-6 max-w-2xl text-white/80 text-base md:text-lg leading-relaxed">
-            Compre Windows, Office, Adobe e mais com entrega imediata por e-mail e suporte 24/7
+            Compre Windows, Office, Autodesk e mais com entrega imediata por e-mail e suporte
           </p>
 
           <div class="mt-8 flex flex-col sm:flex-row gap-4">
@@ -46,7 +46,7 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="text-green-300">✔</span>
-              Suporte 24/7
+              Suporte Gratuito
             </div>
           </div>
         </div>
