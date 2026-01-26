@@ -1,5 +1,6 @@
 import prisma from '#root/server/db/prisma'
 import { getDefaultProductDescription } from '#root/server/utils/productDescriptionTemplate'
+import { createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const rawSlug = event.context.params?.slug
@@ -43,6 +44,7 @@ export default defineEventHandler(async (event) => {
     description,
     price: product.preco,
     image: product.imagem,
+    cardItems: product.cardItems,
     tutorialTitle: product.tutorialTitulo,
     tutorialSubtitle: product.tutorialSubtitulo,
     tutorialContent: product.tutorialConteudo,

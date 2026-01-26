@@ -12,6 +12,7 @@ interface Product {
   precoAntigo?: number | null
   image?: string | null
   imagem?: string | null
+  cardItems?: string | null
 }
 
 const props = defineProps<{
@@ -98,7 +99,7 @@ const categoryLabel = computed(() => {
   return ''
 })
 
-const includedItems = [
+const defaultIncludedItems = [
   'Entrega instantânea',
   'Licença original e vitalícia',
   'Suporte 24/7',
@@ -108,6 +109,16 @@ const includedItems = [
   'Ativação permanente',
   'Sem renovação necessária'
 ]
+
+const includedItems = computed(() => {
+  const raw = String((props.product as any)?.cardItems ?? '').trim()
+  if (!raw) return defaultIncludedItems
+  const items = raw
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return items.length ? items : defaultIncludedItems
+})
 
 function buyNow(event: Event) {
   event.preventDefault()

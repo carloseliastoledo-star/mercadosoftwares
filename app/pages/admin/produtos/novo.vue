@@ -10,6 +10,7 @@ const form = reactive({
   categorias: [] as string[],
   preco: '',
   precoAntigo: '',
+  cardItems: '',
   descricao: '',
   ativo: true,
   imagem: '',
@@ -151,6 +152,16 @@ async function salvar() {
         placeholder="Preço âncora (opcional)"
         class="w-full border p-2 rounded"
       />
+
+      <div class="space-y-2">
+        <label class="text-sm font-semibold">Itens do card (opcional)</label>
+        <textarea
+          v-model="form.cardItems"
+          placeholder="1 item por linha (ex: Entrega instantânea)"
+          rows="8"
+          class="w-full border p-2 rounded text-sm"
+        />
+      </div>
 
       <div class="space-y-2">
         <label class="text-sm font-semibold">Categorias</label>

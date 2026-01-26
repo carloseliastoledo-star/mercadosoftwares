@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
       finalUrl: true,
       preco: true,
       precoAntigo: true,
+      cardItems: true,
       ativo: true
     },
     orderBy: { criadoEm: 'desc' }

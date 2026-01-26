@@ -83,7 +83,7 @@
 
           <div class="pt-2">
             <div class="text-lg font-semibold text-gray-900 mb-3">O que está incluído:</div>
-            <ul class="space-y-2 text-gray-700">
+            <ul class="mt-6 space-y-2 text-gray-700">
               <li v-for="item in includedItems" :key="item" class="flex items-start gap-3">
                 <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-100">
                   <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-green-600">
@@ -277,7 +277,7 @@ const formattedPixPrice = computed(() => {
   })
 })
 
-const includedItems = [
+const defaultIncludedItems = [
   'Entrega instantânea',
   'Licença original e vitalícia',
   'Suporte 24/7',
@@ -287,6 +287,16 @@ const includedItems = [
   'Ativação permanente',
   'Sem renovação necessária'
 ]
+
+const includedItems = computed(() => {
+  const raw = String((safeProduct.value as any)?.cardItems ?? '').trim()
+  if (!raw) return defaultIncludedItems
+  const items = raw
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return items.length ? items : defaultIncludedItems
+})
 
 function buyNow() {
   const slugValue = String((safeProduct.value as any)?.slug || slug || '')

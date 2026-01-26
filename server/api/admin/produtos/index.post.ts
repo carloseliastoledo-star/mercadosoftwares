@@ -18,6 +18,9 @@ export default defineEventHandler(async (event) => {
   const rawPrecoAntigo = body.precoAntigo === null || body.precoAntigo === undefined ? '' : String(body.precoAntigo).trim()
   const precoAntigo = rawPrecoAntigo === '' ? null : Number(rawPrecoAntigo)
 
+  const rawCardItems = typeof body.cardItems === 'string' ? body.cardItems.trim() : ''
+  const cardItems = rawCardItems ? rawCardItems : null
+
   const categorias = Array.isArray(body.categorias) ? body.categorias.map((s: any) => String(s).trim()).filter(Boolean) : []
 
   try {
@@ -31,6 +34,7 @@ export default defineEventHandler(async (event) => {
         descricao,
         ativo: body.ativo ?? true,
         imagem: body.imagem,
+        cardItems,
         ...(categorias.length
           ? {
               produtoCategorias: {

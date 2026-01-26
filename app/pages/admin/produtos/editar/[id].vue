@@ -15,6 +15,7 @@ const form = reactive({
   categorias: [] as string[],
   preco: '',
   precoAntigo: '',
+  cardItems: '',
   descricao: '',
   ativo: true,
   imagem: '',
@@ -44,6 +45,7 @@ watchEffect(() => {
   form.finalUrl = p.finalUrl ?? ''
   form.preco = String(p.preco ?? '')
   form.precoAntigo = p.precoAntigo === null || p.precoAntigo === undefined ? '' : String(p.precoAntigo)
+  form.cardItems = p.cardItems ?? ''
   form.descricao = p.descricao ?? ''
   form.ativo = p.ativo ?? true
   form.imagem = p.imagem ?? ''
@@ -175,6 +177,16 @@ async function salvar() {
         />
 
         <div class="space-y-2">
+          <label class="text-sm font-semibold">Itens do card (opcional)</label>
+          <textarea
+            v-model="form.cardItems"
+            placeholder="1 item por linha (ex: Entrega instantânea)"
+            rows="8"
+            class="w-full border p-2 rounded text-sm"
+          />
+        </div>
+
+        <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">Categorias</label>
           <div class="space-y-1">
             <label v-for="c in categorias" :key="c.id" class="flex items-center gap-2 text-sm">
@@ -229,7 +241,7 @@ async function salvar() {
 
         <button
           @click="salvar"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          class="w-full bg-blue-600 text-white py-2 rounded"
         >
           Salvar alterações
         </button>

@@ -31,6 +31,10 @@ export default defineEventHandler(async (event) => {
   const rawPrecoAntigo = body.precoAntigo === null || body.precoAntigo === undefined ? '' : String(body.precoAntigo).trim()
   const precoAntigo = rawPrecoAntigo === '' ? null : Number(rawPrecoAntigo)
 
+  const cardItemsProvided = body.cardItems !== undefined
+  const rawCardItems = body.cardItems === null || body.cardItems === undefined ? '' : String(body.cardItems).trim()
+  const cardItems = rawCardItems === '' ? null : rawCardItems
+
   try {
     return await prisma.produto.update({
       where: { id },
@@ -43,6 +47,7 @@ export default defineEventHandler(async (event) => {
         ...(descricao !== undefined ? { descricao } : {}),
         ativo: body.ativo,
         imagem: body.imagem,
+        ...(cardItemsProvided ? { cardItems } : {}),
         ...(categoriasProvided
           ? {
               produtoCategorias: {
