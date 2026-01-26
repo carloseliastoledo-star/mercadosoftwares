@@ -7,7 +7,8 @@ const form = reactive({
   googleAdsConversionLabel: '',
   headHtml: '',
   bodyOpenHtml: '',
-  bodyCloseHtml: ''
+  bodyCloseHtml: '',
+  homeBestSellerSlugs: ''
 })
 
 const loading = ref(true)
@@ -29,6 +30,7 @@ onMounted(async () => {
     form.headHtml = s.headHtml ?? ''
     form.bodyOpenHtml = s.bodyOpenHtml ?? ''
     form.bodyCloseHtml = s.bodyCloseHtml ?? ''
+    form.homeBestSellerSlugs = s.homeBestSellerSlugs ?? ''
   } catch (err: any) {
     errorMsg.value = err?.data?.statusMessage || err?.message || 'Erro ao carregar configurações'
   } finally {
@@ -50,7 +52,8 @@ async function salvar() {
         googleAdsConversionLabel: form.googleAdsConversionLabel,
         headHtml: form.headHtml,
         bodyOpenHtml: form.bodyOpenHtml,
-        bodyCloseHtml: form.bodyCloseHtml
+        bodyCloseHtml: form.bodyCloseHtml,
+        homeBestSellerSlugs: form.homeBestSellerSlugs
       }
     })
     message.value = 'Configurações salvas com sucesso.'
@@ -100,6 +103,16 @@ async function salvar() {
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Código no final do &lt;body&gt; (HTML)</label>
         <textarea v-model="form.bodyCloseHtml" class="w-full border p-2 rounded font-mono text-xs" rows="6" placeholder="Cole aqui scripts que devem carregar no final" />
+      </div>
+
+      <div class="pt-4 border-t">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Home - Mais vendidos (slugs)</label>
+        <textarea
+          v-model="form.homeBestSellerSlugs"
+          class="w-full border p-2 rounded font-mono text-xs"
+          rows="4"
+          placeholder="Opcional: informe os slugs dos produtos (um por linha ou separados por vírgula) para aparecerem na Home. Se vazio, o sistema calcula automaticamente pelos pedidos PAID."
+        />
       </div>
 
       <div v-if="message" class="text-sm text-green-700">{{ message }}</div>

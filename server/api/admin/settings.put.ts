@@ -31,6 +31,10 @@ export default defineEventHandler(async (event) => {
     ? null
     : String(body.googleAdsConversionLabel).trim()
 
+  const homeBestSellerSlugs = body?.homeBestSellerSlugs === null || body?.homeBestSellerSlugs === undefined
+    ? null
+    : String(body.homeBestSellerSlugs)
+
   if (googleAdsConversionId && googleAdsConversionId.length > 64) {
     throw createError({ statusCode: 400, statusMessage: 'googleAdsConversionId inválido' })
   }
@@ -55,6 +59,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'bodyCloseHtml muito grande' })
   }
 
+  if (homeBestSellerSlugs && homeBestSellerSlugs.length > 20000) {
+    throw createError({ statusCode: 400, statusMessage: 'homeBestSellerSlugs muito grande' })
+  }
+
   const existing = await prisma.siteSettings.findFirst({
     select: { id: true }
   })
@@ -68,7 +76,8 @@ export default defineEventHandler(async (event) => {
           googleAdsConversionLabel: googleAdsConversionLabel || null,
           headHtml,
           bodyOpenHtml,
-          bodyCloseHtml
+          bodyCloseHtml,
+          homeBestSellerSlugs
         },
         select: {
           id: true,
@@ -77,7 +86,8 @@ export default defineEventHandler(async (event) => {
           googleAdsConversionLabel: true,
           headHtml: true,
           bodyOpenHtml: true,
-          bodyCloseHtml: true
+          bodyCloseHtml: true,
+          homeBestSellerSlugs: true
         }
       })
     : await prisma.siteSettings.create({
@@ -87,7 +97,8 @@ export default defineEventHandler(async (event) => {
           googleAdsConversionLabel: googleAdsConversionLabel || null,
           headHtml,
           bodyOpenHtml,
-          bodyCloseHtml
+          bodyCloseHtml,
+          homeBestSellerSlugs
         },
         select: {
           id: true,
@@ -96,7 +107,8 @@ export default defineEventHandler(async (event) => {
           googleAdsConversionLabel: true,
           headHtml: true,
           bodyOpenHtml: true,
-          bodyCloseHtml: true
+          bodyCloseHtml: true,
+          homeBestSellerSlugs: true
         }
       })
 

@@ -125,8 +125,8 @@
     <div class="max-w-7xl mx-auto px-6 py-12">
       <div class="flex items-end justify-between gap-6 flex-wrap">
         <div>
-          <h2 class="text-3xl font-extrabold text-gray-900">Produtos em destaque</h2>
-          <p class="text-gray-600 mt-2">Escolha um produto e finalize a compra em poucos cliques.</p>
+          <h2 class="text-3xl font-extrabold text-gray-900">Mais vendidos</h2>
+          <p class="text-gray-600 mt-2">Os produtos que mais vendem na loja.</p>
         </div>
         <NuxtLink
           to="/produtos"
@@ -282,7 +282,7 @@
 <script setup lang="ts">
 definePageMeta({ ssr: false })
 
-const { data, pending, error } = await useFetch('/api/products', {
+const { data, pending, error } = await useFetch('/api/products/best-sellers', {
   server: false
 })
 
