@@ -85,6 +85,43 @@
       </div>
     </div>
 
+    <div class="bg-gray-50 border-b">
+      <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex items-end justify-between gap-6 flex-wrap">
+          <div>
+            <h2 class="text-3xl font-extrabold text-gray-900">Categorias</h2>
+            <p class="text-gray-600 mt-2">Encontre rapidamente o que você precisa.</p>
+          </div>
+          <NuxtLink
+            to="/categorias"
+            class="text-blue-700 font-semibold hover:underline"
+          >
+            Ver todas →
+          </NuxtLink>
+        </div>
+
+        <div v-if="categoriasPending" class="text-center py-12 text-gray-500">
+          Carregando categorias...
+        </div>
+
+        <div v-else-if="categoriasError" class="text-center py-12 text-red-600">
+          Erro ao carregar categorias.
+        </div>
+
+        <div v-else class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <NuxtLink
+            v-for="c in categoriasHome"
+            :key="c.id"
+            :to="`/categoria/${c.slug}`"
+            class="bg-white border rounded-2xl p-5 hover:shadow-sm transition"
+          >
+            <div class="font-bold text-gray-900">{{ c.nome }}</div>
+            <div class="text-xs text-gray-500 mt-1">/categoria/{{ c.slug }}/</div>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-7xl mx-auto px-6 py-12">
       <div class="flex items-end justify-between gap-6 flex-wrap">
         <div>
@@ -249,7 +286,16 @@ const { data, pending, error } = await useFetch('/api/products', {
   server: false
 })
 
+type CategoriaDto = { id: string; nome: string; slug: string }
+
+const { data: categoriasData, pending: categoriasPending, error: categoriasError } = await useFetch<{ ok: true; categorias: CategoriaDto[] }>('/api/categorias', {
+  server: false
+})
+
 const products = computed(() => data.value || [])
+
+const categorias = computed(() => categoriasData.value?.categorias || [])
+const categoriasHome = computed(() => categorias.value.slice(0, 8))
 
 const faqs = [
   {
