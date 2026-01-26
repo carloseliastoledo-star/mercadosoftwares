@@ -167,7 +167,7 @@ const route = useRoute()
 const slug = route.params.slug as string
 
 const canonicalUrl = computed(() => {
-  const s = String((safeProduct.value as any)?.slug || slug || '').trim()
+  const s = String(slug || '').trim()
   if (!s) return 'https://casadosoftware.com.br/'
   return `https://casadosoftware.com.br/produto/${s}`
 })
