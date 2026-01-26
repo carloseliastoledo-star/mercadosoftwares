@@ -181,6 +181,9 @@ async function runImport(forceRestart: boolean) {
   try {
     const res = await $fetch('/api/admin/woocommerce/import', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: {
         pagesPerRun: pagesPerRun.value,
         perPage: perPage.value,
@@ -207,6 +210,9 @@ async function runImportProducts(forceRestart: boolean) {
   try {
     const res = await $fetch('/api/admin/woocommerce/products/import', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: {
         pagesPerRun: pagesPerRunProducts.value,
         perPage: perPageProducts.value,
