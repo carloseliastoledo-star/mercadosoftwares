@@ -41,6 +41,24 @@ export type WooOrder = {
   }>
 }
 
+export type WooProductCategory = {
+  id: number
+  name: string
+  slug: string
+}
+
+export type WooProduct = {
+  id: number
+  name: string
+  slug?: string
+  price?: string
+  regular_price?: string
+  description?: string
+  short_description?: string
+  images?: Array<{ src?: string }>
+  categories?: Array<{ id: number; name?: string; slug?: string }>
+}
+
 export async function wooGetOrders(params: {
   after?: string
   page: number
@@ -60,6 +78,44 @@ export async function wooGetOrders(params: {
   }
 
   return await $fetch<WooOrder[]>(url.toString(), {
+    method: 'GET'
+  })
+}
+
+export async function wooGetProductCategories(params: {
+  page: number
+  per_page: number
+}): Promise<WooProductCategory[]> {
+  const { baseUrl, consumerKey, consumerSecret } = getWooConfig()
+
+  const url = new URL(`${baseUrl}/wp-json/wc/v3/products/categories`)
+  url.searchParams.set('consumer_key', consumerKey)
+  url.searchParams.set('consumer_secret', consumerSecret)
+  url.searchParams.set('page', String(params.page))
+  url.searchParams.set('per_page', String(params.per_page))
+  url.searchParams.set('orderby', 'id')
+  url.searchParams.set('order', 'asc')
+
+  return await $fetch<WooProductCategory[]>(url.toString(), {
+    method: 'GET'
+  })
+}
+
+export async function wooGetProducts(params: {
+  page: number
+  per_page: number
+}): Promise<WooProduct[]> {
+  const { baseUrl, consumerKey, consumerSecret } = getWooConfig()
+
+  const url = new URL(`${baseUrl}/wp-json/wc/v3/products`)
+  url.searchParams.set('consumer_key', consumerKey)
+  url.searchParams.set('consumer_secret', consumerSecret)
+  url.searchParams.set('page', String(params.page))
+  url.searchParams.set('per_page', String(params.per_page))
+  url.searchParams.set('orderby', 'id')
+  url.searchParams.set('order', 'asc')
+
+  return await $fetch<WooProduct[]>(url.toString(), {
     method: 'GET'
   })
 }

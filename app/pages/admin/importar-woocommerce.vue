@@ -66,6 +66,66 @@
         </div>
       </div>
     </div>
+
+    <div class="bg-white rounded shadow p-6 space-y-4 mt-6">
+      <div>
+        <h2 class="text-lg font-semibold">Importar Produtos e Categorias</h2>
+        <p class="text-sm text-gray-600 mt-1">Importa categorias e produtos do WooCommerce (uma vez). Pode executar em lotes.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Páginas por execução</label>
+          <input v-model.number="pagesPerRunProducts" type="number" min="1" max="25" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Itens por página</label>
+          <input v-model.number="perPageProducts" type="number" min="10" max="100" class="w-full border p-2 rounded" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="loadingProducts"
+          @click="runImportProducts(false)"
+        >
+          {{ loadingProducts ? 'Executando...' : 'Executar próximo lote' }}
+        </button>
+
+        <button
+          class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 disabled:opacity-50"
+          :disabled="loadingProducts"
+          @click="runImportProducts(true)"
+        >
+          Reiniciar import
+        </button>
+
+        <button class="px-4 py-2 rounded-lg border" :disabled="loadingProducts" @click="refreshProducts">Atualizar status</button>
+      </div>
+
+      <div v-if="errorProducts" class="text-red-700 text-sm font-medium">{{ errorProducts }}</div>
+      <div v-if="messageProducts" class="text-green-700 text-sm font-medium">{{ messageProducts }}</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div class="border rounded p-4">
+          <div class="text-sm text-gray-500">Status</div>
+          <div class="mt-1 font-mono text-sm">done: {{ statusProducts?.state?.done ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">nextPage: {{ statusProducts?.state?.nextPage ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">updatedAt: {{ statusProducts?.state?.updatedAt ?? '-' }}</div>
+        </div>
+
+        <div class="border rounded p-4">
+          <div class="text-sm text-gray-500">Última execução</div>
+          <div class="mt-1 font-mono text-sm">processedCategories: {{ lastRunProducts?.processedCategories ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">upsertedCategories: {{ lastRunProducts?.upsertedCategories ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">processedProducts: {{ lastRunProducts?.processedProducts ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">createdProducts: {{ lastRunProducts?.createdProducts ?? '-' }}</div>
+          <div class="mt-1 font-mono text-sm">updatedProducts: {{ lastRunProducts?.updatedProducts ?? '-' }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,6 +143,16 @@ const message = ref('')
 const status = ref<any>(null)
 const lastRun = ref<any>(null)
 
+const pagesPerRunProducts = ref(3)
+const perPageProducts = ref(100)
+
+const loadingProducts = ref(false)
+const errorProducts = ref('')
+const messageProducts = ref('')
+
+const statusProducts = ref<any>(null)
+const lastRunProducts = ref<any>(null)
+
 async function refreshAll() {
   error.value = ''
   message.value = ''
@@ -90,6 +160,16 @@ async function refreshAll() {
     status.value = await $fetch('/api/admin/woocommerce/status')
   } catch (err: any) {
     error.value = err?.data?.statusMessage || 'Erro ao carregar status'
+  }
+}
+
+async function refreshProducts() {
+  errorProducts.value = ''
+  messageProducts.value = ''
+  try {
+    statusProducts.value = await $fetch('/api/admin/woocommerce/products/status')
+  } catch (err: any) {
+    errorProducts.value = err?.data?.statusMessage || 'Erro ao carregar status'
   }
 }
 
@@ -119,5 +199,33 @@ async function runImport(forceRestart: boolean) {
   }
 }
 
-onMounted(refreshAll)
+async function runImportProducts(forceRestart: boolean) {
+  loadingProducts.value = true
+  errorProducts.value = ''
+  messageProducts.value = ''
+
+  try {
+    const res = await $fetch('/api/admin/woocommerce/products/import', {
+      method: 'POST',
+      body: {
+        pagesPerRun: pagesPerRunProducts.value,
+        perPage: perPageProducts.value,
+        forceRestart
+      }
+    })
+
+    lastRunProducts.value = res
+    await refreshProducts()
+    messageProducts.value = res.done ? 'Import finalizado.' : 'Lote executado com sucesso.'
+  } catch (err: any) {
+    errorProducts.value = err?.data?.statusMessage || 'Erro ao executar import'
+  } finally {
+    loadingProducts.value = false
+  }
+}
+
+onMounted(async () => {
+  await refreshAll()
+  await refreshProducts()
+})
 </script>

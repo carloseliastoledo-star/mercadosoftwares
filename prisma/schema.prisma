@@ -15,6 +15,7 @@ enum AdminRole {
 
 model Produto {
   id        String    @id @default(uuid())
+  wcProductId Int?     @unique
   nome      String
   slug      String    @unique
   finalUrl  String?
@@ -64,6 +65,7 @@ model Customer {
 
 model Categoria {
   id       String    @id @default(uuid())
+  wcCategoryId Int?   @unique
   nome     String
   slug     String    @unique
   produtoCategorias ProdutoCategoria[]
