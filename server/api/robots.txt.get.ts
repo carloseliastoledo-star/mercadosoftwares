@@ -5,6 +5,8 @@ export default defineEventHandler((event) => {
 
   return [
     'User-agent: *',
+    'Disallow: /admin',
+    'Disallow: /api',
     'Allow: /',
     'Sitemap: https://casadosoftware.com.br/sitemap.xml',
     ''
