@@ -172,6 +172,9 @@ model SiteSettings {
   googleAnalyticsId       String?
   googleAdsConversionId  String?
   googleAdsConversionLabel String?
+  headHtml                String?  @db.Text
+  bodyOpenHtml            String?  @db.Text
+  bodyCloseHtml           String?  @db.Text
   createdAt              DateTime @default(now()) @db.DateTime(0)
   updatedAt              DateTime @updatedAt @db.DateTime(0)
 }

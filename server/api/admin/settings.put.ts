@@ -7,6 +7,18 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
 
+  const headHtml = body?.headHtml === null || body?.headHtml === undefined
+    ? null
+    : String(body.headHtml)
+
+  const bodyOpenHtml = body?.bodyOpenHtml === null || body?.bodyOpenHtml === undefined
+    ? null
+    : String(body.bodyOpenHtml)
+
+  const bodyCloseHtml = body?.bodyCloseHtml === null || body?.bodyCloseHtml === undefined
+    ? null
+    : String(body.bodyCloseHtml)
+
   const googleAnalyticsId = body?.googleAnalyticsId === null || body?.googleAnalyticsId === undefined
     ? null
     : String(body.googleAnalyticsId).trim()
@@ -31,6 +43,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'googleAdsConversionLabel inválido' })
   }
 
+  if (headHtml && headHtml.length > 20000) {
+    throw createError({ statusCode: 400, statusMessage: 'headHtml muito grande' })
+  }
+
+  if (bodyOpenHtml && bodyOpenHtml.length > 20000) {
+    throw createError({ statusCode: 400, statusMessage: 'bodyOpenHtml muito grande' })
+  }
+
+  if (bodyCloseHtml && bodyCloseHtml.length > 20000) {
+    throw createError({ statusCode: 400, statusMessage: 'bodyCloseHtml muito grande' })
+  }
+
   const existing = await prisma.siteSettings.findFirst({
     select: { id: true }
   })
@@ -41,26 +65,38 @@ export default defineEventHandler(async (event) => {
         data: {
           googleAnalyticsId: googleAnalyticsId || null,
           googleAdsConversionId: googleAdsConversionId || null,
-          googleAdsConversionLabel: googleAdsConversionLabel || null
+          googleAdsConversionLabel: googleAdsConversionLabel || null,
+          headHtml,
+          bodyOpenHtml,
+          bodyCloseHtml
         },
         select: {
           id: true,
           googleAnalyticsId: true,
           googleAdsConversionId: true,
-          googleAdsConversionLabel: true
+          googleAdsConversionLabel: true,
+          headHtml: true,
+          bodyOpenHtml: true,
+          bodyCloseHtml: true
         }
       })
     : await prisma.siteSettings.create({
         data: {
           googleAnalyticsId: googleAnalyticsId || null,
           googleAdsConversionId: googleAdsConversionId || null,
-          googleAdsConversionLabel: googleAdsConversionLabel || null
+          googleAdsConversionLabel: googleAdsConversionLabel || null,
+          headHtml,
+          bodyOpenHtml,
+          bodyCloseHtml
         },
         select: {
           id: true,
           googleAnalyticsId: true,
           googleAdsConversionId: true,
-          googleAdsConversionLabel: true
+          googleAdsConversionLabel: true,
+          headHtml: true,
+          bodyOpenHtml: true,
+          bodyCloseHtml: true
         }
       })
 

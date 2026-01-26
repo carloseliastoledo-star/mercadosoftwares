@@ -7,7 +7,10 @@ export default defineEventHandler(async () => {
       id: true,
       googleAnalyticsId: true,
       googleAdsConversionId: true,
-      googleAdsConversionLabel: true
+      googleAdsConversionLabel: true,
+      headHtml: true,
+      bodyOpenHtml: true,
+      bodyCloseHtml: true
     }
   })
 
@@ -19,7 +22,10 @@ export default defineEventHandler(async () => {
       id: true,
       googleAnalyticsId: true,
       googleAdsConversionId: true,
-      googleAdsConversionLabel: true
+      googleAdsConversionLabel: true,
+      headHtml: true,
+      bodyOpenHtml: true,
+      bodyCloseHtml: true
     }
   })
 

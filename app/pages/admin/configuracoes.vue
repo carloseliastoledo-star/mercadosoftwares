@@ -4,7 +4,10 @@ definePageMeta({ layout: 'admin' })
 const form = reactive({
   googleAnalyticsId: '',
   googleAdsConversionId: '',
-  googleAdsConversionLabel: ''
+  googleAdsConversionLabel: '',
+  headHtml: '',
+  bodyOpenHtml: '',
+  bodyCloseHtml: ''
 })
 
 const loading = ref(true)
@@ -23,6 +26,9 @@ onMounted(async () => {
     form.googleAnalyticsId = s.googleAnalyticsId ?? ''
     form.googleAdsConversionId = s.googleAdsConversionId ?? ''
     form.googleAdsConversionLabel = s.googleAdsConversionLabel ?? ''
+    form.headHtml = s.headHtml ?? ''
+    form.bodyOpenHtml = s.bodyOpenHtml ?? ''
+    form.bodyCloseHtml = s.bodyCloseHtml ?? ''
   } catch (err: any) {
     errorMsg.value = err?.data?.statusMessage || err?.message || 'Erro ao carregar configurações'
   } finally {
@@ -41,7 +47,10 @@ async function salvar() {
       body: {
         googleAnalyticsId: form.googleAnalyticsId,
         googleAdsConversionId: form.googleAdsConversionId,
-        googleAdsConversionLabel: form.googleAdsConversionLabel
+        googleAdsConversionLabel: form.googleAdsConversionLabel,
+        headHtml: form.headHtml,
+        bodyOpenHtml: form.bodyOpenHtml,
+        bodyCloseHtml: form.bodyCloseHtml
       }
     })
     message.value = 'Configurações salvas com sucesso.'
@@ -76,6 +85,21 @@ async function salvar() {
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Google Ads Conversion Label</label>
         <input v-model="form.googleAdsConversionLabel" class="w-full border p-2 rounded" placeholder="Ex: AbCdEfGhIjkLmNoPqRsT" />
+      </div>
+
+      <div class="pt-4 border-t">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Código no &lt;head&gt; (HTML)</label>
+        <textarea v-model="form.headHtml" class="w-full border p-2 rounded font-mono text-xs" rows="6" placeholder="Cole aqui scripts/meta/pixel..." />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Código no início do &lt;body&gt; (HTML)</label>
+        <textarea v-model="form.bodyOpenHtml" class="w-full border p-2 rounded font-mono text-xs" rows="6" placeholder="Ex: Tag Manager (noscript)" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Código no final do &lt;body&gt; (HTML)</label>
+        <textarea v-model="form.bodyCloseHtml" class="w-full border p-2 rounded font-mono text-xs" rows="6" placeholder="Cole aqui scripts que devem carregar no final" />
       </div>
 
       <div v-if="message" class="text-sm text-green-700">{{ message }}</div>
