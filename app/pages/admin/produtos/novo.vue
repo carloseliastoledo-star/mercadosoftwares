@@ -9,6 +9,7 @@ const form = reactive({
   finalUrl: '',
   categorias: [] as string[],
   preco: '',
+  precoAntigo: '',
   descricao: '',
   ativo: true,
   imagem: '',
@@ -142,6 +143,12 @@ async function salvar() {
       <input
         v-model="form.preco"
         placeholder="Preço"
+        class="w-full border p-2 rounded"
+      />
+
+      <input
+        v-model="form.precoAntigo"
+        placeholder="Preço âncora (opcional)"
         class="w-full border p-2 rounded"
       />
 

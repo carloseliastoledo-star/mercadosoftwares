@@ -14,6 +14,7 @@ const form = reactive({
   finalUrl: '',
   categorias: [] as string[],
   preco: '',
+  precoAntigo: '',
   descricao: '',
   ativo: true,
   imagem: '',
@@ -42,6 +43,7 @@ watchEffect(() => {
   form.slug = p.slug ?? ''
   form.finalUrl = p.finalUrl ?? ''
   form.preco = String(p.preco ?? '')
+  form.precoAntigo = p.precoAntigo === null || p.precoAntigo === undefined ? '' : String(p.precoAntigo)
   form.descricao = p.descricao ?? ''
   form.ativo = p.ativo ?? true
   form.imagem = p.imagem ?? ''
@@ -163,6 +165,12 @@ async function salvar() {
         <input
           v-model="form.preco"
           placeholder="Preço"
+          class="w-full border p-2 rounded"
+        />
+
+        <input
+          v-model="form.precoAntigo"
+          placeholder="Preço âncora (opcional)"
           class="w-full border p-2 rounded"
         />
 

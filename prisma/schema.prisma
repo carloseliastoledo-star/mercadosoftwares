@@ -21,6 +21,7 @@ model Produto {
   finalUrl  String?
   descricao String?   @db.Text
   preco     Float
+  precoAntigo Float?
   ativo     Boolean   @default(true)
   imagem    String?   // 👈 NOVO CAMPO
   googleAdsConversionLabel    String?

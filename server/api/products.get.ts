@@ -1,4 +1,5 @@
 import prisma from '#root/server/db/prisma'
+import { createError } from 'h3'
 
 export default defineEventHandler(async () => {
   try {
@@ -12,6 +13,7 @@ export default defineEventHandler(async () => {
         slug: true,
         descricao: true,
         preco: true,
+        precoAntigo: true,
         imagem: true,
         produtoCategorias: { select: { categoria: { select: { slug: true } } } },
         tutorialTitulo: true,
@@ -29,6 +31,7 @@ export default defineEventHandler(async () => {
       slug: p.slug,
       description: p.descricao,
       price: p.preco,
+      precoAntigo: p.precoAntigo,
       image: p.imagem,
       categories: (p.produtoCategorias || []).map((pc) => pc.categoria?.slug).filter(Boolean),
       tutorialTitle: p.tutorialTitulo,

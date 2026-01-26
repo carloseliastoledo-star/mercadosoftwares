@@ -63,7 +63,10 @@ const produtos = computed(() => data.value || [])
           class="border-t"
         >
           <td class="p-3 font-medium">{{ p.nome }}</td>
-          <td class="p-3">R$ {{ p.preco }}</td>
+          <td class="p-3">
+            <span v-if="p.precoAntigo" class="text-gray-400 line-through mr-2">R$ {{ p.precoAntigo }}</span>
+            <span>R$ {{ p.preco }}</span>
+          </td>
           <td class="p-3 text-gray-500">{{ p.slug }}</td>
           <td class="p-3">
             <span

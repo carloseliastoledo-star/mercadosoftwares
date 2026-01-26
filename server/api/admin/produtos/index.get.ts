@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       slug: true,
       finalUrl: true,
       preco: true,
+      precoAntigo: true,
       ativo: true
     },
     orderBy: { criadoEm: 'desc' }

@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
     finalUrl: product.finalUrl,
     description,
     price: product.preco,
+    precoAntigo: (product as any).precoAntigo ?? null,
     image: product.imagem,   // 👈 CAMPO CRÍTICO
     categories: (product.produtoCategorias || []).map((pc) => pc.categoria?.slug).filter(Boolean),
     tutorialTitle: product.tutorialTitulo,

@@ -15,6 +15,9 @@ export default defineEventHandler(async (event) => {
   const rawFinalUrl = typeof body.finalUrl === 'string' ? body.finalUrl.trim() : ''
   const finalUrl = rawFinalUrl ? rawFinalUrl : null
 
+  const rawPrecoAntigo = body.precoAntigo === null || body.precoAntigo === undefined ? '' : String(body.precoAntigo).trim()
+  const precoAntigo = rawPrecoAntigo === '' ? null : Number(rawPrecoAntigo)
+
   const categorias = Array.isArray(body.categorias) ? body.categorias.map((s: any) => String(s).trim()).filter(Boolean) : []
 
   try {
@@ -24,6 +27,7 @@ export default defineEventHandler(async (event) => {
         slug: body.slug,
         finalUrl,
         preco: Number(body.preco),
+        precoAntigo: precoAntigo === null || Number.isNaN(precoAntigo) ? null : precoAntigo,
         descricao,
         ativo: body.ativo ?? true,
         imagem: body.imagem,
