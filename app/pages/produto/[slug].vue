@@ -156,6 +156,19 @@
         </section>
       </div>
 
+      <div
+        v-if="data"
+        class="bg-white rounded-2xl shadow mt-8 p-8"
+      >
+        <h2 class="text-2xl font-bold mb-3">Por que nosso preço é mais acessível?</h2>
+        <p class="text-gray-700 leading-relaxed">
+          Nossos preços são mais acessíveis porque trabalhamos com distribuição digital, sem custos de mídia física, logística ou intermediários.
+        </p>
+        <p class="text-gray-700 leading-relaxed mt-4">
+          Isso nos permite oferecer valores competitivos, mantendo suporte e entrega imediata.
+        </p>
+      </div>
+
     </div>
   </section>
 </template>
