@@ -29,6 +29,9 @@ export default defineEventHandler(async (event) => {
   const statusUpper = String(order.status || '').toUpperCase()
   const mpPaymentId = String(order.mercadoPagoPaymentId || '').trim()
 
+  let fulfillmentAttempted = false
+  let fulfillmentError = ''
+
   if (statusUpper !== 'PAID' && mpPaymentId) {
     try {
       const payment = getMpPayment()
@@ -51,9 +54,13 @@ export default defineEventHandler(async (event) => {
           }
         })
 
-        processMercadoPagoPayment(String((mpPayment as any)?.id || mpPaymentId)).catch((err) => {
+        fulfillmentAttempted = true
+        try {
+          await processMercadoPagoPayment(String((mpPayment as any)?.id || mpPaymentId))
+        } catch (err: any) {
+          fulfillmentError = String(err?.data?.statusMessage || err?.message || 'Falha ao processar pagamento')
           console.log('[order-status] processMercadoPagoPayment error', err)
-        })
+        }
       }
     } catch {
       // se falhar (token/MP indisponível), apenas retorna o status atual do pedido
@@ -61,9 +68,28 @@ export default defineEventHandler(async (event) => {
   }
 
   if (statusUpper === 'PAID' && !order.emailEnviadoEm && mpPaymentId) {
-    processMercadoPagoPayment(mpPaymentId).catch((err) => {
+    fulfillmentAttempted = true
+    try {
+      await processMercadoPagoPayment(mpPaymentId)
+    } catch (err: any) {
+      fulfillmentError = String(err?.data?.statusMessage || err?.message || 'Falha ao processar pagamento')
       console.log('[order-status] reprocessMercadoPagoPayment error', err)
+    }
+
+    order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: {
+        id: true,
+        status: true,
+        pagoEm: true,
+        mercadoPagoPaymentId: true,
+        emailEnviadoEm: true
+      }
     })
+
+    if (!order) {
+      throw createError({ statusCode: 404, statusMessage: 'Pedido não encontrado' })
+    }
   }
 
   return {
@@ -74,6 +100,8 @@ export default defineEventHandler(async (event) => {
       pagoEm: order.pagoEm,
       mercadoPagoPaymentId: order.mercadoPagoPaymentId,
       emailEnviadoEm: order.emailEnviadoEm
-    }
+    },
+    fulfillmentAttempted,
+    fulfillmentError
   }
 })
