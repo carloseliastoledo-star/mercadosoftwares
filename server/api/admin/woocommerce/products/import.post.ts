@@ -11,6 +11,44 @@ function parseMoney(input: unknown): number {
   return Number.isFinite(n) ? n : 0
 }
 
+function htmlToPlainText(input: unknown): string {
+  let s = String(input ?? '')
+  if (!s.trim()) return ''
+
+  // normalize line breaks from common tags
+  s = s
+    .replace(/<\s*br\s*\/?>/gi, '\n')
+    .replace(/<\s*\/\s*p\s*>/gi, '\n')
+    .replace(/<\s*p\b[^>]*>/gi, '')
+    .replace(/<\s*\/\s*div\s*>/gi, '\n')
+    .replace(/<\s*div\b[^>]*>/gi, '')
+    .replace(/<\s*\/\s*li\s*>/gi, '\n')
+    .replace(/<\s*li\b[^>]*>/gi, '- ')
+
+  // strip remaining tags
+  s = s.replace(/<[^>]+>/g, '')
+
+  // decode minimal HTML entities
+  s = s
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+
+  // cleanup whitespace
+  s = s
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/[\t\f\v]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ ]{2,}/g, ' ')
+    .trim()
+
+  return s
+}
+
 function toSlug(input: unknown): string {
   return String(input ?? '')
     .trim()
@@ -274,8 +312,9 @@ export default defineEventHandler(async (event) => {
 
         const preco = parseMoney(p?.price ?? p?.regular_price)
 
-        const rawDescricao = String(p?.description || p?.short_description || '').trim()
-        const descricao = rawDescricao || null
+        const rawDescricaoHtml = String(p?.description || p?.short_description || '').trim()
+        const descricaoText = htmlToPlainText(rawDescricaoHtml)
+        const descricao = descricaoText || null
 
         const imagem = Array.isArray(p?.images) && p.images.length > 0 ? String(p.images[0]?.src || '').trim() : ''
         const imagemUrl = imagem || null
