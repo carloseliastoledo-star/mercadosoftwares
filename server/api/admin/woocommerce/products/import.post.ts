@@ -21,6 +21,160 @@ function toSlug(input: unknown): string {
     .replace(/(^-|-$)/g, '')
 }
 
+async function upsertCategoriaByWoo(input: { wcCategoryId: number; nome: string; slug: string }) {
+  const baseSlug = input.slug
+
+  try {
+    await prisma.categoria.upsert({
+      where: { wcCategoryId: input.wcCategoryId },
+      create: {
+        wcCategoryId: input.wcCategoryId,
+        nome: input.nome,
+        slug: baseSlug
+      },
+      update: {
+        nome: input.nome,
+        slug: baseSlug
+      },
+      select: { id: true }
+    })
+    return
+  } catch (err: any) {
+    if (String(err?.code || '') !== 'P2002') throw err
+
+    // slug já existe. Reaproveitar categoria existente por slug.
+    const existingBySlug = await prisma.categoria.findUnique({ where: { slug: baseSlug }, select: { id: true, wcCategoryId: true } })
+    if (existingBySlug) {
+      // se não estiver associada, associa; se estiver associada a outra, não muda.
+      if (!existingBySlug.wcCategoryId || existingBySlug.wcCategoryId === input.wcCategoryId) {
+        await prisma.categoria.update({
+          where: { id: existingBySlug.id },
+          data: {
+            wcCategoryId: input.wcCategoryId,
+            nome: input.nome
+          },
+          select: { id: true }
+        })
+        return
+      }
+    }
+
+    // fallback: gerar slug único
+    const uniqueSlug = `${baseSlug}-${input.wcCategoryId}`
+    await prisma.categoria.upsert({
+      where: { wcCategoryId: input.wcCategoryId },
+      create: {
+        wcCategoryId: input.wcCategoryId,
+        nome: input.nome,
+        slug: uniqueSlug
+      },
+      update: {
+        nome: input.nome,
+        slug: uniqueSlug
+      },
+      select: { id: true }
+    })
+  }
+}
+
+async function upsertProdutoByWoo(input: {
+  wcProductId: number
+  nome: string
+  slug: string
+  preco: number
+  descricao: string | null
+  imagem: string | null
+  categoriaIds: string[]
+}) {
+  const baseSlug = input.slug
+
+  const makeProdutoData = (slug: string) => ({
+    wcProductId: input.wcProductId,
+    nome: input.nome,
+    slug,
+    preco: input.preco,
+    descricao: input.descricao,
+    imagem: input.imagem,
+    ativo: true
+  })
+
+  const makeCategoriasRelation = () => ({
+    produtoCategorias: {
+      deleteMany: {},
+      ...(input.categoriaIds.length
+        ? {
+            create: input.categoriaIds.map((id) => ({
+              categoria: { connect: { id } }
+            }))
+          }
+        : {})
+    }
+  })
+
+  try {
+    await prisma.produto.upsert({
+      where: { wcProductId: input.wcProductId },
+      create: {
+        ...makeProdutoData(baseSlug),
+        ...(input.categoriaIds.length
+          ? {
+              produtoCategorias: {
+                create: input.categoriaIds.map((id) => ({
+                  categoria: { connect: { id } }
+                }))
+              }
+            }
+          : {})
+      },
+      update: {
+        ...makeProdutoData(baseSlug),
+        ...makeCategoriasRelation()
+      },
+      select: { id: true }
+    })
+    return
+  } catch (err: any) {
+    if (String(err?.code || '') !== 'P2002') throw err
+
+    const existingBySlug = await prisma.produto.findUnique({ where: { slug: baseSlug }, select: { id: true, wcProductId: true } })
+    if (existingBySlug) {
+      if (!existingBySlug.wcProductId || existingBySlug.wcProductId === input.wcProductId) {
+        await prisma.produto.update({
+          where: { id: existingBySlug.id },
+          data: {
+            ...makeProdutoData(baseSlug),
+            ...makeCategoriasRelation()
+          },
+          select: { id: true }
+        })
+        return
+      }
+    }
+
+    const uniqueSlug = `${baseSlug}-${input.wcProductId}`
+    await prisma.produto.upsert({
+      where: { wcProductId: input.wcProductId },
+      create: {
+        ...makeProdutoData(uniqueSlug),
+        ...(input.categoriaIds.length
+          ? {
+              produtoCategorias: {
+                create: input.categoriaIds.map((id) => ({
+                  categoria: { connect: { id } }
+                }))
+              }
+            }
+          : {})
+      },
+      update: {
+        ...makeProdutoData(uniqueSlug),
+        ...makeCategoriasRelation()
+      },
+      select: { id: true }
+    })
+  }
+}
+
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
 
@@ -87,19 +241,7 @@ export default defineEventHandler(async (event) => {
           continue
         }
 
-        await prisma.categoria.upsert({
-          where: { wcCategoryId: Number(c.id) },
-          create: {
-            wcCategoryId: Number(c.id),
-            nome,
-            slug
-          },
-          update: {
-            nome,
-            slug
-          },
-          select: { id: true }
-        })
+        await upsertCategoriaByWoo({ wcCategoryId: Number(c.id), nome, slug })
 
         processedCategories++
         upsertedCategories++
@@ -149,45 +291,14 @@ export default defineEventHandler(async (event) => {
           ? await prisma.categoria.findMany({ where: { wcCategoryId: { in: catIds } }, select: { id: true } })
           : []
 
-        const produto = await prisma.produto.upsert({
-          where: { wcProductId },
-          create: {
-            wcProductId,
-            nome,
-            slug,
-            preco,
-            descricao,
-            imagem: imagemUrl,
-            ativo: true,
-            ...(categoriasDb.length
-              ? {
-                  produtoCategorias: {
-                    create: categoriasDb.map((c) => ({
-                      categoria: { connect: { id: c.id } }
-                    }))
-                  }
-                }
-              : {})
-          },
-          update: {
-            nome,
-            slug,
-            preco,
-            descricao,
-            imagem: imagemUrl,
-            ativo: true,
-            produtoCategorias: {
-              deleteMany: {},
-              ...(categoriasDb.length
-                ? {
-                    create: categoriasDb.map((c) => ({
-                      categoria: { connect: { id: c.id } }
-                    }))
-                  }
-                : {})
-            }
-          },
-          select: { id: true }
+        await upsertProdutoByWoo({
+          wcProductId,
+          nome,
+          slug,
+          preco,
+          descricao,
+          imagem: imagemUrl,
+          categoriaIds: categoriasDb.map((c) => c.id)
         })
 
         if (existing) updatedProducts++
@@ -195,9 +306,7 @@ export default defineEventHandler(async (event) => {
 
         processedProducts++
 
-        if (!produto?.id) {
-          throw createError({ statusCode: 500, statusMessage: 'Falha ao upsert produto' })
-        }
+        // se chegou aqui, o upsert deu certo
       }
 
       page++
