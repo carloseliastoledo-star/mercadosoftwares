@@ -149,6 +149,7 @@ function buyNow(event: Event) {
         :src="productImage"
         :alt="productName"
         class="w-full h-[180px] object-contain"
+        referrerpolicy="no-referrer"
         @error="onImageError"
       />
     </div>

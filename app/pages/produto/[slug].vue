@@ -38,6 +38,7 @@
             :src="safeImage"
             :alt="safeProduct.nome"
             class="w-full max-w-[520px] max-h-[520px] object-contain"
+            referrerpolicy="no-referrer"
             @error="onImageError"
           />
         </div>
