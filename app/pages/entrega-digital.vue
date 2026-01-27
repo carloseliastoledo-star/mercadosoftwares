@@ -26,7 +26,7 @@
         <h2 class="text-xl font-bold text-gray-900">Suporte</h2>
         <p class="text-sm">
           Se você não receber a entrega dentro do prazo, entre em contato pelo e-mail
-          <a class="text-blue-600 hover:underline" href="mailto:sac@acasadosoftware.com.br">sac@acasadosoftware.com.br</a>.
+          <a class="text-blue-600 hover:underline" href="mailto:comercial@casadosoftware.com.br">comercial@casadosoftware.com.br</a>.
         </p>
       </div>
 

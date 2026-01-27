@@ -132,7 +132,7 @@
           <h3 class="font-semibold text-gray-800 mb-2">Suporte</h3>
           <p>Atendimento rápido e especializado</p>
           <p class="mt-2 font-medium text-gray-800">
-            sac@acasadosoftware.com.br
+            comercial@casadosoftware.com.br
           </p>
           <p class="mt-2 font-medium text-gray-800">
             <a class="hover:underline" href="https://wa.me/5511910512647" target="_blank" rel="noopener noreferrer">

@@ -20,7 +20,7 @@
         <div class="mt-3 space-y-1 text-sm text-gray-700">
           <p>
             <span class="font-semibold">E-mail:</span>
-            <a class="text-blue-600 hover:underline" href="mailto:sac@acasadosoftware.com.br">sac@acasadosoftware.com.br</a>
+            <a class="text-blue-600 hover:underline" href="mailto:comercial@casadosoftware.com.br">comercial@casadosoftware.com.br</a>
           </p>
           <p><span class="font-semibold">Atendimento:</span> em horário comercial.</p>
         </div>
