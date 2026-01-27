@@ -3,6 +3,15 @@ import { resolve } from 'path'
 export default defineNuxtConfig({
   srcDir: 'app',
 
+  app: {
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/logo-casa-do-software.png' },
+        { rel: 'apple-touch-icon', href: '/logo-casa-do-software.png' }
+      ]
+    }
+  },
+
   runtimeConfig: {
     public: {
       mercadopagoPublicKey: process.env.MERCADOPAGO_PUBLIC_KEY || '',
