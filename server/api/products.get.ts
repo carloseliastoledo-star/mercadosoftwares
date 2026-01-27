@@ -9,6 +9,10 @@ function normalizeImageUrl(input: unknown): string | null {
   if (raw.startsWith('https://')) return raw
   if (raw.startsWith('//')) return `https:${raw}`
 
+  if (/^([a-z0-9-]+\.)+[a-z]{2,}(\/|$)/i.test(raw)) {
+    return `https://${raw}`
+  }
+
   if (raw.startsWith('/')) {
     const baseUrl = String(process.env.WOOCOMMERCE_BASE_URL || '').trim().replace(/\/+$/, '')
     if (!baseUrl) return raw
