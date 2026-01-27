@@ -16,6 +16,12 @@ function normalizeImageUrl(input: unknown): string | null {
     return `${baseUrl}${raw}`
   }
 
+  if (/^(wp-content\/|uploads\/)/i.test(raw)) {
+    const baseUrl = String(process.env.WOOCOMMERCE_BASE_URL || '').trim().replace(/\/+$/, '')
+    if (!baseUrl) return `/${raw}`
+    return `${baseUrl}/${raw}`
+  }
+
   return raw
 }
 
