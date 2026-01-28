@@ -2,7 +2,10 @@
   <div class="min-h-screen flex bg-gray-100">
 
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-[#1d2327] text-gray-200 fixed h-screen z-50">
+    <aside
+      class="w-64 bg-[#1d2327] text-gray-200 fixed h-screen z-50"
+      :class="sidebarOpen ? 'block' : 'hidden md:block'"
+    >
 
       <div class="p-4 text-lg font-bold border-b border-gray-700">
         Casa do Software
@@ -57,14 +60,30 @@
       </nav>
     </aside>
 
+    <div
+      v-if="sidebarOpen"
+      class="fixed inset-0 bg-black/40 z-40 md:hidden"
+      @click="sidebarOpen = false"
+    />
+
     <!-- ÁREA DIREITA -->
-    <div class="flex-1 ml-64 flex flex-col">
+    <div class="flex-1 md:ml-64 flex flex-col">
 
       <!-- TOPBAR -->
-      <header class="h-14 bg-white border-b flex items-center justify-between px-6">
+      <header class="h-14 bg-white border-b flex items-center justify-between px-4 md:px-6">
 
-        <div class="text-sm text-gray-600">
-          Painel Administrativo
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="md:hidden text-gray-700"
+            @click="sidebarOpen = true"
+          >
+            ☰
+          </button>
+
+          <div class="text-sm text-gray-600">
+            Painel Administrativo
+          </div>
         </div>
 
         <button
@@ -77,7 +96,7 @@
       </header>
 
       <!-- CONTEÚDO -->
-      <main class="flex-1 p-8">
+      <main class="flex-1 p-4 md:p-8">
         <slot />
       </main>
 
@@ -87,6 +106,8 @@
 </template>
 
 <script setup>
+const sidebarOpen = ref(false)
+
 async function logout() {
   try {
     await $fetch('/api/admin/auth/logout', { method: 'POST' })
