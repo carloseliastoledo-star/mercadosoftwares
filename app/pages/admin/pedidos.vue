@@ -81,6 +81,13 @@
                   Editar
                 </button>
                 <button
+                  v-if="canResend(o)"
+                  class="text-indigo-700 hover:text-indigo-900"
+                  @click="resendOrder(o)"
+                >
+                  Reenviar e-mail
+                </button>
+                <button
                   v-if="canManualFulfill(o)"
                   class="text-emerald-700 hover:text-emerald-900"
                   @click="openFulfillModal(o)"
@@ -360,6 +367,23 @@ function closeImportModal() {
 
 function canManualFulfill(o: OrderDto) {
   return String(o.status || '').toUpperCase() === 'PAID' && (!o.licencas || o.licencas.length === 0)
+}
+
+function canResend(o: OrderDto) {
+  return String(o.status || '').toUpperCase() === 'PAID' && Array.isArray(o.licencas) && o.licencas.length > 0
+}
+
+async function resendOrder(o: OrderDto) {
+  if (!o?.id) return
+  if (!confirm('Reenviar o e-mail de entrega deste pedido para o cliente?')) return
+
+  try {
+    await $fetch(`/api/admin/pedidos/${o.id}/resend`, { method: 'POST' })
+    alert('E-mail reenviado com sucesso.')
+    await refresh()
+  } catch (err: any) {
+    alert(err?.data?.statusMessage || 'Erro ao reenviar e-mail')
+  }
 }
 
 async function openFulfillModal(o: OrderDto) {
