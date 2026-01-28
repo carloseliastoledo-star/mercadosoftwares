@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
     select: {
       id: true,
       nome: true,
-      slug: true
+      slug: true,
+      ativo: true
     }
   })
 

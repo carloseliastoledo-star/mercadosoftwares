@@ -72,6 +72,7 @@ model Categoria {
   wcCategoryId Int?   @unique
   nome     String
   slug     String    @unique
+  ativo    Boolean   @default(true)
   produtoCategorias ProdutoCategoria[]
 }
 

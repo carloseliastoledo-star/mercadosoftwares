@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   for (const c of cats) {
     await prisma.categoria.upsert({
       where: { slug: c.slug },
-      create: c,
+      create: { ...c, ativo: true },
       update: { nome: c.nome }
     })
   }

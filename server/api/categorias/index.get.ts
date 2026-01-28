@@ -3,6 +3,7 @@ import prisma from '../../db/prisma'
 
 export default defineEventHandler(async () => {
   const categorias = await prisma.categoria.findMany({
+    where: { ativo: true },
     orderBy: { nome: 'asc' },
     select: {
       id: true,

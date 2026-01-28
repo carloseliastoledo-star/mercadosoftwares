@@ -43,6 +43,7 @@
           <tr>
             <th class="p-3 text-left">Nome</th>
             <th class="p-3 text-left">Slug</th>
+            <th class="p-3 text-left">Ativa</th>
             <th class="p-3 text-left">Ações</th>
           </tr>
         </thead>
@@ -55,11 +56,17 @@
               <input v-model="c.slug" class="w-full border p-2 rounded font-mono" />
             </td>
             <td class="p-3">
+              <input v-model="c.ativo" type="checkbox" class="h-4 w-4 accent-blue-600" />
+            </td>
+            <td class="p-3">
               <div class="flex items-center gap-3">
                 <button class="text-blue-600 hover:text-blue-800" @click="save(c)">Salvar</button>
                 <button class="text-red-600 hover:text-red-800" @click="remove(c)">Apagar</button>
               </div>
             </td>
+          </tr>
+          <tr v-if="!categorias.length" class="border-t">
+            <td class="p-3 text-gray-500" colspan="4">Nenhuma categoria.</td>
           </tr>
         </tbody>
       </table>
@@ -70,7 +77,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
 
-type CategoriaDto = { id: string; nome: string; slug: string }
+type CategoriaDto = { id: string; nome: string; slug: string; ativo: boolean }
 
 const loading = ref(false)
 const error = ref('')
@@ -119,7 +126,7 @@ async function save(c: CategoriaDto) {
   try {
     await $fetch(`/api/admin/categorias/${c.id}`, {
       method: 'PUT',
-      body: { nome: c.nome, slug: c.slug }
+      body: { nome: c.nome, slug: c.slug, ativo: c.ativo }
     })
     await refresh()
     message.value = 'Categoria salva.'

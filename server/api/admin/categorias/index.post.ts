@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   const created = await prisma.categoria.create({
     data: { nome, slug },
-    select: { id: true, nome: true, slug: true }
+    select: { id: true, nome: true, slug: true, ativo: true }
   })
 
   return { ok: true, categoria: created }

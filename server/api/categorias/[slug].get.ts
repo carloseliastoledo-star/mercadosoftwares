@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
       id: true,
       nome: true,
       slug: true,
+      ativo: true,
       produtoCategorias: {
         where: {
           produto: { ativo: true }
@@ -38,6 +39,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Categoria não encontrada' })
   }
 
+  if (!categoria.ativo) {
+    throw createError({ statusCode: 404, statusMessage: 'Categoria não encontrada' })
+  }
+
+  type ProdutoItem = {
+    id: string
+    nome: string
+    slug: string
+    descricao: string | null
+    preco: number
+    imagem: string | null
+    criadoEm: Date
+  }
+
   return {
     ok: true,
     categoria: {
@@ -46,10 +61,10 @@ export default defineEventHandler(async (event) => {
       slug: categoria.slug
     },
     produtos: (categoria.produtoCategorias || [])
-      .map((pc) => pc.produto)
-      .filter(Boolean)
-      .sort((a, b) => Number(new Date(b.criadoEm)) - Number(new Date(a.criadoEm)))
-      .map((p) => ({
+      .map((pc: { produto: ProdutoItem }) => pc.produto)
+      .filter((p: ProdutoItem | null): p is ProdutoItem => Boolean(p))
+      .sort((a: ProdutoItem, b: ProdutoItem) => Number(new Date(b.criadoEm)) - Number(new Date(a.criadoEm)))
+      .map((p: ProdutoItem) => ({
         id: p.id,
         name: p.nome,
         slug: p.slug,

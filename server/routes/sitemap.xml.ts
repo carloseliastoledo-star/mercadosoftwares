@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
       orderBy: { criadoEm: 'desc' }
     }),
     prisma.categoria.findMany({
+      where: { ativo: true },
       select: { slug: true }
     })
   ])
