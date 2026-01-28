@@ -7,13 +7,17 @@ export default defineNuxtRouteMiddleware((to) => {
     // Libera a página de login
     if (to.path === '/admin/login') return
 
-    // Roda apenas no navegador
-    if (import.meta.client) {
-      const { $fetch } = useNuxtApp()
+    const { $fetch } = useNuxtApp()
 
-      return $fetch('/api/admin/auth/me')
+    if (import.meta.server) {
+      const headers = useRequestHeaders(['cookie'])
+      return $fetch('/api/admin/auth/me', { headers })
         .then(() => undefined)
         .catch(() => navigateTo('/admin/login'))
     }
+
+    return $fetch('/api/admin/auth/me')
+      .then(() => undefined)
+      .catch(() => navigateTo('/admin/login'))
   }
 })
