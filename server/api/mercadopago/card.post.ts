@@ -138,7 +138,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const paymentTypeId = (result as any)?.payment_type_id
-  const paymentMethodId = (result as any)?.payment_method_id
+  const mpPaymentMethodId = (result as any)?.payment_method_id
 
   const status = String((result as any)?.status || '').toLowerCase()
 
@@ -147,7 +147,7 @@ export default defineEventHandler(async (event) => {
     data: {
       mercadoPagoPaymentId: mpPaymentId,
       mercadoPagoPaymentTypeId: paymentTypeId ? String(paymentTypeId) : null,
-      mercadoPagoPaymentMethodId: paymentMethodId ? String(paymentMethodId) : null,
+      mercadoPagoPaymentMethodId: mpPaymentMethodId ? String(mpPaymentMethodId) : null,
       status: status === 'approved' ? 'PAID' : 'PENDING',
       pagoEm: status === 'approved' ? new Date() : null
     }
