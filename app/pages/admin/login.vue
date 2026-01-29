@@ -15,6 +15,14 @@ async function submit() {
       body: { email: email.value, password: password.value }
     })
 
+    // Confirma se a sessão realmente ficou ativa (cookie persistido)
+    try {
+      await $fetch('/api/admin/auth/me')
+    } catch {
+      error.value = 'Sessão não foi salva no navegador (cookie bloqueado). Tente novamente fora da aba anônima ou verifique configurações de cookies.'
+      return
+    }
+
     const redirect = String(route.query.redirect || '')
     navigateTo(redirect && redirect.startsWith('/') ? redirect : '/admin')
   } catch (err: any) {
