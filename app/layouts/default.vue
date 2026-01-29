@@ -49,6 +49,10 @@
             Tutoriais
           </NuxtLink>
 
+          <NuxtLink to="/blog" class="hover:text-blue-600">
+            Blog
+          </NuxtLink>
+
           <NuxtLink to="/minha-conta/login" class="hover:text-blue-600">
             Minha conta
           </NuxtLink>
@@ -117,6 +121,7 @@
           <ul class="space-y-2">
             <li><NuxtLink to="/produtos" class="hover:text-blue-600">Produtos</NuxtLink></li>
             <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">Tutoriais</NuxtLink></li>
+            <li><NuxtLink to="/blog" class="hover:text-blue-600">Blog</NuxtLink></li>
             <li><NuxtLink to="/quem-somos" class="hover:text-blue-600">Quem somos</NuxtLink></li>
             <li><NuxtLink to="/entrega-digital" class="hover:text-blue-600">Entrega digital</NuxtLink></li>
             <li><NuxtLink to="/reembolso" class="hover:text-blue-600">Política de reembolso</NuxtLink></li>

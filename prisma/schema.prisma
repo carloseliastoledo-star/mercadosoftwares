@@ -171,6 +171,16 @@ model Pagina {
   atualizadoEm DateTime @updatedAt @db.DateTime(0)
 }
 
+model BlogPost {
+  id           String   @id @default(uuid())
+  titulo       String
+  slug         String   @unique
+  html         String?  @db.Text
+  publicado    Boolean  @default(false)
+  criadoEm     DateTime @default(now()) @db.DateTime(0)
+  atualizadoEm DateTime @updatedAt @db.DateTime(0)
+}
+
 model AdminUser {
   id           String    @id @default(uuid())
   email        String    @unique

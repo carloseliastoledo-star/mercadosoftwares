@@ -53,6 +53,10 @@
           📄 Páginas
         </NuxtLink>
 
+        <NuxtLink to="/admin/blog" class="menu">
+          📝 Blog
+        </NuxtLink>
+
         <NuxtLink to="/admin/configuracoes" class="menu">
           ⚙️ Configurações
         </NuxtLink>
