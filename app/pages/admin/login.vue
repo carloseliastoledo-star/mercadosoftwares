@@ -3,6 +3,7 @@ const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
+const route = useRoute()
 
 async function submit() {
   loading.value = true
@@ -14,9 +15,14 @@ async function submit() {
       body: { email: email.value, password: password.value }
     })
 
-    navigateTo('/admin')
+    const redirect = String(route.query.redirect || '')
+    navigateTo(redirect && redirect.startsWith('/') ? redirect : '/admin')
   } catch (err: any) {
-    error.value = err?.data?.statusMessage || 'Erro ao fazer login'
+    const statusCode = err?.data?.statusCode || err?.statusCode
+    const statusMessage = err?.data?.statusMessage || err?.statusMessage
+    const message = err?.data?.message || err?.message
+    error.value = String(statusMessage || message || 'Erro ao fazer login')
+    if (statusCode) error.value = `${statusCode}: ${error.value}`
   } finally {
     loading.value = false
   }
