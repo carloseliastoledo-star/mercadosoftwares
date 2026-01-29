@@ -17,8 +17,8 @@
     <div v-if="pending" class="text-gray-500">Carregando...</div>
     <div v-else-if="error" class="text-red-600">Não foi possível carregar os pedidos.</div>
 
-    <div v-else class="bg-white rounded shadow overflow-x-auto -mx-4 md:-mx-8">
-      <table class="min-w-max w-full text-sm">
+    <div v-else class="bg-white rounded shadow overflow-x-auto">
+      <table class="w-full text-xs">
         <thead class="bg-gray-100 text-gray-600">
           <tr>
             <th class="px-2 py-2 text-left">Pedido</th>
@@ -41,14 +41,14 @@
               <div class="font-mono text-xs text-gray-400">{{ o.id }}</div>
             </td>
             <td class="px-2 py-2">
-              <div class="font-medium">{{ o.produto?.nome }}</div>
-              <div class="text-xs text-gray-500">{{ o.produto?.slug }}</div>
+              <div class="font-medium whitespace-normal break-words">{{ o.produto?.nome }}</div>
+              <div class="text-xs text-gray-500 whitespace-normal break-words">{{ o.produto?.slug }}</div>
             </td>
             <td class="px-2 py-2">
-              <div class="font-medium">{{ o.customer?.email }}</div>
-              <div v-if="o.customer?.nome" class="text-xs text-gray-500">{{ o.customer?.nome }}</div>
-              <div v-if="o.customer?.whatsapp" class="text-xs text-gray-500">WhatsApp: {{ o.customer?.whatsapp }}</div>
-              <div v-if="o.customer?.cpf" class="text-xs text-gray-500">CPF: {{ o.customer?.cpf }}</div>
+              <div class="font-medium whitespace-normal break-words">{{ o.customer?.email }}</div>
+              <div v-if="o.customer?.nome" class="text-xs text-gray-500 whitespace-normal break-words">{{ o.customer?.nome }}</div>
+              <div v-if="o.customer?.whatsapp" class="text-xs text-gray-500 whitespace-normal break-words">WhatsApp: {{ o.customer?.whatsapp }}</div>
+              <div v-if="o.customer?.cpf" class="text-xs text-gray-500 whitespace-normal break-words">CPF: {{ o.customer?.cpf }}</div>
             </td>
             <td class="px-2 py-2">
               <span
