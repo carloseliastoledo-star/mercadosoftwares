@@ -33,5 +33,10 @@ export default defineEventHandler((event: H3Event) => {
   } catch (err) {
     // Fallback: nunca quebrar navegação com 500 por causa do middleware.
     console.error('[admin-pages-auth] error', err)
+    try {
+      return sendRedirect(event, '/admin/login', 302)
+    } catch (err2) {
+      console.error('[admin-pages-auth] redirect fallback error', err2)
+    }
   }
 })
