@@ -1,4 +1,4 @@
-import { navigateTo, useNuxtApp } from '#app'
+import { navigateTo } from '#app'
 
 export default defineNuxtRouteMiddleware((to) => {
   if (!to.path.startsWith('/admin')) return
@@ -6,8 +6,6 @@ export default defineNuxtRouteMiddleware((to) => {
   if (to.path === '/admin/login') return
 
   if (import.meta.server) return
-
-  const { $fetch } = useNuxtApp()
 
   return $fetch('/api/admin/auth/me')
     .then(() => undefined)
