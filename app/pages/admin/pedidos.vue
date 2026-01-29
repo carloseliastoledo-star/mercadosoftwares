@@ -29,8 +29,8 @@
             <th class="px-2 py-2 text-left w-24">Criado</th>
             <th class="px-2 py-2 text-left w-24">Pago</th>
             <th class="px-2 py-2 text-left w-20">Entrega</th>
-            <th class="px-2 py-2 text-left w-24">Licenças</th>
-            <th class="px-2 py-2 text-left w-28">Ações</th>
+            <th class="px-2 py-2 text-left w-44">Licenças</th>
+            <th class="px-2 py-2 text-left w-36">Ações</th>
           </tr>
         </thead>
 
@@ -75,12 +75,17 @@
               <div v-else class="text-xs text-gray-500">-</div>
             </td>
             <td class="px-2 py-2 align-top">
-              <div class="text-xs text-gray-600 truncate" :title="o.licencas?.length ? `${o.licencas.length} licença(s)` : '-'">
-                {{ o.licencas?.length ? `${o.licencas.length} licença(s)` : '-' }}
+              <div v-if="!o.licencas?.length" class="text-xs text-gray-500">-</div>
+              <div v-else>
+                <div class="text-[11px] text-gray-500 truncate" :title="o.licencas[0]?.status">{{ o.licencas[0]?.status }}</div>
+                <div class="font-mono text-[11px] truncate" :title="o.licencas[0]?.chave">{{ o.licencas[0]?.chave }}</div>
+                <div v-if="o.licencas.length > 1" class="text-[11px] text-gray-500">
+                  +{{ o.licencas.length - 1 }}
+                </div>
               </div>
             </td>
             <td class="px-2 py-2">
-              <div class="flex items-center gap-3">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <button class="text-blue-600 hover:text-blue-800" @click="openEditModal(o)">
                   Editar
                 </button>
@@ -89,7 +94,7 @@
                   class="text-indigo-700 hover:text-indigo-900"
                   @click="resendOrder(o)"
                 >
-                  Reenviar e-mail
+                  Reenviar
                 </button>
                 <button
                   v-if="canManualFulfill(o)"
