@@ -25,7 +25,7 @@
             <th class="px-2 py-2 text-left w-64">Produto</th>
             <th class="px-2 py-2 text-left w-56">Cliente</th>
             <th class="px-2 py-2 text-left w-20">Status</th>
-            <th class="px-2 py-2 text-left w-24">Pagamento</th>
+            <th class="px-2 py-2 text-left w-28">Meio pgto</th>
             <th class="px-2 py-2 text-left w-24">Criado</th>
             <th class="px-2 py-2 text-left w-24">Pago</th>
             <th class="px-2 py-2 text-left w-20">Entrega</th>
@@ -59,11 +59,8 @@
               </span>
             </td>
             <td class="px-2 py-2 text-xs text-gray-700 align-top">
-              <div v-if="o.mercadoPagoPaymentTypeId || o.mercadoPagoPaymentMethodId">
-                <div class="font-mono">{{ o.mercadoPagoPaymentTypeId || '-' }}</div>
-                <div class="font-mono text-gray-400">{{ o.mercadoPagoPaymentMethodId || '-' }}</div>
-              </div>
-              <div v-else class="text-gray-500">-</div>
+              <div class="font-medium">{{ paymentTypeLabel(o) }}</div>
+              <div v-if="paymentMethodLabel(o)" class="text-[11px] text-gray-500">{{ paymentMethodLabel(o) }}</div>
             </td>
             <td class="px-2 py-2 text-xs text-gray-600 align-top">{{ formatDate(o.criadoEm) }}</td>
             <td class="px-2 py-2 text-xs text-gray-600 align-top">{{ o.pagoEm ? formatDate(o.pagoEm) : '-' }}</td>
@@ -365,6 +362,32 @@ const selectedLicencaId = ref('')
 const fulfillSubmitting = ref(false)
 const fulfillMessage = ref('')
 const fulfillError = ref('')
+
+function paymentTypeLabel(o: OrderDto) {
+  const t = String(o?.mercadoPagoPaymentTypeId || '').toLowerCase()
+  if (!t) return '-'
+  if (t === 'pix') return 'PIX'
+  if (t === 'credit_card') return 'Cartão'
+  if (t === 'debit_card') return 'Cartão'
+  if (t === 'ticket') return 'Boleto'
+  return t
+}
+
+function paymentMethodLabel(o: OrderDto) {
+  const m = String(o?.mercadoPagoPaymentMethodId || '').toLowerCase()
+  if (!m) return ''
+
+  const map: Record<string, string> = {
+    visa: 'Visa',
+    master: 'Mastercard',
+    mastercard: 'Mastercard',
+    amex: 'American Express',
+    elo: 'Elo',
+    hipercard: 'Hipercard'
+  }
+
+  return map[m] || m
+}
 
 function openImportModal() {
   showImport.value = true
