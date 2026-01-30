@@ -2,9 +2,14 @@
   <section class="bg-gray-100 min-h-screen py-12">
     <div class="max-w-7xl mx-auto px-6">
 
-      <h1 class="text-3xl font-bold text-gray-900 mb-10 text-center">
-        Nossos Produtos
-      </h1>
+      <div class="mb-10">
+        <h1 class="text-3xl font-extrabold text-gray-900">
+          Nossos Produtos
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Escolha a licença ideal e receba por e-mail após confirmação.
+        </p>
+      </div>
 
       <!-- Loading -->
       <div v-if="pending" class="text-center py-20 text-gray-500">
@@ -17,11 +22,7 @@
       </div>
 
       <!-- Grid -->
-      <div
-        v-else
-        :key="products.length"
-        class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4"
-      >
+      <div v-else class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <ProductCard
           v-for="product in products"
           :key="product.id + product.imagem"
@@ -38,8 +39,10 @@ import ProductCard from '~/components/ProductCard.vue'
 
 definePageMeta({ ssr: true })
 
+const baseUrl = useSiteUrl()
+
 useHead(() => ({
-  link: [{ rel: 'canonical', href: 'https://casadosoftware.com.br/produtos' }]
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/produtos` }] : []
 }))
 
 const { data, pending, error } = await useFetch('/api/products', {

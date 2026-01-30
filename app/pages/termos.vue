@@ -1,8 +1,10 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-extrabold text-gray-900">Termos de Uso</h1>
+  <section class="bg-gray-100 min-h-screen py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="bg-white rounded-2xl border border-gray-200 p-8">
+        <h1 class="text-3xl font-extrabold text-gray-900">Termos de Uso</h1>
 
-    <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
+        <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
       <p>
         Ao acessar e utilizar este site, você concorda com os termos e condições descritos abaixo.
       </p>
@@ -45,6 +47,21 @@
       <p class="text-sm text-gray-600">
         Estes termos podem ser atualizados periodicamente.
       </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
+
+<script setup lang="ts">
+const { siteName } = useSiteBranding()
+const baseUrl = useSiteUrl()
+
+useSeoMeta({
+  title: `Termos de Uso | ${siteName}`
+})
+
+useHead(() => ({
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/termos` }] : []
+}))
+</script>

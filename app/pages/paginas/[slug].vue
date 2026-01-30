@@ -37,8 +37,10 @@ const { data, pending, error } = await useFetch<{ ok: true; pagina: PaginaDto }>
 
 const pagina = computed(() => data.value?.pagina || null)
 
+const { siteName } = useSiteBranding()
+
 useHead(() => {
-  const title = pagina.value?.titulo ? `${pagina.value.titulo} - Casa do Software` : 'Casa do Software'
+  const title = pagina.value?.titulo ? `${pagina.value.titulo} - ${siteName}` : siteName
   return { title }
 })
 

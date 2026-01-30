@@ -1,9 +1,14 @@
 <template>
   <section class="bg-gray-50 min-h-screen py-12">
     <div class="max-w-6xl mx-auto px-6">
-      <h1 class="text-4xl font-bold text-gray-900 mb-8">
-        Finalize Seu Pedido
-      </h1>
+      <div class="mb-8">
+        <h1 class="text-4xl font-extrabold text-gray-900">
+          Finalize seu pedido
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Preencha seus dados e escolha a forma de pagamento.
+        </p>
+      </div>
 
       <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -99,17 +104,41 @@
                 {{ pixError }}
               </div>
 
-              <div v-if="pix.qrCodeBase64 || pix.qrCode" class="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <div class="font-semibold mb-3">PIX gerado</div>
-                <img v-if="pix.qrCodeBase64" :src="pix.qrCodeBase64" alt="QR Code PIX" class="w-56 mx-auto" />
+              <div v-if="pix.qrCodeBase64 || pix.qrCode" class="mt-6 border border-gray-200 rounded-2xl overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 flex items-center justify-between gap-4">
+                  <div>
+                    <div class="font-semibold text-gray-900">PIX gerado</div>
+                    <div class="text-xs text-gray-600">Abra o app do banco e pague pelo QR Code ou pelo código copia e cola.</div>
+                  </div>
+                  <div v-if="pixCopied" class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-lg">
+                    Copiado
+                  </div>
+                </div>
 
-                <div v-if="pix.qrCode" class="mt-4">
-                  <div class="text-sm font-medium text-gray-700 mb-2">Copia e cola</div>
-                  <textarea
-                    readonly
-                    class="w-full border border-gray-200 rounded-lg p-3 text-xs bg-white"
-                    rows="4"
-                  >{{ pix.qrCode }}</textarea>
+                <div class="p-4 bg-white">
+                  <div class="grid md:grid-cols-2 gap-6 items-start">
+                    <div class="flex items-center justify-center">
+                      <img v-if="pix.qrCodeBase64" :src="pix.qrCodeBase64" alt="QR Code PIX" class="w-56" />
+                    </div>
+
+                    <div v-if="pix.qrCode" class="space-y-3">
+                      <div class="text-sm font-semibold text-gray-900">Copia e cola</div>
+                      <textarea
+                        readonly
+                        class="w-full border border-gray-200 rounded-xl p-3 text-xs bg-gray-50"
+                        rows="5"
+                      >{{ pix.qrCode }}</textarea>
+                      <button
+                        type="button"
+                        class="w-full bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-xl disabled:opacity-60"
+                        :disabled="!pix.qrCode"
+                        @click="copyPixCode"
+                      >
+                        Copiar código PIX
+                      </button>
+                      <div v-if="pixCopyError" class="text-xs text-red-600">{{ pixCopyError }}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -124,26 +153,26 @@
                 <form id="mp-card-form" class="space-y-3" @submit.prevent>
                   <div class="grid grid-cols-1 gap-3">
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1">Número do cartão</label>
+                      <label class="block text-xs font-semibold text-gray-700 mb-1">Número do cartão</label>
                       <input id="form-cardNumber" class="w-full border border-gray-200 p-3 rounded-xl bg-white" />
                     </div>
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1">Nome no cartão</label>
+                      <label class="block text-xs font-semibold text-gray-700 mb-1">Nome no cartão</label>
                       <input id="form-cardholderName" class="w-full border border-gray-200 p-3 rounded-xl bg-white" />
                     </div>
                   </div>
 
                   <div class="grid grid-cols-3 gap-3">
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1">Mês</label>
+                      <label class="block text-xs font-semibold text-gray-700 mb-1">Mês</label>
                       <input id="form-cardExpirationMonth" class="w-full border border-gray-200 p-3 rounded-xl bg-white" />
                     </div>
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1">Ano</label>
+                      <label class="block text-xs font-semibold text-gray-700 mb-1">Ano</label>
                       <input id="form-cardExpirationYear" class="w-full border border-gray-200 p-3 rounded-xl bg-white" />
                     </div>
                     <div>
-                      <label class="block text-xs text-gray-600 mb-1">CVV</label>
+                      <label class="block text-xs font-semibold text-gray-700 mb-1">CVV</label>
                       <input id="form-securityCode" class="w-full border border-gray-200 p-3 rounded-xl bg-white" />
                     </div>
                   </div>
@@ -171,6 +200,49 @@
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-fit">
           <h2 class="text-xl font-bold text-gray-900 mb-6">Resumo do Pedido</h2>
+
+          <div v-if="product" class="mb-6 border border-gray-200 bg-white rounded-xl p-4">
+            <div class="flex gap-4">
+              <img
+                :src="productImage"
+                :alt="productName"
+                class="w-16 h-16 rounded-lg bg-gray-50 object-contain"
+                referrerpolicy="no-referrer"
+                @error="onProductImageError"
+              />
+
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-semibold text-gray-900 truncate">{{ productName }}</div>
+                <div class="text-xs text-gray-600 mt-1">Entrega digital • Envio por e-mail após confirmação</div>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                  <div class="text-lg font-extrabold text-gray-900">{{ formattedSubtotal }}</div>
+                  <div class="text-xs text-gray-600">em até 12x de {{ formattedInstallment12 }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 grid gap-2 text-xs text-gray-700">
+              <div class="flex items-center gap-2">
+                <span class="text-emerald-600">✔</span>
+                Compra segura
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-emerald-600">✔</span>
+                Devolução grátis. Até 7 dias
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-emerald-600">✔</span>
+                Suporte especializado
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6 border border-gray-200 bg-gray-50 rounded-xl p-4 text-sm text-gray-700">
+            <div class="font-semibold text-gray-900">Compra segura</div>
+            <div class="mt-2">
+              Utilizamos criptografia segura para proteger seus dados durante o processamento, garantindo mais segurança na compra.
+            </div>
+          </div>
 
           <div v-if="product" class="space-y-4">
             <div class="border border-gray-200 bg-gray-50 rounded-xl p-4">
@@ -226,10 +298,10 @@
                 <input v-model="acceptedTerms" type="checkbox" class="mt-1" />
                 <span>
                   Aceito os
-                  <a href="/legal/termos" class="text-blue-600 hover:underline">Termos de Uso</a>,
-                  <a href="/legal/privacidade" class="text-blue-600 hover:underline">Política de Privacidade</a>
+                  <a href="/termos" class="text-blue-600 hover:underline">Termos de Uso</a>,
+                  <a href="/privacidade" class="text-blue-600 hover:underline">Política de Privacidade</a>
                   e
-                  <a href="/politica-de-devolucao" class="text-blue-600 hover:underline">Política de Devolução</a>
+                  <a href="/reembolso" class="text-blue-600 hover:underline">Política de Reembolso</a>
                 </span>
               </label>
             </div>
@@ -257,6 +329,17 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const config = useRuntimeConfig()
+
+const { siteName } = useSiteBranding()
+const baseUrl = useSiteUrl()
+
+useSeoMeta({
+  title: `Checkout | ${siteName}`
+})
+
+useHead(() => ({
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/checkout` }] : []
+}))
 
 const slug = computed(() => String(route.query.product || ''))
 
@@ -291,6 +374,9 @@ const pixOrderId = ref('')
 const pixPaymentId = ref('')
 const pixPolling = ref(false)
 
+const pixCopied = ref(false)
+const pixCopyError = ref('')
+
 const PIX_ORDER_STORAGE_KEY = 'checkout_pix_order_id'
 const PIX_PAYMENT_STORAGE_KEY = 'checkout_pix_payment_id'
 
@@ -300,6 +386,39 @@ const finalizeLoading = ref(false)
 const finalizeError = ref('')
 
 const subtotal = computed(() => Number(product.value?.price || 0))
+const formattedSubtotal = computed(() => {
+  return subtotal.value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
+})
+
+const formattedInstallment12 = computed(() => {
+  if (!subtotal.value) {
+    return Number(0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  }
+  const v = Math.round((subtotal.value / 12) * 100) / 100
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+})
+
+const productName = computed(() => {
+  return String((product.value as any)?.nome || (product.value as any)?.name || '')
+})
+
+const productImage = computed(() => {
+  const p: any = product.value
+  const image = String(p?.imagem || p?.image || '').trim()
+  if (!image) return '/products/placeholder.svg'
+  if (image.startsWith('http://')) return image.replace(/^http:\/\//, 'https://')
+  return image
+})
+
+function onProductImageError(e: Event) {
+  const el = e.target as HTMLImageElement | null
+  if (!el) return
+  if (el.src.endsWith('/products/placeholder.svg')) return
+  el.src = '/products/placeholder.svg'
+}
 const desconto = computed(() => {
   const base = subtotal.value
   if (!base) return 0
@@ -563,6 +682,42 @@ async function goToPix() {
     pixError.value = err?.data?.statusMessage || 'Não foi possível gerar o PIX'
   } finally {
     pixLoading.value = false
+  }
+}
+
+async function copyPixCode() {
+  pixCopyError.value = ''
+  pixCopied.value = false
+  const text = String(pix.qrCode || '').trim()
+  if (!text) return
+
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text)
+      pixCopied.value = true
+      setTimeout(() => {
+        pixCopied.value = false
+      }, 2500)
+      return
+    }
+
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', 'true')
+    ta.style.position = 'fixed'
+    ta.style.left = '-9999px'
+    document.body.appendChild(ta)
+    ta.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(ta)
+    if (!ok) throw new Error('copy-failed')
+
+    pixCopied.value = true
+    setTimeout(() => {
+      pixCopied.value = false
+    }, 2500)
+  } catch {
+    pixCopyError.value = 'Não foi possível copiar. Selecione o código e copie manualmente.'
   }
 }
 

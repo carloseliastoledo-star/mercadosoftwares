@@ -1,56 +1,45 @@
 <template>
   <div class="min-h-screen flex flex-col bg-white">
 
+    <div v-if="topbarText" class="bg-gray-900 text-white text-xs">
+      <div class="max-w-7xl mx-auto px-6 py-2 flex items-center justify-center">
+        <a
+          v-if="topbarLink"
+          :href="topbarLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+        >
+          {{ topbarText }}
+        </a>
+        <span v-else>{{ topbarText }}</span>
+      </div>
+    </div>
+
     <!-- HEADER -->
     <header class="border-b bg-white sticky top-0 z-40">
       <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
         <!-- LOGO -->
         <NuxtLink to="/" class="flex items-center gap-3">
           <img
-            src="/logo-casa-do-software.png"
-            alt="Casa do Software"
+            :src="logoPath"
+            :alt="siteName"
             class="h-11 md:h-14 w-auto"
           />
           <span class="text-lg font-extrabold tracking-tight text-gray-900">
-            Casa do Software
+            {{ siteName }}
           </span>
         </NuxtLink>
 
         <!-- MENU -->
         <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-700">
-          <NuxtLink to="/produtos" class="hover:text-blue-600">
-            Produtos
-          </NuxtLink>
-
-          <div class="relative group">
-            <NuxtLink to="/categorias" class="hover:text-blue-600">
-              Categorias
-            </NuxtLink>
-            <div
-              class="hidden group-hover:block absolute left-0 top-full pt-3"
-            >
-              <div class="bg-white border rounded-xl shadow-lg p-3 min-w-56">
-                <div v-if="!categorias.length" class="text-xs text-gray-500 px-2 py-1">
-                  Nenhuma categoria
-                </div>
-                <NuxtLink
-                  v-for="c in categorias"
-                  :key="c.id"
-                  :to="`/categoria/${c.slug}`"
-                  class="block px-2 py-2 rounded hover:bg-gray-50 hover:text-blue-600"
-                >
-                  {{ c.nome }}
-                </NuxtLink>
-              </div>
-            </div>
-          </div>
-
-          <NuxtLink to="/tutoriais" class="hover:text-blue-600">
-            Tutoriais
-          </NuxtLink>
-
-          <NuxtLink to="/blog" class="hover:text-blue-600">
-            Blog
+          <NuxtLink
+            v-for="it in mainMenu"
+            :key="it.label"
+            :to="it.to"
+            class="hover:text-blue-600"
+          >
+            {{ it.label }}
           </NuxtLink>
 
           <NuxtLink to="/minha-conta/login" class="hover:text-blue-600">
@@ -72,18 +61,15 @@
         </nav>
 
         <div class="md:hidden flex items-center gap-3">
-          <NuxtLink
-            to="/minha-conta/login"
-            class="text-sm font-semibold text-gray-700 hover:text-blue-600"
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-lg border text-gray-700"
+            @click="mobileMenuOpen = true"
+            aria-label="Abrir menu"
           >
-            Conta
-          </NuxtLink>
-          <NuxtLink
-            to="/categorias"
-            class="text-sm font-semibold text-gray-700 hover:text-blue-600"
-          >
-            Categorias
-          </NuxtLink>
+            ☰
+          </button>
+
           <NuxtLink
             to="/checkout"
             class="relative inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
@@ -100,6 +86,58 @@
       </div>
     </header>
 
+    <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 md:hidden">
+      <div class="absolute inset-0 bg-black/40" @click="mobileMenuOpen = false" />
+      <div class="absolute inset-y-0 left-0 w-[85%] max-w-sm bg-white shadow-xl flex flex-col">
+        <div class="px-5 py-4 border-b flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img :src="logoPath" :alt="siteName" class="h-10 w-auto" />
+            <div class="font-extrabold text-gray-900">{{ siteName }}</div>
+          </div>
+          <button
+            type="button"
+            class="text-gray-600"
+            @click="mobileMenuOpen = false"
+            aria-label="Fechar menu"
+          >
+            ✕
+          </button>
+        </div>
+
+        <nav class="p-5 flex-1 overflow-y-auto">
+          <div class="space-y-1">
+            <NuxtLink
+              v-for="it in mainMenu"
+              :key="it.label"
+              :to="it.to"
+              class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
+              @click="mobileMenuOpen = false"
+            >
+              {{ it.label }}
+            </NuxtLink>
+
+            <NuxtLink
+              to="/minha-conta/login"
+              class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
+              @click="mobileMenuOpen = false"
+            >
+              Minha conta
+            </NuxtLink>
+          </div>
+        </nav>
+
+        <div class="p-5 border-t">
+          <NuxtLink
+            to="/checkout"
+            class="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-3 rounded-xl transition"
+            @click="mobileMenuOpen = false"
+          >
+            Ir para o carrinho
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
     <!-- CONTEÚDO DAS PÁGINAS -->
     <main class="flex-1">
       <NuxtPage />
@@ -110,7 +148,7 @@
       <div class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-gray-600">
 
         <div>
-          <h3 class="font-semibold text-gray-800 mb-2">Casa do Software</h3>
+          <h3 class="font-semibold text-gray-800 mb-2">{{ siteName }}</h3>
           <p>
             Licenças digitais de Windows e Office com envio imediato após confirmação.
           </p>
@@ -136,12 +174,12 @@
         <div>
           <h3 class="font-semibold text-gray-800 mb-2">Suporte</h3>
           <p>Atendimento rápido e especializado</p>
-          <p class="mt-2 font-medium text-gray-800">
-            comercial@casadosoftware.com.br
+          <p v-if="supportEmail" class="mt-2 font-medium text-gray-800">
+            {{ supportEmail }}
           </p>
-          <p class="mt-2 font-medium text-gray-800">
-            <a class="hover:underline" href="https://wa.me/5511910512647" target="_blank" rel="noopener noreferrer">
-              WhatsApp: (11) 91051-2647
+          <p v-if="whatsappHref" class="mt-2 font-medium text-gray-800">
+            <a class="hover:underline" :href="whatsappHref" target="_blank" rel="noopener noreferrer">
+              WhatsApp: {{ whatsappLabel }}
             </a>
           </p>
           <p class="mt-2 text-xs text-gray-500">
@@ -151,9 +189,9 @@
       </div>
 
       <div class="text-center text-xs text-gray-500 py-4 border-t">
-        © {{ new Date().getFullYear() }} Casa do Software — Todos os direitos reservados.
+        © {{ new Date().getFullYear() }} {{ siteName }} — Todos os direitos reservados.
         <div class="mt-2 max-w-4xl mx-auto">
-          A Casa do Software (Eletrokeys LTDA) é uma empresa independente registrada no Microsoft Partner Network.
+          {{ siteName }} (Eletrokeys LTDA) é uma empresa independente registrada no Microsoft Partner Network.
           Não somos afiliados à Microsoft.
         </div>
       </div>
@@ -163,6 +201,17 @@
 </template>
 
 <script setup lang="ts">
+const { siteName, logoPath, supportEmail, topbarText, topbarLink, whatsappNumber } = useSiteBranding()
+
+const mobileMenuOpen = ref(false)
+
+const mainMenuBase = [
+  { label: 'Windows', slug: 'windows', fallbackTo: '/categorias' },
+  { label: 'Office', slug: 'office', fallbackTo: '/categorias' },
+  { label: 'Windows Server', slug: 'windows-server', fallbackTo: '/categorias' },
+  { label: 'Contato', to: '/quem-somos' }
+] as const
+
 type PaginaLinkDto = {
   titulo: string
   slug: string
@@ -187,5 +236,37 @@ const { data: categoriasData } = await useFetch<{ ok: true; categorias: Categori
 const paginas = computed(() => data.value?.paginas || [])
 const categorias = computed(() => categoriasData.value?.categorias || [])
 
+const categoriasSet = computed(() => {
+  return new Set(categorias.value.map((c) => String(c.slug || '').trim()).filter(Boolean))
+})
+
+const mainMenu = computed(() => {
+  return mainMenuBase.map((it) => {
+    if ('to' in it) return it
+    const slug = String(it.slug || '').trim()
+    if (!slug) return { label: it.label, to: it.fallbackTo }
+    if (categoriasSet.value.has(slug)) return { label: it.label, to: `/categoria/${slug}` }
+    return { label: it.label, to: it.fallbackTo }
+  })
+})
+
 const cartCount = computed(() => (cart.value || []).length)
+
+const whatsappHref = computed(() => {
+  const n = String(whatsappNumber || '').replace(/\D/g, '')
+  if (!n) return ''
+  return `https://wa.me/${n}`
+})
+
+const whatsappLabel = computed(() => {
+  const n = String(whatsappNumber || '').replace(/\D/g, '')
+  if (!n) return ''
+  if (n.startsWith('55') && n.length === 13) {
+    const ddd = n.slice(2, 4)
+    const p1 = n.slice(4, 9)
+    const p2 = n.slice(9)
+    return `(${ddd}) ${p1}-${p2}`
+  }
+  return n
+})
 </script>

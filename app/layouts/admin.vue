@@ -8,7 +8,7 @@
     >
 
       <div class="p-4 text-lg font-bold border-b border-gray-700">
-        Casa do Software
+        {{ siteName }}
       </div>
 
       <nav class="p-4 space-y-1 text-sm">
@@ -110,6 +110,8 @@
 </template>
 
 <script setup>
+const { siteName } = useSiteBranding()
+
 const sidebarOpen = ref(false)
 
 async function logout() {

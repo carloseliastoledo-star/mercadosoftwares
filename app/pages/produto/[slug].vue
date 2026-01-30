@@ -67,9 +67,32 @@
               {{ formattedPrice }}
             </div>
 
+            <div class="text-sm text-gray-600">
+              em até 12x de {{ installments12 }}
+            </div>
+
             <div class="text-sm text-blue-600">
               Pagamento à vista no PIX
               <span v-if="formattedPixPrice" class="text-gray-500">({{ formattedPixPrice }})</span>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-sm text-gray-700">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600">✔</span>
+              Entrega digital • Disponível
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600">✔</span>
+              Devolução grátis. Até 7 dias a partir do recebimento
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600">✔</span>
+              Compra garantida. Saia satisfeito ou devolvemos seu dinheiro
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600">✔</span>
+              Envio por e-mail após confirmação
             </div>
           </div>
 
@@ -196,10 +219,12 @@ definePageMeta({ ssr: true })
 const route = useRoute()
 const slug = route.params.slug as string
 
+const baseUrl = useSiteUrl()
+
 const canonicalUrl = computed(() => {
   const s = String(slug || '').trim()
-  if (!s) return 'https://casadosoftware.com.br/'
-  return `https://casadosoftware.com.br/produto/${s}`
+  if (!s) return baseUrl ? `${baseUrl}/` : ''
+  return baseUrl ? `${baseUrl}/produto/${s}` : ''
 })
 
 useHead(() => ({
@@ -307,6 +332,16 @@ const formattedPixPrice = computed(() => {
   const pixPrice = Math.round(price * 0.95 * 100) / 100
   if (pixPrice === price) return null
   return pixPrice.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
+})
+
+const installments12 = computed(() => {
+  const price = Number(safeProduct.value.preco || 0)
+  if (!price) return Number(0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  const value = Math.round((price / 12) * 100) / 100
+  return value.toLocaleString('pt-BR', {
     style: 'currency',
     currency: 'BRL'
   })

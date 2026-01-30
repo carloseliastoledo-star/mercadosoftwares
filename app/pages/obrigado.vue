@@ -2,6 +2,17 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
+const { siteName } = useSiteBranding()
+const baseUrl = useSiteUrl()
+
+useSeoMeta({
+  title: `Obrigado | ${siteName}`
+})
+
+useHead(() => ({
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/obrigado` }] : []
+}))
+
 const { data: siteSettings } = await useFetch('/api/site-settings')
 
 const orderId = computed(() => String(route.query.orderId || ''))
@@ -65,9 +76,14 @@ onMounted(async () => {
 
 <template>
   <section class="bg-gray-50 min-h-screen py-16">
-    <div class="max-w-2xl mx-auto px-6">
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-        <h1 class="text-3xl font-bold text-gray-900">Obrigado pela sua compra!</h1>
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+        <div class="inline-flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl text-sm font-semibold">
+          <span>✔</span>
+          Pagamento confirmado
+        </div>
+
+        <h1 class="mt-6 text-3xl font-extrabold text-gray-900">Obrigado pela sua compra!</h1>
         <p class="mt-3 text-gray-700">
           Seu pagamento foi confirmado.
         </p>
@@ -90,7 +106,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="mt-8 flex gap-3">
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <NuxtLink to="/" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold">
             Voltar para a Home
           </NuxtLink>

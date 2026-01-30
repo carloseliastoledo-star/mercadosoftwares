@@ -1,8 +1,10 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-extrabold text-gray-900">Política de Privacidade</h1>
+  <section class="bg-gray-100 min-h-screen py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="bg-white rounded-2xl border border-gray-200 p-8">
+        <h1 class="text-3xl font-extrabold text-gray-900">Política de Privacidade</h1>
 
-    <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
+        <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
       <p>
         Esta política descreve como coletamos e utilizamos informações ao navegar e comprar neste site.
       </p>
@@ -38,7 +40,7 @@
       <div class="rounded-xl border bg-white p-5 space-y-3">
         <h2 class="text-xl font-bold text-gray-900">5. Contato</h2>
         <p class="text-sm">
-          Para solicitações relacionadas a privacidade: <a class="text-blue-600 hover:underline" href="mailto:comercial@casadosoftware.com.br">comercial@casadosoftware.com.br</a>
+          Para solicitações relacionadas a privacidade: <a class="text-blue-600 hover:underline" :href="mailtoSupport">{{ supportEmail }}</a>
         </p>
         <p class="text-sm">
           Eletrokeys LTDA — CNPJ 44.694.365/0001-48.
@@ -48,6 +50,26 @@
       <p class="text-sm text-gray-600">
         Esta política pode ser atualizada.
       </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
+
+<script setup lang="ts">
+const { supportEmail, siteName } = useSiteBranding()
+const baseUrl = useSiteUrl()
+
+const mailtoSupport = computed(() => {
+  const email = String(supportEmail || '').trim()
+  return email ? `mailto:${email}` : 'mailto:'
+})
+
+useSeoMeta({
+  title: `Política de Privacidade | ${siteName}`
+})
+
+useHead(() => ({
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/privacidade` }] : []
+}))
+</script>

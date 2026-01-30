@@ -1,8 +1,10 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-extrabold text-gray-900">Entrega Digital</h1>
+  <section class="bg-gray-100 min-h-screen py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="bg-white rounded-2xl border border-gray-200 p-8">
+        <h1 class="text-3xl font-extrabold text-gray-900">Entrega Digital</h1>
 
-    <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
+        <div class="mt-6 space-y-4 text-gray-700 leading-relaxed">
       <p>
         Nossos produtos são digitais. A forma de entrega e as instruções constam na página de cada produto.
       </p>
@@ -42,13 +44,33 @@
         <h2 class="text-xl font-bold text-gray-900">Suporte</h2>
         <p class="text-sm">
           Se você não receber a entrega dentro do prazo, entre em contato pelo e-mail
-          <a class="text-blue-600 hover:underline" href="mailto:comercial@casadosoftware.com.br">comercial@casadosoftware.com.br</a>.
+          <a class="text-blue-600 hover:underline" :href="mailtoSupport">{{ supportEmail }}</a>.
         </p>
       </div>
 
       <p class="text-sm text-gray-600">
         Eletrokeys LTDA — CNPJ 44.694.365/0001-48.
       </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
+
+<script setup lang="ts">
+const { supportEmail, siteName } = useSiteBranding()
+const baseUrl = useSiteUrl()
+
+const mailtoSupport = computed(() => {
+  const email = String(supportEmail || '').trim()
+  return email ? `mailto:${email}` : 'mailto:'
+})
+
+useSeoMeta({
+  title: `Entrega Digital | ${siteName}`
+})
+
+useHead(() => ({
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/entrega-digital` }] : []
+}))
+</script>

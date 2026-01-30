@@ -25,7 +25,9 @@
 </template>
 
 <script setup lang="ts">
-useHead(() => ({ title: 'Blog - Casa do Software' }))
+const { siteName } = useSiteBranding()
+
+useHead(() => ({ title: `Blog - ${siteName}` }))
 
 type BlogPostListDto = {
   titulo: string

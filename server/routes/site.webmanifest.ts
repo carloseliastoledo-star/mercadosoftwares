@@ -1,5 +1,5 @@
 import { defineEventHandler, sendRedirect } from 'h3'
 
 export default defineEventHandler((event) => {
-  return sendRedirect(event, '/robots.txt', 301)
+  return sendRedirect(event, '/api/site.webmanifest', 301)
 })

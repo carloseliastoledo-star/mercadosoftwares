@@ -108,6 +108,19 @@
           </NuxtLink>
         </div>
 
+        <div class="mt-8 grid gap-4 lg:grid-cols-3">
+          <NuxtLink
+            v-for="c in categoriasDestaque"
+            :key="c.slug"
+            :to="c.to"
+            class="bg-white border rounded-2xl p-6 hover:shadow-sm transition"
+          >
+            <div class="text-xs text-gray-500 tracking-widest">CATEGORIA</div>
+            <div class="mt-2 text-xl font-extrabold text-gray-900">{{ c.label }}</div>
+            <div class="mt-3 text-blue-700 font-semibold">Ver tudo →</div>
+          </NuxtLink>
+        </div>
+
         <div v-if="categoriasPending" class="text-center py-12 text-gray-500">
           Carregando categorias...
         </div>
@@ -133,8 +146,8 @@
     <div class="max-w-7xl mx-auto px-6 py-12">
       <div class="flex items-end justify-between gap-6 flex-wrap">
         <div>
-          <h2 class="text-3xl font-extrabold text-gray-900">Mais vendidos</h2>
-          <p class="text-gray-600 mt-2">Os produtos que mais vendem na loja.</p>
+          <h2 class="text-3xl font-extrabold text-gray-900">Ofertas da semana</h2>
+          <p class="text-gray-600 mt-2">Aproveite os destaques com entrega digital rápida.</p>
         </div>
         <NuxtLink
           to="/produtos"
@@ -158,6 +171,37 @@
           :key="product.id + (product.imagem || product.image || '')"
           :product="product"
         />
+      </div>
+    </div>
+
+    <div class="bg-gray-50 border-y">
+      <div class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+        <div v-for="section in vitrines" :key="section.title">
+          <div class="flex items-end justify-between gap-6 flex-wrap">
+            <div>
+              <h2 class="text-3xl font-extrabold text-gray-900">{{ section.title }}</h2>
+              <p class="text-gray-600 mt-2">{{ section.subtitle }}</p>
+            </div>
+            <NuxtLink
+              :to="section.to"
+              class="text-blue-700 font-semibold hover:underline"
+            >
+              Ver tudo →
+            </NuxtLink>
+          </div>
+
+          <div v-if="!section.items.length" class="text-center py-10 text-gray-500">
+            Em breve.
+          </div>
+
+          <div v-else class="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <ProductCard
+              v-for="product in section.items"
+              :key="product.id + (product.imagem || product.image || '') + section.title"
+              :product="product"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -290,11 +334,81 @@
 <script setup lang="ts">
 definePageMeta({ ssr: true })
 
+function pickVitrineItems(predicate: (p: any) => boolean) {
+  const fromAll = allProducts.value.filter(predicate)
+  if (fromAll.length >= 4) return fromAll.slice(0, 4)
+
+  const fromBest = products.value.filter(predicate)
+  const merged = [...fromAll, ...fromBest].filter((p, idx, arr) => {
+    const id = String((p as any)?.id || '')
+    return idx === arr.findIndex((x) => String((x as any)?.id || '') === id)
+  })
+
+  return merged.slice(0, 4)
+}
+
+const vitrineWindows = computed(() => {
+  return pickVitrineItems((p: any) => {
+    const n = String(p?.nome ?? p?.name ?? '').toLowerCase()
+    const s = String(p?.slug ?? '').toLowerCase()
+    return n.includes('windows') || s.includes('windows')
+  })
+})
+
+const vitrineOffice = computed(() => {
+  return pickVitrineItems((p: any) => {
+    const n = String(p?.nome ?? p?.name ?? '').toLowerCase()
+    const s = String(p?.slug ?? '').toLowerCase()
+    return n.includes('office') || s.includes('office') || n.includes('microsoft 365') || s.includes('365')
+  })
+})
+
+const vitrineWindowsServer = computed(() => {
+  return pickVitrineItems((p: any) => {
+    const n = String(p?.nome ?? p?.name ?? '').toLowerCase()
+    const s = String(p?.slug ?? '').toLowerCase()
+    return n.includes('server') || s.includes('server')
+  })
+})
+
+const vitrines = computed(() => {
+  const toWindows = categoriasSet.value.has('windows') ? '/categoria/windows' : '/categorias'
+  const toOffice = categoriasSet.value.has('office') ? '/categoria/office' : '/categorias'
+  const toServer = categoriasSet.value.has('windows-server') ? '/categoria/windows-server' : '/categorias'
+
+  return [
+    {
+      title: 'Windows',
+      subtitle: 'Licenças digitais para Windows com envio por e-mail.',
+      to: toWindows,
+      items: vitrineWindows.value
+    },
+    {
+      title: 'Office',
+      subtitle: 'Pacotes Office e Microsoft 365 para o seu dia a dia.',
+      to: toOffice,
+      items: vitrineOffice.value
+    },
+    {
+      title: 'Windows Server',
+      subtitle: 'Licenças para servidores e ambientes corporativos.',
+      to: toServer,
+      items: vitrineWindowsServer.value
+    }
+  ]
+})
+
+const baseUrl = useSiteUrl()
+
 useHead(() => ({
-  link: [{ rel: 'canonical', href: 'https://casadosoftware.com.br/' }]
+  link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/` }] : []
 }))
 
 const { data, pending, error } = await useFetch('/api/products/best-sellers', {
+  server: true
+})
+
+const { data: allProductsData } = await useFetch('/api/products', {
   server: true
 })
 
@@ -306,8 +420,27 @@ const { data: categoriasData, pending: categoriasPending, error: categoriasError
 
 const products = computed(() => data.value || [])
 
+const allProducts = computed(() => allProductsData.value || [])
+
 const categorias = computed(() => categoriasData.value?.categorias || [])
 const categoriasHome = computed(() => categorias.value.slice(0, 8))
+
+const categoriasSet = computed(() => {
+  return new Set(categorias.value.map((c) => String(c.slug || '').trim()).filter(Boolean))
+})
+
+const categoriasDestaque = computed(() => {
+  const items = [
+    { label: 'Windows', slug: 'windows' },
+    { label: 'Office', slug: 'office' },
+    { label: 'Windows Server', slug: 'windows-server' }
+  ]
+
+  return items.map((it) => {
+    const to = categoriasSet.value.has(it.slug) ? `/categoria/${it.slug}` : '/categorias'
+    return { ...it, to }
+  })
+})
 
 const faqs = [
   {

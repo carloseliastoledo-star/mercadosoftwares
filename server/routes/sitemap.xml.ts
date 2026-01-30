@@ -1,5 +1,4 @@
-import { defineEventHandler, setHeader } from 'h3'
-import prisma from '#root/server/db/prisma'
+import { defineEventHandler, setHeader, getRequestURL } from 'h3'
 
 function escXml(s: string): string {
   return s
@@ -13,33 +12,38 @@ function escXml(s: string): string {
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Type', 'application/xml; charset=utf-8')
 
-  const base = 'https://casadosoftware.com.br'
-
-  const [produtos, categorias] = await Promise.all([
-    prisma.produto.findMany({
-      where: { ativo: true },
-      select: { slug: true, criadoEm: true },
-      orderBy: { criadoEm: 'desc' }
-    }),
-    prisma.categoria.findMany({
-      where: { ativo: true },
-      select: { slug: true }
-    })
-  ])
+  const reqUrl = getRequestURL(event)
+  const base = (String(process.env.SITE_URL || '').trim() || reqUrl.origin).replace(/\/$/, '')
 
   const urls: { loc: string; lastmod?: string }[] = []
-
   urls.push({ loc: `${base}/`, lastmod: new Date().toISOString().slice(0, 10) })
   urls.push({ loc: `${base}/produtos` })
 
-  for (const c of categorias) {
-    if (!c.slug) continue
-    urls.push({ loc: `${base}/categoria/${c.slug}` })
-  }
+  try {
+    const { default: prisma } = await import('#root/server/db/prisma')
 
-  for (const p of produtos) {
-    if (!p.slug) continue
-    urls.push({ loc: `${base}/produto/${p.slug}`, lastmod: p.criadoEm ? new Date(p.criadoEm).toISOString().slice(0, 10) : undefined })
+    const [produtos, categorias] = await Promise.all([
+      prisma.produto.findMany({
+        where: { ativo: true },
+        select: { slug: true, criadoEm: true },
+        orderBy: { criadoEm: 'desc' }
+      }),
+      prisma.categoria.findMany({
+        select: { slug: true }
+      })
+    ])
+
+    for (const c of categorias) {
+      if (!c.slug) continue
+      urls.push({ loc: `${base}/categoria/${c.slug}` })
+    }
+
+    for (const p of produtos) {
+      if (!p.slug) continue
+      urls.push({ loc: `${base}/produto/${p.slug}`, lastmod: p.criadoEm ? new Date(p.criadoEm).toISOString().slice(0, 10) : undefined })
+    }
+  } catch {
+    // sem banco: retorna sitemap mínimo (não quebra com 500)
   }
 
   const body = urls

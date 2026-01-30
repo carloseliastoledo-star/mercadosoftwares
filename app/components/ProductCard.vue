@@ -103,6 +103,17 @@ const formattedPixPrice = computed(() => {
   })
 })
 
+const installments12 = computed(() => {
+  const price = productPrice.value
+  if (!price) return null
+  const value = Math.round((price / 12) * 100) / 100
+  if (!value) return null
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
+})
+
 const categoryLabel = computed(() => {
   const n = productName.value.toLowerCase()
   if (n.includes('windows')) return 'WINDOWS'
@@ -179,6 +190,10 @@ function buyNow(event: Event) {
 
         <div class="text-3xl font-extrabold text-gray-900">
           {{ formattedPrice }}
+        </div>
+
+        <div v-if="installments12" class="text-sm text-gray-600">
+          em até 12x de {{ installments12 }}
         </div>
 
         <div class="text-sm text-blue-600">

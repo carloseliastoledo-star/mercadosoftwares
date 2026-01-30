@@ -1,6 +1,8 @@
 <script setup lang="ts">
 type CategoriaDto = { id: string; nome: string; slug: string }
 
+const { siteName } = useSiteBranding()
+
 const { data, pending, error } = await useFetch<{ ok: true; categorias: CategoriaDto[] }>('/api/categorias', {
   server: true
 })
@@ -8,7 +10,7 @@ const { data, pending, error } = await useFetch<{ ok: true; categorias: Categori
 const categorias = computed(() => data.value?.categorias || [])
 
 useSeoMeta({
-  title: 'Categorias | Casa do Software'
+  title: `Categorias | ${siteName}`
 })
 </script>
 

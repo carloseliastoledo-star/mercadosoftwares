@@ -37,8 +37,10 @@ const post = computed(() => data.value?.post || null)
 
 const postHtml = computed(() => String(post.value?.html || ''))
 
+const { siteName } = useSiteBranding()
+
 useHead(() => {
-  const title = post.value?.titulo ? `${post.value.titulo} - Casa do Software` : 'Casa do Software'
+  const title = post.value?.titulo ? `${post.value.titulo} - ${siteName}` : siteName
   return { title }
 })
 
