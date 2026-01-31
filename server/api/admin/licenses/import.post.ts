@@ -1,9 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { requireAdminSession } from '../../../utils/adminSession'
+import { getStoreContext } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const { storeSlug } = getStoreContext()
 
   const body = await readBody(event)
 
@@ -37,7 +40,8 @@ export default defineEventHandler(async (event) => {
   const data = licenses.map((key: string) => ({
     chave: key,
     status: 'STOCK',
-    produtoId: produto.id
+    produtoId: produto.id,
+    storeSlug
   }))
 
   const result = await prisma.licenca.createMany({

@@ -1,17 +1,22 @@
 import { defineEventHandler } from 'h3'
 import prisma from '../../../db/prisma.js'
 import { requireAdminSession } from '../../../utils/adminSession.js'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
 
+  const ctx = getStoreContext()
+
   const orders = await (prisma as any).order.findMany({
+    where: whereForStore({}, ctx) as any,
     orderBy: { criadoEm: 'desc' },
     take: 200,
     select: {
       id: true,
       numero: true,
       status: true,
+      storeSlug: true,
       criadoEm: true,
       pagoEm: true,
       emailEnviadoEm: true,

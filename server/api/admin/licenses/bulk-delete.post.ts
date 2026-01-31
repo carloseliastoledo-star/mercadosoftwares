@@ -1,9 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { requireAdminSession } from '../../../utils/adminSession'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const body = await readBody(event)
 
@@ -19,12 +22,15 @@ export default defineEventHandler(async (event) => {
     }
 
     const result = await prisma.licenca.deleteMany({
-      where: {
-        produtoId,
-        status: 'STOCK',
-        orderId: null,
-        customerId: null
-      }
+      where: whereForStore(
+        {
+          produtoId,
+          status: 'STOCK',
+          orderId: null,
+          customerId: null
+        },
+        ctx
+      ) as any
     })
 
     return { ok: true, deleted: result.count }
@@ -35,12 +41,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const result = await prisma.licenca.deleteMany({
-    where: {
-      id: { in: ids },
-      status: 'STOCK',
-      orderId: null,
-      customerId: null
-    }
+    where: whereForStore(
+      {
+        id: { in: ids },
+        status: 'STOCK',
+        orderId: null,
+        customerId: null
+      },
+      ctx
+    ) as any
   })
 
   return { ok: true, deleted: result.count }

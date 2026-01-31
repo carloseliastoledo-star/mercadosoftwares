@@ -24,7 +24,14 @@ export async function processMercadoPagoPayment(dataId: string) {
       await prisma.$transaction(async (tx) => {
         const anyTx: any = tx as any
         let order:
-          | { id: string; produtoId: string; customerId: string; emailEnviadoEm: Date | null; telegramEnviadoEm: Date | null }
+          | {
+              id: string
+              produtoId: string
+              customerId: string
+              storeSlug: string | null
+              emailEnviadoEm: Date | null
+              telegramEnviadoEm: Date | null
+            }
           | null = null
 
         try {
@@ -40,7 +47,14 @@ export async function processMercadoPagoPayment(dataId: string) {
               fulfillmentError: null,
               fulfillmentUpdatedAt: new Date()
             },
-            select: { id: true, produtoId: true, customerId: true, emailEnviadoEm: true, telegramEnviadoEm: true }
+            select: {
+              id: true,
+              produtoId: true,
+              customerId: true,
+              storeSlug: true,
+              emailEnviadoEm: true,
+              telegramEnviadoEm: true
+            }
           })
         } catch (err: any) {
           if (String(err?.code || '') === 'P2025') {
@@ -106,7 +120,8 @@ export async function processMercadoPagoPayment(dataId: string) {
             produtoId: order.produtoId,
             status: 'STOCK',
             orderId: null,
-            customerId: null
+            customerId: null,
+            storeSlug: order.storeSlug
           },
           select: { id: true }
         })
@@ -129,7 +144,8 @@ export async function processMercadoPagoPayment(dataId: string) {
           data: {
             status: 'SOLD',
             orderId: order.id,
-            customerId: order.customerId
+            customerId: order.customerId,
+            storeSlug: order.storeSlug
           },
           select: { id: true, chave: true }
         })

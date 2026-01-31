@@ -1,8 +1,10 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../db/prisma.js'
 import { getMpPayment } from '../../utils/mercadopago.js'
+import { getStoreContext } from '../../utils/store'
 
 export default defineEventHandler(async (event) => {
+  const { storeSlug } = getStoreContext()
   const body = await readBody(event)
 
   const produtoId = String(body?.produtoId || '')
@@ -83,6 +85,7 @@ export default defineEventHandler(async (event) => {
     const order = await tx.order.create({
       data: {
         status: 'PENDING',
+        storeSlug,
         produtoId: produto.id,
         customerId: customer.id,
         cupomId: coupon?.id || null,

@@ -2,20 +2,24 @@ import { defineEventHandler, getRouterParam, createError } from 'h3'
 import prisma from '#root/server/db/prisma'
 import { requireAdminSession } from '#root/server/utils/adminSession'
 import { renderLicenseEmail, sendMail } from '#root/server/utils/mailer'
+import { getStoreContext, whereForStore } from '#root/server/utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const id = String(getRouterParam(event, 'id') || '').trim()
   if (!id) {
     throw createError({ statusCode: 400, statusMessage: 'id obrigatório' })
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: whereForStore({ id }, ctx) as any,
     select: {
       id: true,
       status: true,
+      storeSlug: true,
       customer: { select: { email: true } },
       produto: { select: { nome: true } },
       licencas: { select: { chave: true } }

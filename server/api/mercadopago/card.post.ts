@@ -2,8 +2,10 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../db/prisma.js'
 import { getMpPayment } from '../../utils/mercadopago.js'
 import { processMercadoPagoPayment } from '../../utils/mercadopagoWebhook.js'
+import { getStoreContext } from '../../utils/store'
 
 export default defineEventHandler(async (event) => {
+  const { storeSlug } = getStoreContext()
   const body = await readBody(event)
 
   const produtoId = String(body?.produtoId || '')
@@ -15,6 +17,8 @@ export default defineEventHandler(async (event) => {
   const paymentMethodId = String(body?.payment_method_id || '')
   const issuerId = body?.issuer_id ? String(body.issuer_id) : undefined
   const installments = Number(body?.installments || 1)
+
+  const issuerIdNumber = issuerId ? Number(issuerId) : undefined
 
   const identificationType = String(body?.identification?.type || 'CPF')
   const identificationNumber = String(body?.identification?.number || '')
@@ -87,6 +91,7 @@ export default defineEventHandler(async (event) => {
     const order = await tx.order.create({
       data: {
         status: 'PENDING',
+        storeSlug,
         produtoId: produto.id,
         customerId: customer.id,
         cupomId: coupon?.id || null,
@@ -114,7 +119,7 @@ export default defineEventHandler(async (event) => {
       token,
       installments,
       payment_method_id: paymentMethodId,
-      issuer_id: issuerId,
+      issuer_id: Number.isFinite(issuerIdNumber as number) ? (issuerIdNumber as number) : undefined,
       payer: {
         email,
         identification: {

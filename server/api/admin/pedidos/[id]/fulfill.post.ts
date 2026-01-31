@@ -2,9 +2,12 @@ import { defineEventHandler, readBody, getRouterParam, createError } from 'h3'
 import prisma from '#root/server/db/prisma'
 import { requireAdminSession } from '#root/server/utils/adminSession'
 import { renderLicenseEmail, sendMail } from '#root/server/utils/mailer'
+import { getStoreContext, whereForStore } from '#root/server/utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const id = String(getRouterParam(event, 'id') || '').trim()
   if (!id) {
@@ -17,13 +20,14 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'licencaId obrigatório' })
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: whereForStore({ id }, ctx) as any,
     select: {
       id: true,
       status: true,
       produtoId: true,
       customerId: true,
+      storeSlug: true,
       emailEnviadoEm: true,
       licencas: { select: { id: true } }
     }
@@ -44,7 +48,7 @@ export default defineEventHandler(async (event) => {
   const result = await prisma.$transaction(async (tx) => {
     const licenca = await tx.licenca.findUnique({
       where: { id: licencaId },
-      select: { id: true, chave: true, status: true, produtoId: true, orderId: true, customerId: true }
+      select: { id: true, chave: true, status: true, produtoId: true, orderId: true, customerId: true, storeSlug: true }
     })
 
     if (!licenca) {
@@ -57,6 +61,10 @@ export default defineEventHandler(async (event) => {
 
     if (licenca.status !== 'STOCK' || licenca.orderId || licenca.customerId) {
       throw createError({ statusCode: 400, statusMessage: 'Licença não está disponível em estoque' })
+    }
+
+    if (String(licenca.storeSlug || '') !== String(order.storeSlug || '')) {
+      throw createError({ statusCode: 400, statusMessage: 'Licença não pertence à mesma loja do pedido' })
     }
 
     const [customer, produto] = await Promise.all([
@@ -77,7 +85,8 @@ export default defineEventHandler(async (event) => {
       data: {
         status: 'SOLD',
         orderId: order.id,
-        customerId: order.customerId
+        customerId: order.customerId,
+        storeSlug: order.storeSlug
       },
       select: { id: true, chave: true }
     })

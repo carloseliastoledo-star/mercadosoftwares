@@ -1,7 +1,9 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import prisma from '#root/server/db/prisma'
+import { getStoreContext, whereForStore } from '#root/server/utils/store'
 
 export default defineEventHandler(async (event) => {
+  const ctx = getStoreContext()
   const query = getQuery(event)
   const orderId = String(query.orderId || '').trim()
 
@@ -9,8 +11,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'orderId obrigatório' })
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
+  const order = await prisma.order.findFirst({
+    where: whereForStore({ id: orderId }, ctx) as any,
     select: {
       id: true,
       produto: {

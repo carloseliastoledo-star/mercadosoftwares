@@ -2,8 +2,10 @@ import { defineEventHandler, getQuery, createError } from 'h3'
 import prisma from '#root/server/db/prisma'
 import { getMpPayment } from '#root/server/utils/mercadopago'
 import { processMercadoPagoPayment } from '#root/server/utils/mercadopagoWebhook'
+import { getStoreContext, whereForStore } from '#root/server/utils/store'
 
 export default defineEventHandler(async (event) => {
+  const ctx = getStoreContext()
   const query = getQuery(event)
   const orderId = String(query.orderId || '').trim()
 
@@ -11,11 +13,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'orderId obrigatório' })
   }
 
-  let order = await prisma.order.findUnique({
-    where: { id: orderId },
+  let order = await prisma.order.findFirst({
+    where: whereForStore({ id: orderId }, ctx) as any,
     select: {
       id: true,
       status: true,
+      storeSlug: true,
       pagoEm: true,
       mercadoPagoPaymentId: true,
       emailEnviadoEm: true
@@ -49,6 +52,7 @@ export default defineEventHandler(async (event) => {
           select: {
             id: true,
             status: true,
+            storeSlug: true,
             pagoEm: true,
             mercadoPagoPaymentId: true
           }
@@ -76,11 +80,12 @@ export default defineEventHandler(async (event) => {
       console.log('[order-status] reprocessMercadoPagoPayment error', err)
     }
 
-    order = await prisma.order.findUnique({
-      where: { id: orderId },
+    order = await prisma.order.findFirst({
+      where: whereForStore({ id: orderId }, ctx) as any,
       select: {
         id: true,
         status: true,
+        storeSlug: true,
         pagoEm: true,
         mercadoPagoPaymentId: true,
         emailEnviadoEm: true

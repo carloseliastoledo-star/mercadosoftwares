@@ -2,9 +2,12 @@ import { createError, defineEventHandler, getQuery } from 'h3'
 import prisma from '#root/server/db/prisma'
 import { requireAdminSession } from '#root/server/utils/adminSession'
 import { normalizeCouponCode } from '#root/server/utils/coupon'
+import { getStoreContext, whereForStore } from '#root/server/utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const query = getQuery(event)
 
@@ -27,10 +30,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'to inválido' })
   }
 
-  const where: any = {
-    status: 'PAID',
-    couponCode: code
-  }
+  const where: any = whereForStore(
+    {
+      status: 'PAID',
+      couponCode: code
+    },
+    ctx
+  )
 
   if (from || to) {
     where.pagoEm = {}

@@ -44,6 +44,7 @@ model Licenca {
   status      String
   produtoId   String
   produto     Produto  @relation(fields: [produtoId], references: [id])
+  storeSlug   String?
   customerId  String?
   customer    Customer? @relation(fields: [customerId], references: [id])
   orderId     String?
@@ -122,6 +123,7 @@ model Order {
   id                  String   @id @default(uuid())
   numero              Int      @unique @default(autoincrement())
   status              String
+  storeSlug            String?
   produtoId            String
   produto              Produto  @relation(fields: [produtoId], references: [id])
   customerId           String

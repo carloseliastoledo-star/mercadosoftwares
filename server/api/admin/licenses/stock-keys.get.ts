@@ -1,9 +1,12 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { requireAdminSession } from '../../../utils/adminSession'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const query = getQuery(event)
   const produtoId = String((query as any)?.produtoId || '').trim()
@@ -14,12 +17,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'produtoId obrigatório' })
   }
 
-  const where = {
-    produtoId,
-    status: 'STOCK',
-    orderId: null,
-    customerId: null
-  } as const
+  const where = whereForStore(
+    {
+      produtoId,
+      status: 'STOCK',
+      orderId: null,
+      customerId: null
+    },
+    ctx
+  ) as any
 
   const [total, items] = await Promise.all([
     prisma.licenca.count({ where }),

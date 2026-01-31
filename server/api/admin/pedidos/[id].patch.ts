@@ -1,11 +1,14 @@
 import { defineEventHandler, readBody, getRouterParam, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { requireAdminSession } from '../../../utils/adminSession'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 type AllowedStatus = 'PENDING' | 'PAID' | 'REJECTED' | 'CANCELLED'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
+
+  const ctx = getStoreContext()
 
   const id = String(getRouterParam(event, 'id') || '').trim()
   if (!id) {
@@ -20,9 +23,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'status inválido' })
   }
 
-  const order = await prisma.order.findUnique({
-    where: { id },
-    select: { id: true, status: true, licencas: { select: { id: true } } }
+  const order = await prisma.order.findFirst({
+    where: whereForStore({ id }, ctx) as any,
+    select: { id: true, status: true, storeSlug: true, licencas: { select: { id: true } } }
   })
 
   if (!order) {
