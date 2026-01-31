@@ -346,16 +346,8 @@
 
 <script setup lang="ts">
 function pickVitrineItems(predicate: (p: any) => boolean) {
-  const fromAll = allProducts.value.filter(predicate)
-  if (fromAll.length >= 4) return fromAll.slice(0, 4)
-
   const fromBest = products.value.filter(predicate)
-  const merged = [...fromAll, ...fromBest].filter((p, idx, arr) => {
-    const id = String((p as any)?.id || '')
-    return idx === arr.findIndex((x) => String((x as any)?.id || '') === id)
-  })
-
-  return merged.slice(0, 4)
+  return fromBest.slice(0, 4)
 }
 
 const vitrineWindows = computed(() => {
@@ -419,10 +411,6 @@ const { data, pending, error } = await useFetch('/api/products/best-sellers', {
   server: true
 })
 
-const { data: allProductsData } = await useFetch('/api/products', {
-  server: true
-})
-
 type CategoriaDto = { id: string; nome: string; slug: string }
 
 const { data: categoriasData, pending: categoriasPending, error: categoriasError } = await useFetch<{ ok: true; categorias: CategoriaDto[] }>('/api/categorias', {
@@ -430,8 +418,6 @@ const { data: categoriasData, pending: categoriasPending, error: categoriasError
 })
 
 const products = computed(() => data.value || [])
-
-const allProducts = computed(() => allProductsData.value || [])
 
 const categorias = computed(() => categoriasData.value?.categorias || [])
 const categoriasHome = computed(() => categorias.value.slice(0, 12))

@@ -195,8 +195,8 @@
 </template>
 
 <script setup lang="ts">
-const { data, pending, error } = await useFetch('/api/products', {
-  server: false
+const { data, pending, error } = await useFetch('/api/products/best-sellers', {
+  server: true
 })
 
 const products = computed(() => data.value || [])
