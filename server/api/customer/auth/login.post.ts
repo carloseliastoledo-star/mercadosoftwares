@@ -2,8 +2,10 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { verifyPassword } from '../../../utils/password'
 import { setCustomerSession } from '../../../utils/customerSession'
+import { getStoreContext } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
+  const { storeSlug } = getStoreContext()
   const body = await readBody(event)
 
   const email = String(body?.email || '').trim().toLowerCase()
@@ -17,8 +19,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Senha obrigatória' })
   }
 
+  if (!storeSlug) {
+    throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
+  }
+
   const customer = await prisma.customer.findUnique({
-    where: { email },
+    where: { email_storeSlug: { email, storeSlug } },
     select: { id: true, email: true, nome: true, passwordHash: true }
   })
 

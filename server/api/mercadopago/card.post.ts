@@ -33,12 +33,16 @@ export default defineEventHandler(async (event) => {
   const produto = await prisma.produto.findUnique({ where: { id: produtoId } })
   if (!produto) throw createError({ statusCode: 404, statusMessage: 'Produto não encontrado' })
 
+  if (!storeSlug) {
+    throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
+  }
+
   const round2 = (n: number) => Math.round(n * 100) / 100
 
   const { order, coupon } = await (prisma as any).$transaction(async (tx: any) => {
     const customer = await tx.customer.upsert({
-      where: { email },
-      create: { email },
+      where: { email_storeSlug: { email, storeSlug } },
+      create: { email, storeSlug },
       update: {}
     })
 

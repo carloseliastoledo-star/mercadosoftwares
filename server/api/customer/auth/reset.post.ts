@@ -3,12 +3,14 @@ import crypto from 'crypto'
 import prisma from '../../../db/prisma.js'
 import { hashPassword } from '../../../utils/password.js'
 import { setCustomerSession } from '../../../utils/customerSession.js'
+import { getStoreContext } from '../../../utils/store'
 
 function hashToken(token: string, secret: string) {
   return crypto.createHmac('sha256', secret).update(token).digest('hex')
 }
 
 export default defineEventHandler(async (event) => {
+  const { storeSlug } = getStoreContext()
   const body = await readBody(event)
 
   const token = String(body?.token || '')
@@ -27,13 +29,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Configuração de segurança ausente' })
   }
 
+  if (!storeSlug) {
+    throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
+  }
+
   const tokenHash = hashToken(token, secret)
   const now = new Date()
 
   const customer = await (prisma as any).customer.findFirst({
     where: {
       passwordResetTokenHash: tokenHash,
-      passwordResetExpiresAt: { gt: now }
+      passwordResetExpiresAt: { gt: now },
+      storeSlug
     },
     select: { id: true, email: true }
   })

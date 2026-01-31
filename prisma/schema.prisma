@@ -54,7 +54,8 @@ model Licenca {
 
 model Customer {
   id        String   @id @default(uuid())
-  email     String   @unique
+  email     String
+  storeSlug String?
   passwordHash String?
   passwordResetTokenHash String?
   passwordResetExpiresAt DateTime? @db.DateTime(0)
@@ -66,6 +67,8 @@ model Customer {
   orders    Order[]
   licencas  Licenca[]
   wooOrders WooOrder[]
+
+  @@unique([email, storeSlug])
 }
 
 model Categoria {

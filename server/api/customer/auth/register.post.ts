@@ -2,8 +2,10 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../../db/prisma'
 import { hashPassword } from '../../../utils/password'
 import { setCustomerSession } from '../../../utils/customerSession'
+import { getStoreContext } from '../../../utils/store'
 
 export default defineEventHandler(async (event) => {
+  const { storeSlug } = getStoreContext()
   const body = await readBody(event)
 
   const email = String(body?.email || '').trim().toLowerCase()
@@ -20,7 +22,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Senha deve ter pelo menos 6 caracteres' })
   }
 
-  const existing = await prisma.customer.findUnique({ where: { email } })
+  if (!storeSlug) {
+    throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
+  }
+
+  const existing = await prisma.customer.findUnique({ where: { email_storeSlug: { email, storeSlug } } })
 
   if (existing?.passwordHash) {
     throw createError({ statusCode: 409, statusMessage: 'Cliente já cadastrado. Faça login.' })
@@ -29,9 +35,10 @@ export default defineEventHandler(async (event) => {
   const passwordHash = hashPassword(password)
 
   const customer = await prisma.customer.upsert({
-    where: { email },
+    where: { email_storeSlug: { email, storeSlug } },
     create: {
       email,
+      storeSlug,
       passwordHash,
       nome,
       whatsapp,

@@ -27,13 +27,27 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Produto não encontrado' })
   }
 
+  if (!storeSlug) {
+    throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
+  }
+
   const round2 = (n: number) => Math.round(n * 100) / 100
 
   const { customer, order, coupon } = await (prisma as any).$transaction(async (tx: any) => {
     const customer = await tx.customer.upsert({
-      where: { email },
-      create: { email },
-      update: {}
+      where: { email_storeSlug: { email, storeSlug } },
+      create: {
+        email,
+        storeSlug,
+        nome: nome || null,
+        whatsapp: whatsapp || null,
+        cpf: cpf || null
+      },
+      update: {
+        nome: nome || undefined,
+        whatsapp: whatsapp || undefined,
+        cpf: cpf || undefined
+      }
     })
 
     let coupon: { id: string; code: string; percent: number } | null = null
