@@ -1,6 +1,35 @@
 <script setup lang="ts">
 definePageMeta({ ssr: false })
 
+const intl = useIntlContext()
+
+const t = computed(() => {
+  if (intl.language.value === 'en') {
+    return {
+      defaultTitle: 'Activation tutorial',
+      loading: 'Loading tutorial...',
+      notFound: 'Tutorial not found',
+      noContent: 'No content.'
+    }
+  }
+
+  if (intl.language.value === 'es') {
+    return {
+      defaultTitle: 'Tutorial de activación',
+      loading: 'Cargando tutorial...',
+      notFound: 'Tutorial no encontrado',
+      noContent: 'Sin contenido.'
+    }
+  }
+
+  return {
+    defaultTitle: 'Tutorial de Ativação',
+    loading: 'Carregando tutorial...',
+    notFound: 'Tutorial não encontrado',
+    noContent: 'Sem conteúdo.'
+  }
+})
+
 const route = useRoute()
 const slug = route.params.slug as string
 
@@ -14,7 +43,7 @@ const tutorial = computed(() => {
   if (!p) return null
 
   return {
-    title: p.tutorialTitle || 'Tutorial de Ativação',
+    title: p.tutorialTitle || t.value.defaultTitle,
     content: p.tutorialContent || ''
   }
 })
@@ -60,7 +89,7 @@ const tutorialHtml = computed(() => {
     .filter(Boolean)
     .map((b) => `<p class="mb-4 whitespace-pre-wrap">${linkifyText(b)}</p>`)
     .join('')
-  return html || '<p class="text-gray-500">Sem conteúdo.</p>'
+  return html || `<p class="text-gray-500">${escapeHtml(t.value.noContent)}</p>`
 })
 </script>
 
@@ -69,12 +98,12 @@ const tutorialHtml = computed(() => {
     <div class="max-w-4xl mx-auto px-6">
 
       <div v-if="pending" class="text-gray-500">
-        Carregando tutorial...
+        {{ t.loading }}
       </div>
 
       <div v-else-if="error || !tutorial">
         <h1 class="text-2xl font-bold">
-          Tutorial não encontrado
+          {{ t.notFound }}
         </h1>
       </div>
 

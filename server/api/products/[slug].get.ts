@@ -4,6 +4,7 @@ import { createError } from 'h3'
 import { getStoreContext } from '#root/server/utils/store'
 import { getIntlContext } from '#root/server/utils/intl'
 import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
+import { autoTranslateText } from '#root/server/utils/autoTranslate'
 
 function normalizeImageUrl(input: unknown): string | null {
   const raw = String(input ?? '').trim()
@@ -50,6 +51,8 @@ export default defineEventHandler(async (event) => {
 
   const intl = getIntlContext(event)
 
+  const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
+
   const product = await (prisma as any).produto.findUnique({
     where: { slug: String(slug) },
     select: {
@@ -90,6 +93,12 @@ export default defineEventHandler(async (event) => {
     ? rawDescription
     : getDefaultProductDescription({ nome: product.nome, slug: product.slug })
 
+  const translatedName = autoTranslateText(product.nome, { lang }) || product.nome
+  const translatedDescription = autoTranslateText(description, { lang }) || description
+  const translatedTutorialTitle = autoTranslateText(product.tutorialTitulo, { lang }) || product.tutorialTitulo
+  const translatedTutorialSubtitle = autoTranslateText(product.tutorialSubtitulo, { lang }) || product.tutorialSubtitulo
+  const translatedTutorialContent = autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo
+
   const override = (product as any).precosLoja?.[0] || null
 
   const effective = resolveEffectivePrice({
@@ -106,18 +115,18 @@ export default defineEventHandler(async (event) => {
 
   return {
     id: product.id,
-    name: product.nome,
+    name: translatedName,
     slug: product.slug,
     finalUrl: product.finalUrl,
-    description,
+    description: translatedDescription,
     price: effectivePrice,
     precoAntigo: effectiveOldPrice ?? null,
     currency: effective.currency,
     image: normalizeImageUrl(product.imagem),
     categories: (product.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
-    tutorialTitle: product.tutorialTitulo,
-    tutorialSubtitle: product.tutorialSubtitulo,
-    tutorialContent: product.tutorialConteudo,
+    tutorialTitle: translatedTutorialTitle,
+    tutorialSubtitle: translatedTutorialSubtitle,
+    tutorialContent: translatedTutorialContent,
     createdAt: product.criadoEm
   }
 })

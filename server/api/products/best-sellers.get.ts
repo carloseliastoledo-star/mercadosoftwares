@@ -2,6 +2,7 @@ import prisma from '#root/server/db/prisma'
 import { getStoreContext } from '#root/server/utils/store'
 import { getIntlContext } from '#root/server/utils/intl'
 import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
+import { autoTranslateText } from '#root/server/utils/autoTranslate'
 
 function normalizeImageUrl(input: unknown): string | null {
   const raw = String(input ?? '').trim()
@@ -69,6 +70,8 @@ export default defineEventHandler(async (event) => {
 
     const intl = getIntlContext(event)
 
+    const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
+
     const settings = await prisma.siteSettings.findFirst({
       select: { homeBestSellerSlugs: true }
     })
@@ -125,19 +128,24 @@ export default defineEventHandler(async (event) => {
         const effectivePrice = effective.amount
         const effectiveOldPrice = effective.oldAmount
 
+        const translatedName = autoTranslateText(p.nome, { lang }) || p.nome
+        const translatedDescription = autoTranslateText(p.descricao, { lang }) || p.descricao
+        const translatedTutorialTitle = autoTranslateText(p.tutorialTitulo, { lang }) || p.tutorialTitulo
+        const translatedTutorialSubtitle = autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo
+
         return {
           id: p.id,
-          name: p.nome,
+          name: translatedName,
           slug: p.slug,
-          description: p.descricao,
+          description: translatedDescription,
           cardItems: p.cardItems,
           price: effectivePrice,
           precoAntigo: effectiveOldPrice,
           currency: effective.currency,
           image: normalizeImageUrl(p.imagem),
           categories: (p.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
-          tutorialTitle: p.tutorialTitulo,
-          tutorialSubtitle: p.tutorialSubtitulo,
+          tutorialTitle: translatedTutorialTitle,
+          tutorialSubtitle: translatedTutorialSubtitle,
           createdAt: p.criadoEm
         }
       })
@@ -177,19 +185,24 @@ export default defineEventHandler(async (event) => {
       const effectivePrice = effective.amount
       const effectiveOldPrice = effective.oldAmount
 
+      const translatedName = autoTranslateText(p.nome, { lang }) || p.nome
+      const translatedDescription = autoTranslateText(p.descricao, { lang }) || p.descricao
+      const translatedTutorialTitle = autoTranslateText(p.tutorialTitulo, { lang }) || p.tutorialTitulo
+      const translatedTutorialSubtitle = autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo
+
       return {
         id: p.id,
-        name: p.nome,
+        name: translatedName,
         slug: p.slug,
-        description: p.descricao,
+        description: translatedDescription,
         cardItems: p.cardItems,
         price: effectivePrice,
         precoAntigo: effectiveOldPrice,
         currency: effective.currency,
         image: normalizeImageUrl(p.imagem),
         categories: (p.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
-        tutorialTitle: p.tutorialTitulo,
-        tutorialSubtitle: p.tutorialSubtitulo,
+        tutorialTitle: translatedTutorialTitle,
+        tutorialSubtitle: translatedTutorialSubtitle,
         createdAt: p.criadoEm
       }
     })

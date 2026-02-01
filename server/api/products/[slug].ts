@@ -1,9 +1,56 @@
 import prisma from '#root/server/db/prisma'
 import { getDefaultProductDescription } from '#root/server/utils/productDescriptionTemplate'
 import { createError } from 'h3'
+import { getStoreContext } from '#root/server/utils/store'
+import { getIntlContext } from '#root/server/utils/intl'
+import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
+import { autoTranslateText } from '#root/server/utils/autoTranslate'
+
+function normalizeImageUrl(input: unknown): string | null {
+  const raw = String(input ?? '').trim()
+  if (!raw) return null
+
+  if (raw.startsWith('http://')) return raw.replace(/^http:\/\//, 'https://')
+  if (raw.startsWith('https://')) return raw
+  if (raw.startsWith('//')) return `https:${raw}`
+
+  if (/^([a-z0-9-]+\.)+[a-z]{2,}(\/|$)/i.test(raw)) {
+    return `https://${raw}`
+  }
+
+  if (raw.startsWith('/')) {
+    const baseUrl = String(process.env.WOOCOMMERCE_BASE_URL || '').trim().replace(/\/+$/, '')
+    if (!baseUrl) return raw
+    return `${baseUrl}${raw}`
+  }
+
+  if (/^(wp-content\/|uploads\/)/i.test(raw)) {
+    const baseUrl = String(process.env.WOOCOMMERCE_BASE_URL || '').trim().replace(/\/+$/, '')
+    if (!baseUrl) return `/${raw}`
+    return `${baseUrl}/${raw}`
+  }
+
+  if (
+    !raw.startsWith('/') &&
+    !/^products\//i.test(raw) &&
+    !/^public\//i.test(raw) &&
+    /\.(png|jpe?g|webp|gif|svg)(\?.*)?$/i.test(raw)
+  ) {
+    const baseUrl = String(process.env.WOOCOMMERCE_BASE_URL || '').trim().replace(/\/+$/, '')
+    if (!baseUrl) return `/${raw.replace(/^\/+/, '')}`
+    return `${baseUrl}/${raw.replace(/^\/+/, '')}`
+  }
+
+  return raw
+}
 
 export default defineEventHandler(async (event) => {
   const rawSlug = event.context.params?.slug
+
+  const { storeSlug } = getStoreContext()
+
+  const intl = getIntlContext(event)
+  const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
 
   if (!rawSlug) {
     throw createError({
@@ -20,8 +67,32 @@ export default defineEventHandler(async (event) => {
     .replace(/[^a-z0-9-]/g, '')
     .replace(/-+/g, '-')
 
-  const product = await prisma.produto.findUnique({
-    where: { slug }
+  const product = await (prisma as any).produto.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      nome: true,
+      slug: true,
+      finalUrl: true,
+      descricao: true,
+      preco: true,
+      precoAntigo: true,
+      ativo: true,
+      imagem: true,
+      cardItems: true,
+      tutorialTitulo: true,
+      tutorialSubtitulo: true,
+      tutorialConteudo: true,
+      criadoEm: true,
+      precosLoja: {
+        where: { storeSlug: storeSlug || undefined },
+        select: { preco: true, precoAntigo: true }
+      },
+      precosMoeda: {
+        where: { storeSlug: storeSlug || undefined },
+        select: { currency: true, amount: true, oldAmount: true }
+      }
+    }
   })
 
   if (!product || !product.ativo) {
@@ -36,18 +107,37 @@ export default defineEventHandler(async (event) => {
     ? rawDescription
     : getDefaultProductDescription({ nome: product.nome, slug: product.slug })
 
+  const override = (product as any).precosLoja?.[0] || null
+
+  const effective = resolveEffectivePrice({
+    requestedCurrency: intl.currency,
+    baseAmount: product.preco,
+    baseOldAmount: product.precoAntigo,
+    storeAmountOverride: override?.preco,
+    storeOldAmountOverride: override?.precoAntigo,
+    currencyRows: (product as any).precosMoeda || []
+  })
+
+  const translatedName = autoTranslateText(product.nome, { lang }) || product.nome
+  const translatedDescription = autoTranslateText(description, { lang }) || description
+  const translatedTutorialTitle = autoTranslateText(product.tutorialTitulo, { lang }) || product.tutorialTitulo
+  const translatedTutorialSubtitle = autoTranslateText(product.tutorialSubtitulo, { lang }) || product.tutorialSubtitulo
+  const translatedTutorialContent = autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo
+
   return {
     id: product.id,
-    name: product.nome,
+    name: translatedName,
     slug: product.slug,
     finalUrl: product.finalUrl,
-    description,
-    price: product.preco,
-    image: product.imagem,
+    description: translatedDescription,
+    price: effective.amount,
+    precoAntigo: effective.oldAmount ?? null,
+    currency: effective.currency,
+    image: normalizeImageUrl(product.imagem),
     cardItems: product.cardItems,
-    tutorialTitle: product.tutorialTitulo,
-    tutorialSubtitle: product.tutorialSubtitulo,
-    tutorialContent: product.tutorialConteudo,
+    tutorialTitle: translatedTutorialTitle,
+    tutorialSubtitle: translatedTutorialSubtitle,
+    tutorialContent: translatedTutorialContent,
     createdAt: product.criadoEm
   }
 })

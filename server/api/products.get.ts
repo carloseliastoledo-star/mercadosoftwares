@@ -3,6 +3,7 @@ import { createError } from 'h3'
 import { getStoreContext } from '#root/server/utils/store'
 import { getIntlContext } from '#root/server/utils/intl'
 import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
+import { autoTranslateText } from '#root/server/utils/autoTranslate'
 
 function normalizeImageUrl(input: unknown): string | null {
   const raw = String(input ?? '').trim()
@@ -47,6 +48,8 @@ export default defineEventHandler(async (event) => {
     const { storeSlug } = getStoreContext()
 
     const intl = getIntlContext(event)
+
+    const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
 
     const products = await (prisma as any).produto.findMany({
       where: {
@@ -94,19 +97,24 @@ export default defineEventHandler(async (event) => {
       const effectivePrice = effective.amount
       const effectiveOldPrice = effective.oldAmount
 
+      const translatedName = autoTranslateText(p.nome, { lang }) || p.nome
+      const translatedDescription = autoTranslateText(p.descricao, { lang }) || p.descricao
+      const translatedTutorialTitle = autoTranslateText(p.tutorialTitulo, { lang }) || p.tutorialTitulo
+      const translatedTutorialSubtitle = autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo
+
       return {
         id: p.id,
-        name: p.nome,
+        name: translatedName,
         slug: p.slug,
-        description: p.descricao,
+        description: translatedDescription,
         price: effectivePrice,
         precoAntigo: effectiveOldPrice,
         currency: effective.currency,
         image: normalizeImageUrl(p.imagem),
         cardItems: p.cardItems,
         categories: (p.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
-        tutorialTitle: p.tutorialTitulo,
-        tutorialSubtitle: p.tutorialSubtitulo,
+        tutorialTitle: translatedTutorialTitle,
+        tutorialSubtitle: translatedTutorialSubtitle,
         createdAt: p.criadoEm
       }
     })
