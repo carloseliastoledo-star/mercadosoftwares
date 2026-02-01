@@ -22,7 +22,8 @@ export function useSiteBranding() {
   const defaultSiteName = computed(() => (isCasaDoSoftware.value ? 'Casa do Software' : 'Licenças Digitais'))
   const defaultLogoPath = computed(() => (isCasaDoSoftware.value ? '/logo-casa-do-software.png' : '/logo-licencasdigitais.png'))
 
-  const siteName = String(config.public.siteName || '').trim() || defaultSiteName.value
+  const rawName = String((config.public as any)?.siteName || '').trim()
+  const siteName = rawName && rawName !== 'Site' ? rawName : defaultSiteName.value
 
   const rawLogo = String(config.public.logoPath || '').trim()
   const logoPath = rawLogo && rawLogo !== '/logo.png' ? rawLogo : defaultLogoPath.value
