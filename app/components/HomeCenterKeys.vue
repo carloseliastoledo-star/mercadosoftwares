@@ -44,12 +44,28 @@
                   <span class="text-emerald-300">✔</span>
                   Suporte especializado
                 </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-emerald-300">✔</span>
-                  Atendimento Internacional em Português, Espanhol e Inglês
-                </div>
+              </div>
+
+              <div class="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-white bg-white/10 border border-white/15 px-3 py-2 rounded-xl w-fit">
+                <span class="text-emerald-300">✔</span>
+                Atendimento Internacional em Português, Espanhol e Inglês
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-white border rounded-2xl p-6 md:p-8">
+          <div class="text-xs font-bold tracking-widest text-gray-500">INSTITUCIONAL</div>
+          <div class="mt-3 space-y-3 text-sm md:text-base text-gray-700 leading-relaxed">
+            <p>
+              Somos uma empresa independente especializada na comercialização de licenças digitais de software para uso pessoal e profissional.
+            </p>
+            <p>
+              Trabalhamos com sistemas operacionais e aplicativos de produtividade em versões digitais, com pagamento único e ativação online.
+            </p>
+            <p>
+              Não somos a loja oficial de nenhuma marca. Todas as marcas citadas pertencem aos seus respectivos proprietários.
+            </p>
           </div>
         </div>
 
@@ -73,39 +89,31 @@
 
     <div class="bg-white border-y">
       <div class="max-w-7xl mx-auto px-6 py-10">
-        <h2 class="text-2xl font-extrabold text-gray-900 text-center">Por que comprar aqui?</h2>
+        <h2 class="text-2xl font-extrabold text-gray-900 text-center">Por que escolher</h2>
         <p class="text-gray-600 text-center mt-2">
-          Uma experiência simples e segura do início ao fim. Todas as licenças são digitais, entregues por e-mail após confirmação de pagamento, com suporte para ativação.
+          Uma experiência simples e segura do início ao fim.
         </p>
 
         <div class="mt-8 grid md:grid-cols-4 gap-5">
           <div class="bg-gray-50 border rounded-2xl p-6">
-            <div class="text-2xl">✅</div>
-            <div class="font-bold mt-3">Parceiro Microsoft Network</div>
-            <div class="text-sm text-gray-600 mt-1">Marcas pertencem aos seus respectivos proprietários.</div>
-            <a
-              href="https://appsource.microsoft.com/en-us/marketplace/partner-dir/6f443328-4eb9-4548-9928-f302947f80a5/overview"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition"
-            >
-              Ver parceiro
-            </a>
-          </div>
-          <div class="bg-gray-50 border rounded-2xl p-6">
             <div class="text-2xl">⚡</div>
-            <div class="font-bold mt-3">Entrega rápida</div>
-            <div class="text-sm text-gray-600 mt-1">Receba por e-mail após a confirmação.</div>
+            <div class="font-bold mt-3">Entrega Digital Imediata</div>
+            <div class="text-sm text-gray-600 mt-1">Envio automático por e-mail após confirmação do pagamento.</div>
           </div>
           <div class="bg-gray-50 border rounded-2xl p-6">
-            <div class="text-2xl">📘</div>
-            <div class="font-bold mt-3">Tutoriais por produto</div>
-            <div class="text-sm text-gray-600 mt-1">Ativação guiada e fácil de seguir.</div>
+            <div class="text-2xl">💳</div>
+            <div class="font-bold mt-3">Pagamento Único</div>
+            <div class="text-sm text-gray-600 mt-1">Sem cobranças recorrentes ou mensalidades.</div>
           </div>
           <div class="bg-gray-50 border rounded-2xl p-6">
-            <div class="text-2xl">💬</div>
-            <div class="font-bold mt-3">Suporte especializado</div>
-            <div class="text-sm text-gray-600 mt-1">Ajuda rápida quando você precisar.</div>
+            <div class="text-2xl">🧑‍�</div>
+            <div class="font-bold mt-3">Suporte para Ativação</div>
+            <div class="text-sm text-gray-600 mt-1">Atendimento remoto para auxiliar na instalação.</div>
+          </div>
+          <div class="bg-gray-50 border rounded-2xl p-6">
+            <div class="text-2xl">🌍</div>
+            <div class="font-bold mt-3">Atendimento Internacional</div>
+            <div class="text-sm text-gray-600 mt-1">Português • Español • English</div>
           </div>
         </div>
       </div>

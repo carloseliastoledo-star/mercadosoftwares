@@ -186,6 +186,7 @@
         <div>
           <h3 class="font-semibold text-gray-800 mb-2">Suporte</h3>
           <p>Atendimento rápido e especializado</p>
+          <p class="mt-2">Atendimento Internacional em Português, Espanhol e Inglês</p>
           <p v-if="supportEmail" class="mt-2 font-medium text-gray-800">
             {{ supportEmail }}
           </p>
