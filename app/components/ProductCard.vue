@@ -160,25 +160,53 @@ const categoryLabel = computed(() => {
   return ''
 })
 
-const defaultIncludedItems = [
-  'Envio imediato após confirmação',
-  'Licença digital permanente',
-  'Suporte 24/7',
-  '1 PC',
-  'Versão profissional com recursos avançados',
-  'Compatível Windows 10 e 11',
-  'Ativação permanente',
-  'Sem renovação necessária'
-]
+const defaultIncludedItems = computed(() => {
+  if (intl.language.value === 'en') {
+    return [
+      'Fast delivery after confirmation',
+      'Permanent digital license',
+      '24/7 support',
+      '1 PC',
+      'Professional version with advanced features',
+      'Compatible with Windows 10 and 11',
+      'Permanent activation',
+      'No renewal required'
+    ]
+  }
+
+  if (intl.language.value === 'es') {
+    return [
+      'Envío rápido tras la confirmación',
+      'Licencia digital permanente',
+      'Soporte 24/7',
+      '1 PC',
+      'Versión profesional con funciones avanzadas',
+      'Compatible con Windows 10 y 11',
+      'Activación permanente',
+      'Sin renovación'
+    ]
+  }
+
+  return [
+    'Envio imediato após confirmação',
+    'Licença digital permanente',
+    'Suporte 24/7',
+    '1 PC',
+    'Versão profissional com recursos avançados',
+    'Compatível Windows 10 e 11',
+    'Ativação permanente',
+    'Sem renovação necessária'
+  ]
+})
 
 const includedItems = computed(() => {
   const raw = String((props.product as any)?.cardItems ?? '').trim()
-  if (!raw) return defaultIncludedItems
+  if (!raw) return defaultIncludedItems.value
   const items = raw
     .split(/\r?\n/)
     .map((s) => s.trim())
     .filter(Boolean)
-  return items.length ? items : defaultIncludedItems
+  return items.length ? items : defaultIncludedItems.value
 })
 
 function buyNow(event: Event) {
