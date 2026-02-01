@@ -2,13 +2,13 @@
   <section class="bg-gray-50 min-h-screen py-12">
     <div class="max-w-4xl mx-auto px-6">
       <div class="bg-white rounded-2xl border border-gray-100 p-8">
-        <div v-if="pending" class="text-sm text-gray-600">Carregando...</div>
-        <div v-else-if="error" class="text-sm text-red-600">Página não encontrada.</div>
+        <div v-if="pending" class="text-sm text-gray-600">{{ t.loading }}</div>
+        <div v-else-if="error" class="text-sm text-red-600">{{ t.notFound }}</div>
 
         <div v-else>
           <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ pagina?.titulo }}</h1>
           <p v-if="pagina?.atualizadoEm" class="text-xs text-gray-500 mt-2">
-            Atualizado em {{ formatDate(pagina.atualizadoEm) }}
+            {{ t.updatedAt }} {{ formatDate(pagina.atualizadoEm) }}
           </p>
 
           <div class="prose prose-gray max-w-none mt-6 whitespace-pre-wrap">
@@ -23,6 +23,32 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || ''))
+
+const intl = useIntlContext()
+
+const t = computed(() => {
+  if (intl.language.value === 'en') {
+    return {
+      loading: 'Loading...',
+      notFound: 'Page not found.',
+      updatedAt: 'Updated on'
+    }
+  }
+
+  if (intl.language.value === 'es') {
+    return {
+      loading: 'Cargando...',
+      notFound: 'Página no encontrada.',
+      updatedAt: 'Actualizado el'
+    }
+  }
+
+  return {
+    loading: 'Carregando...',
+    notFound: 'Página não encontrada.',
+    updatedAt: 'Atualizado em'
+  }
+})
 
 type PaginaDto = {
   titulo: string
@@ -46,7 +72,7 @@ useHead(() => {
 
 function formatDate(input: string) {
   try {
-    return new Date(input).toLocaleString('pt-BR')
+    return new Date(input).toLocaleString(intl.locale.value)
   } catch {
     return input
   }

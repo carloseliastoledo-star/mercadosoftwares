@@ -162,21 +162,21 @@
         <div>
           <h3 class="font-semibold text-gray-800 mb-2">{{ siteName }}</h3>
           <p>
-            Licenças digitais de Windows e Office com envio imediato após confirmação.
+            {{ t.footerDescription }}
           </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-800 mb-2">Links</h3>
+          <h3 class="font-semibold text-gray-800 mb-2">{{ t.footerLinksTitle }}</h3>
           <ul class="space-y-2">
-            <li><NuxtLink to="/produtos" class="hover:text-blue-600">Produtos</NuxtLink></li>
-            <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">Tutoriais</NuxtLink></li>
-            <li><NuxtLink to="/blog" class="hover:text-blue-600">Blog</NuxtLink></li>
-            <li><NuxtLink to="/quem-somos" class="hover:text-blue-600">Quem somos</NuxtLink></li>
-            <li><NuxtLink to="/entrega-digital" class="hover:text-blue-600">Entrega digital</NuxtLink></li>
-            <li><NuxtLink to="/reembolso" class="hover:text-blue-600">Política de reembolso</NuxtLink></li>
-            <li><NuxtLink to="/privacidade" class="hover:text-blue-600">Privacidade</NuxtLink></li>
-            <li><NuxtLink to="/termos" class="hover:text-blue-600">Termos de uso</NuxtLink></li>
+            <li><NuxtLink to="/produtos" class="hover:text-blue-600">{{ t.footerProducts }}</NuxtLink></li>
+            <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">{{ t.footerTutorials }}</NuxtLink></li>
+            <li><NuxtLink to="/blog" class="hover:text-blue-600">{{ t.footerBlog }}</NuxtLink></li>
+            <li><NuxtLink to="/quem-somos" class="hover:text-blue-600">{{ t.footerAbout }}</NuxtLink></li>
+            <li><NuxtLink to="/entrega-digital" class="hover:text-blue-600">{{ t.footerDigitalDelivery }}</NuxtLink></li>
+            <li><NuxtLink to="/reembolso" class="hover:text-blue-600">{{ t.footerRefundPolicy }}</NuxtLink></li>
+            <li><NuxtLink to="/privacidade" class="hover:text-blue-600">{{ t.footerPrivacy }}</NuxtLink></li>
+            <li><NuxtLink to="/termos" class="hover:text-blue-600">{{ t.footerTerms }}</NuxtLink></li>
             <li v-for="p in paginas" :key="p.slug">
               <NuxtLink :to="`/paginas/${p.slug}`" class="hover:text-blue-600">{{ p.titulo }}</NuxtLink>
             </li>
@@ -184,15 +184,15 @@
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-800 mb-2">Suporte</h3>
-          <p>Atendimento rápido e especializado</p>
-          <p class="mt-2">Atendimento Internacional em Português, Espanhol e Inglês</p>
+          <h3 class="font-semibold text-gray-800 mb-2">{{ t.footerSupportTitle }}</h3>
+          <p>{{ t.footerSupportSubtitle }}</p>
+          <p class="mt-2">{{ t.footerIntlSupport }}</p>
           <p v-if="supportEmail" class="mt-2 font-medium text-gray-800">
             {{ supportEmail }}
           </p>
           <p v-if="whatsappHref" class="mt-2 font-medium text-gray-800">
             <a class="hover:underline" :href="whatsappHref" target="_blank" rel="noopener noreferrer">
-              WhatsApp: {{ whatsappLabel }}
+              {{ t.whatsappPrefix }} {{ whatsappLabel }}
             </a>
           </p>
           <p class="mt-2 text-xs text-gray-500">
@@ -204,8 +204,8 @@
       <div class="text-center text-xs text-gray-500 py-4 border-t">
         © {{ new Date().getFullYear() }} {{ siteName }} — {{ t.rightsReserved }}
         <div class="mt-2 max-w-4xl mx-auto">
-          {{ siteName }} (Eletrokeys LTDA) é uma empresa independente registrada no Microsoft Partner Network.
-          Não somos afiliados à Microsoft.
+          {{ t.footerDisclaimer1 }}
+          {{ t.footerDisclaimer2 }}
         </div>
       </div>
     </footer>
@@ -214,8 +214,6 @@
 </template>
 
 <script setup lang="ts">
-import { useIntlContext } from '#imports'
-
 const { siteName, logoPath, supportEmail, topbarText, topbarLink, whatsappNumber } = useSiteBranding()
 
 const intl = useIntlContext()
@@ -298,6 +296,7 @@ const t = computed(() => {
       footerLinksTitle: 'Links',
       footerProducts: 'Products',
       footerTutorials: 'Tutorials',
+      footerBlog: 'Blog',
       footerAbout: 'About us',
       footerDigitalDelivery: 'Digital delivery',
       footerRefundPolicy: 'Refund policy',
@@ -327,6 +326,7 @@ const t = computed(() => {
       footerLinksTitle: 'Enlaces',
       footerProducts: 'Productos',
       footerTutorials: 'Tutoriales',
+      footerBlog: 'Blog',
       footerAbout: 'Quiénes somos',
       footerDigitalDelivery: 'Entrega digital',
       footerRefundPolicy: 'Política de reembolso',
@@ -355,6 +355,7 @@ const t = computed(() => {
     footerLinksTitle: 'Links',
     footerProducts: 'Produtos',
     footerTutorials: 'Tutoriais',
+    footerBlog: 'Blog',
     footerAbout: 'Quem somos',
     footerDigitalDelivery: 'Entrega digital',
     footerRefundPolicy: 'Política de reembolso',
