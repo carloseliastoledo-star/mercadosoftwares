@@ -6,14 +6,14 @@
           <div class="px-6 py-10 md:px-12 md:py-14">
             <div class="max-w-2xl">
               <div class="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-widest text-orange-200 bg-orange-500/15 border border-orange-500/20 px-3 py-1 rounded-full">
-                Parceiro Microsoft Network
+                {{ t.heroBadge }}
               </div>
               <h1 class="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight text-white">
-                Licenças Digitais
-                <span class="block text-cyan-300">com envio por e-mail</span>
+                {{ t.heroTitle }}
+                <span class="block text-cyan-300">{{ t.heroSubtitle }}</span>
               </h1>
               <p class="mt-4 text-white/80 text-sm md:text-base leading-relaxed">
-                Windows, Office e Windows Server com entrega digital rápida após confirmação.
+                {{ t.heroDescription }}
               </p>
 
               <div class="mt-6 flex flex-col sm:flex-row gap-3">
@@ -21,50 +21,50 @@
                   to="/produtos"
                   class="bg-cyan-400 hover:bg-cyan-300 text-neutral-950 font-extrabold px-6 py-3 rounded-xl transition text-center"
                 >
-                  Ver ofertas
+                  {{ t.heroPrimaryCta }}
                 </NuxtLink>
                 <NuxtLink
                   to="/tutoriais"
                   class="bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold px-6 py-3 rounded-xl transition text-center"
                 >
-                  Como ativar
+                  {{ t.heroSecondaryCta }}
                 </NuxtLink>
               </div>
 
               <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-white/85">
                 <div class="flex items-center gap-2">
                   <span class="text-emerald-300">✔</span>
-                  Envio rápido após confirmação
+                  {{ t.heroBullet1 }}
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-emerald-300">✔</span>
-                  Entrega digital
+                  {{ t.heroBullet2 }}
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-emerald-300">✔</span>
-                  Suporte especializado
+                  {{ t.heroBullet3 }}
                 </div>
               </div>
 
               <div class="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-white bg-white/10 border border-white/15 px-3 py-2 rounded-xl w-fit">
                 <span class="text-emerald-300">✔</span>
-                Atendimento Internacional em Português, Espanhol e Inglês
+                {{ t.heroIntl }}
               </div>
             </div>
           </div>
         </div>
 
         <div class="mt-8 bg-white border rounded-2xl p-6 md:p-8">
-          <div class="text-xs font-bold tracking-widest text-gray-500">INSTITUCIONAL</div>
+          <div class="text-xs font-bold tracking-widest text-gray-500">{{ t.institutionalTitle }}</div>
           <div class="mt-3 space-y-3 text-sm md:text-base text-gray-700 leading-relaxed">
             <p>
-              Somos uma empresa independente especializada na comercialização de licenças digitais de software para uso pessoal e profissional.
+              {{ t.institutionalP1 }}
             </p>
             <p>
-              Trabalhamos com sistemas operacionais e aplicativos de produtividade em versões digitais, com pagamento único e ativação online.
+              {{ t.institutionalP2 }}
             </p>
             <p>
-              Não somos a loja oficial de nenhuma marca. Todas as marcas citadas pertencem aos seus respectivos proprietários.
+              {{ t.institutionalP3 }}
             </p>
           </div>
         </div>
@@ -89,31 +89,31 @@
 
     <div class="bg-white border-y">
       <div class="max-w-7xl mx-auto px-6 py-10">
-        <h2 class="text-2xl font-extrabold text-gray-900 text-center">Por que escolher</h2>
+        <h2 class="text-2xl font-extrabold text-gray-900 text-center">{{ t.whyTitle }}</h2>
         <p class="text-gray-600 text-center mt-2">
-          Uma experiência simples e segura do início ao fim.
+          {{ t.whySubtitle }}
         </p>
 
         <div class="mt-8 grid md:grid-cols-4 gap-5">
           <div class="bg-gray-50 border rounded-2xl p-6">
             <div class="text-2xl">⚡</div>
-            <div class="font-bold mt-3">Entrega Digital Imediata</div>
-            <div class="text-sm text-gray-600 mt-1">Envio automático por e-mail após confirmação do pagamento.</div>
+            <div class="font-bold mt-3">{{ t.whyCard1Title }}</div>
+            <div class="text-sm text-gray-600 mt-1">{{ t.whyCard1Body }}</div>
           </div>
           <div class="bg-gray-50 border rounded-2xl p-6">
             <div class="text-2xl">💳</div>
-            <div class="font-bold mt-3">Pagamento Único</div>
-            <div class="text-sm text-gray-600 mt-1">Sem cobranças recorrentes ou mensalidades.</div>
+            <div class="font-bold mt-3">{{ t.whyCard2Title }}</div>
+            <div class="text-sm text-gray-600 mt-1">{{ t.whyCard2Body }}</div>
           </div>
           <div class="bg-gray-50 border rounded-2xl p-6">
             <div class="text-2xl">🧑‍�</div>
-            <div class="font-bold mt-3">Suporte para Ativação</div>
-            <div class="text-sm text-gray-600 mt-1">Atendimento remoto para auxiliar na instalação.</div>
+            <div class="font-bold mt-3">{{ t.whyCard3Title }}</div>
+            <div class="text-sm text-gray-600 mt-1">{{ t.whyCard3Body }}</div>
           </div>
           <div class="bg-gray-50 border rounded-2xl p-6">
             <div class="text-2xl">🌍</div>
-            <div class="font-bold mt-3">Atendimento Internacional</div>
-            <div class="text-sm text-gray-600 mt-1">Português • Español • English</div>
+            <div class="font-bold mt-3">{{ t.whyCard4Title }}</div>
+            <div class="text-sm text-gray-600 mt-1">{{ t.whyCard4Body }}</div>
           </div>
         </div>
       </div>
@@ -173,12 +173,12 @@
       <div class="flex items-center justify-between gap-6 flex-wrap">
         <div>
           <div class="inline-flex items-end gap-3">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">Mais vendidos</h2>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">{{ t.bestSellersTitle }}</h2>
             <span class="hidden md:block h-[3px] w-16 bg-blue-600 rounded-full mb-1" />
           </div>
         </div>
         <NuxtLink to="/produtos" class="text-sm font-semibold text-gray-800 hover:underline">
-          Ver todos
+          {{ t.viewAll }}
         </NuxtLink>
       </div>
 
@@ -357,6 +357,103 @@
 </template>
 
 <script setup lang="ts">
+import { useIntlContext } from '#imports'
+
+const intl = useIntlContext()
+
+const t = computed(() => {
+  if (intl.language.value === 'en') {
+    return {
+      heroBadge: 'Microsoft Partner Network',
+      heroTitle: 'Digital Licenses',
+      heroSubtitle: 'delivered by email',
+      heroDescription: 'Windows, Office and Windows Server with fast digital delivery after confirmation.',
+      heroPrimaryCta: 'View deals',
+      heroSecondaryCta: 'How to activate',
+      heroBullet1: 'Fast delivery after confirmation',
+      heroBullet2: 'Digital delivery',
+      heroBullet3: 'Specialized support',
+      heroIntl: 'International Support in Portuguese, Spanish and English',
+      institutionalTitle: 'INSTITUTIONAL',
+      institutionalP1: 'We are an independent company specialized in the sale of digital software licenses for personal and professional use.',
+      institutionalP2: 'We work with operating systems and productivity apps in digital versions, with one-time payment and online activation.',
+      institutionalP3: 'We are not the official store of any brand. All mentioned trademarks belong to their respective owners.',
+      whyTitle: 'Why choose',
+      whySubtitle: 'A simple and secure experience from start to finish.',
+      whyCard1Title: 'Instant Digital Delivery',
+      whyCard1Body: 'Automatic email delivery after payment confirmation.',
+      whyCard2Title: 'One-time Payment',
+      whyCard2Body: 'No recurring charges or subscriptions.',
+      whyCard3Title: 'Activation Support',
+      whyCard3Body: 'Remote assistance to help with installation.',
+      whyCard4Title: 'International Support',
+      whyCard4Body: 'Português • Español • English',
+      bestSellersTitle: 'Best sellers',
+      viewAll: 'View all'
+    }
+  }
+
+  if (intl.language.value === 'es') {
+    return {
+      heroBadge: 'Microsoft Partner Network',
+      heroTitle: 'Licencias Digitales',
+      heroSubtitle: 'con envío por e-mail',
+      heroDescription: 'Windows, Office y Windows Server con entrega digital rápida tras la confirmación.',
+      heroPrimaryCta: 'Ver ofertas',
+      heroSecondaryCta: 'Cómo activar',
+      heroBullet1: 'Envío rápido tras la confirmación',
+      heroBullet2: 'Entrega digital',
+      heroBullet3: 'Soporte especializado',
+      heroIntl: 'Atención Internacional en Portugués, Español e Inglés',
+      institutionalTitle: 'INSTITUCIONAL',
+      institutionalP1: 'Somos una empresa independiente especializada en la comercialización de licencias digitales de software para uso personal y profesional.',
+      institutionalP2: 'Trabajamos con sistemas operativos y aplicaciones de productividad en versiones digitales, con pago único y activación online.',
+      institutionalP3: 'No somos la tienda oficial de ninguna marca. Todas las marcas citadas pertenecen a sus respectivos propietarios.',
+      whyTitle: 'Por qué elegir',
+      whySubtitle: 'Una experiencia simple y segura de principio a fin.',
+      whyCard1Title: 'Entrega Digital Inmediata',
+      whyCard1Body: 'Envío automático por e-mail tras la confirmación del pago.',
+      whyCard2Title: 'Pago Único',
+      whyCard2Body: 'Sin cargos recurrentes o mensualidades.',
+      whyCard3Title: 'Soporte para Activación',
+      whyCard3Body: 'Atención remota para ayudar con la instalación.',
+      whyCard4Title: 'Atención Internacional',
+      whyCard4Body: 'Português • Español • English',
+      bestSellersTitle: 'Más vendidos',
+      viewAll: 'Ver todos'
+    }
+  }
+
+  return {
+    heroBadge: 'Parceiro Microsoft Network',
+    heroTitle: 'Licenças Digitais',
+    heroSubtitle: 'com envio por e-mail',
+    heroDescription: 'Windows, Office e Windows Server com entrega digital rápida após confirmação.',
+    heroPrimaryCta: 'Ver ofertas',
+    heroSecondaryCta: 'Como ativar',
+    heroBullet1: 'Envio rápido após confirmação',
+    heroBullet2: 'Entrega digital',
+    heroBullet3: 'Suporte especializado',
+    heroIntl: 'Atendimento Internacional em Português, Espanhol e Inglês',
+    institutionalTitle: 'INSTITUCIONAL',
+    institutionalP1: 'Somos uma empresa independente especializada na comercialização de licenças digitais de software para uso pessoal e profissional.',
+    institutionalP2: 'Trabalhamos com sistemas operacionais e aplicativos de produtividade em versões digitais, com pagamento único e ativação online.',
+    institutionalP3: 'Não somos a loja oficial de nenhuma marca. Todas as marcas citadas pertencem aos seus respectivos proprietários.',
+    whyTitle: 'Por que escolher',
+    whySubtitle: 'Uma experiência simples e segura do início ao fim.',
+    whyCard1Title: 'Entrega Digital Imediata',
+    whyCard1Body: 'Envio automático por e-mail após confirmação do pagamento.',
+    whyCard2Title: 'Pagamento Único',
+    whyCard2Body: 'Sem cobranças recorrentes ou mensalidades.',
+    whyCard3Title: 'Suporte para Ativação',
+    whyCard3Body: 'Atendimento remoto para auxiliar na instalação.',
+    whyCard4Title: 'Atendimento Internacional',
+    whyCard4Body: 'Português • Español • English',
+    bestSellersTitle: 'Mais vendidos',
+    viewAll: 'Ver todos'
+  }
+})
+
 function pickVitrineItems(predicate: (p: any) => boolean) {
   const fromBest = products.value.filter(predicate)
   return fromBest.slice(0, 4)

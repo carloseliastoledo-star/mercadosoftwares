@@ -25,7 +25,7 @@
               type="button"
               class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border text-gray-700"
               @click="mobileMenuOpen = true"
-              aria-label="Abrir menu"
+              :aria-label="t.openMenu"
             >
               ☰
             </button>
@@ -43,14 +43,14 @@
               <input
                 v-model="search"
                 type="search"
-                placeholder="O que está buscando?"
+                :placeholder="t.searchPlaceholder"
                 class="w-full h-11 rounded-l-xl border border-gray-200 bg-gray-50 px-4 text-sm outline-none focus:ring-2 focus:ring-blue-600/30 focus:border-blue-600"
               />
               <button
                 type="submit"
                 class="h-11 px-5 rounded-r-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm"
               >
-                Buscar
+                {{ t.searchButton }}
               </button>
             </div>
           </form>
@@ -61,7 +61,7 @@
               class="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-blue-600"
             >
               <span aria-hidden="true">👤</span>
-              <span>Minha conta</span>
+              <span>{{ t.myAccount }}</span>
             </NuxtLink>
 
             <NuxtLink
@@ -69,7 +69,7 @@
               class="relative inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition"
             >
               <span aria-hidden="true">🛒</span>
-              <span class="font-semibold">Carrinho</span>
+              <span class="font-semibold">{{ t.cart }}</span>
               <span
                 v-if="cartCount > 0"
                 class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-bold flex items-center justify-center"
@@ -83,7 +83,7 @@
         <div class="hidden md:flex items-center gap-6 h-12 border-t">
           <NuxtLink to="/" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-blue-600">
             <span aria-hidden="true">🏠</span>
-            Início
+            {{ t.home }}
           </NuxtLink>
           <NuxtLink
             v-for="it in mainMenu"
@@ -110,7 +110,7 @@
             type="button"
             class="text-gray-600"
             @click="mobileMenuOpen = false"
-            aria-label="Fechar menu"
+            :aria-label="t.closeMenu"
           >
             ✕
           </button>
@@ -133,7 +133,7 @@
               class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
               @click="mobileMenuOpen = false"
             >
-              Minha conta
+              {{ t.myAccount }}
             </NuxtLink>
           </div>
         </nav>
@@ -144,7 +144,7 @@
             class="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-3 rounded-xl transition"
             @click="mobileMenuOpen = false"
           >
-            Ir para o carrinho
+            {{ t.goToCart }}
           </NuxtLink>
         </div>
       </div>
@@ -202,7 +202,7 @@
       </div>
 
       <div class="text-center text-xs text-gray-500 py-4 border-t">
-        © {{ new Date().getFullYear() }} {{ siteName }} — Todos os direitos reservados.
+        © {{ new Date().getFullYear() }} {{ siteName }} — {{ t.rightsReserved }}
         <div class="mt-2 max-w-4xl mx-auto">
           {{ siteName }} (Eletrokeys LTDA) é uma empresa independente registrada no Microsoft Partner Network.
           Não somos afiliados à Microsoft.
@@ -214,7 +214,11 @@
 </template>
 
 <script setup lang="ts">
+import { useIntlContext } from '#imports'
+
 const { siteName, logoPath, supportEmail, topbarText, topbarLink, whatsappNumber } = useSiteBranding()
+
+const intl = useIntlContext()
 
 const route = useRoute()
 
@@ -277,6 +281,48 @@ const mainMenu = computed(() => {
 })
 
 const cartCount = computed(() => (cart.value || []).length)
+
+const t = computed(() => {
+  if (intl.language.value === 'en') {
+    return {
+      home: 'Home',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu',
+      searchPlaceholder: 'What are you looking for?',
+      searchButton: 'Search',
+      myAccount: 'My account',
+      cart: 'Cart',
+      goToCart: 'Go to cart',
+      rightsReserved: 'All rights reserved.'
+    }
+  }
+
+  if (intl.language.value === 'es') {
+    return {
+      home: 'Inicio',
+      openMenu: 'Abrir menú',
+      closeMenu: 'Cerrar menú',
+      searchPlaceholder: '¿Qué estás buscando?',
+      searchButton: 'Buscar',
+      myAccount: 'Mi cuenta',
+      cart: 'Carrito',
+      goToCart: 'Ir al carrito',
+      rightsReserved: 'Todos los derechos reservados.'
+    }
+  }
+
+  return {
+    home: 'Início',
+    openMenu: 'Abrir menu',
+    closeMenu: 'Fechar menu',
+    searchPlaceholder: 'O que está buscando?',
+    searchButton: 'Buscar',
+    myAccount: 'Minha conta',
+    cart: 'Carrinho',
+    goToCart: 'Ir para o carrinho',
+    rightsReserved: 'Todos os direitos reservados.'
+  }
+})
 
 function submitSearch() {
   const q = String(search.value || '').trim()
