@@ -45,7 +45,7 @@ function normalizeImageUrl(input: unknown): string | null {
 }
 
 export default defineEventHandler(async (event) => {
-  const slug = event.context.params?.slug
+  const rawSlug = event.context.params?.slug
 
   const { storeSlug } = getStoreContext()
 
@@ -56,8 +56,16 @@ export default defineEventHandler(async (event) => {
 
   const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
 
+  const slug = String(rawSlug || '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/_/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+
   const product = await (prisma as any).produto.findUnique({
-    where: { slug: String(slug) },
+    where: { slug },
     select: {
       id: true,
       nome: true,
