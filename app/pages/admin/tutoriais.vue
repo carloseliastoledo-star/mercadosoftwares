@@ -63,13 +63,21 @@ const tutoriais = computed(() => {
             <div class="font-semibold text-gray-900 truncate">{{ t.label }}</div>
             <div class="text-xs text-gray-500 mt-1">/tutoriais/{{ t.slug }}</div>
           </div>
-          <NuxtLink
-            :to="`/tutoriais/${t.slug}`"
-            target="_blank"
-            class="text-blue-600 font-semibold hover:underline"
-          >
-            Abrir →
-          </NuxtLink>
+          <div class="flex items-center gap-4 flex-shrink-0">
+            <NuxtLink
+              :to="`/admin/produtos/editar/${t.id}`"
+              class="text-gray-800 font-semibold hover:underline"
+            >
+              Editar
+            </NuxtLink>
+            <NuxtLink
+              :to="`/tutoriais/${t.slug}`"
+              target="_blank"
+              class="text-blue-600 font-semibold hover:underline"
+            >
+              Abrir →
+            </NuxtLink>
+          </div>
         </li>
       </ul>
     </div>
