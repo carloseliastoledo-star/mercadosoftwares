@@ -78,8 +78,46 @@
             </div>
 
             <div>
-              <label class="block font-medium mb-2">Conteúdo (HTML simples)</label>
-              <textarea v-model="formHtml" rows="12" class="w-full border rounded-lg p-3 font-mono text-xs" placeholder="<p>Seu conteúdo aqui...</p>" />
+              <label class="block font-medium mb-2">Conteúdo</label>
+
+              <div v-if="editor" class="border rounded-lg overflow-hidden">
+                <div class="flex flex-wrap items-center gap-2 p-2 bg-gray-50 border-b">
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="toggleBold">B</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm italic" @click="toggleItalic">I</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm underline" @click="toggleUnderline">U</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="setHeading(2)">H2</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="setHeading(3)">H3</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="toggleBulletList">Lista</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="toggleOrderedList">1.</button>
+                  <button type="button" class="px-2 py-1 rounded border text-sm" @click="setLink">Link</button>
+
+                  <div class="flex-1" />
+
+                  <input ref="uploadInput" type="file" accept="image/*" class="hidden" @change="uploadImage" />
+                  <button
+                    type="button"
+                    class="px-3 py-1 rounded border text-sm bg-white disabled:opacity-50"
+                    :disabled="uploadLoading"
+                    @click="triggerUpload"
+                  >
+                    {{ uploadLoading ? 'Enviando...' : 'Enviar imagem' }}
+                  </button>
+                </div>
+
+                <div class="p-3 min-h-[240px]">
+                  <EditorContent :editor="editor" class="prose prose-sm max-w-none" />
+                </div>
+              </div>
+
+              <textarea
+                v-else
+                v-model="formHtml"
+                rows="12"
+                class="w-full border rounded-lg p-3 font-mono text-xs"
+                placeholder="<p>Seu conteúdo aqui...</p>"
+              />
+
+              <div v-if="uploadError" class="text-xs text-red-600 mt-2">{{ uploadError }}</div>
             </div>
 
             <div class="flex items-center gap-2">
@@ -108,6 +146,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import DOMPurify from 'isomorphic-dompurify'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
+import Link from '@tiptap/extension-link'
+import Underline from '@tiptap/extension-underline'
+import Placeholder from '@tiptap/extension-placeholder'
+
 definePageMeta({ layout: 'admin' })
 
 type BlogPostListItem = {
@@ -143,6 +190,55 @@ const formSlug = ref('')
 const formHtml = ref('')
 const formPublicado = ref(false)
 
+const uploadInput = ref<HTMLInputElement | null>(null)
+const uploadLoading = ref(false)
+const uploadError = ref('')
+
+const editor = process.client
+  ? useEditor({
+      extensions: [
+        StarterKit,
+        Underline,
+        Link.configure({
+          openOnClick: false,
+          HTMLAttributes: {
+            rel: 'noopener',
+            target: '_blank'
+          }
+        }),
+        Image,
+        Placeholder.configure({ placeholder: 'Cole aqui seu conteúdo...' })
+      ],
+      content: '',
+      editorProps: {
+        transformPastedHTML(html) {
+          return DOMPurify.sanitize(html, {
+            USE_PROFILES: { html: true },
+            FORBID_ATTR: ['style', 'class', 'id', 'onerror', 'onclick', 'onload']
+          })
+        }
+      },
+      onUpdate({ editor }) {
+        formHtml.value = editor.getHTML()
+      }
+    })
+  : ref(null)
+
+function setEditorHtml(html: string) {
+  const e: any = (editor as any).value
+  if (!e) return
+  e.commands.setContent(html || '', false)
+}
+
+watch(
+  () => showModal.value,
+  (open) => {
+    if (!open) return
+    uploadError.value = ''
+    setEditorHtml(formHtml.value)
+  }
+)
+
 const modalLoading = ref(false)
 const modalMessage = ref('')
 const modalError = ref('')
@@ -170,6 +266,7 @@ async function openEdit(id: string) {
     formSlug.value = res.post.slug
     formHtml.value = res.post.html || ''
     formPublicado.value = Boolean(res.post.publicado)
+    setEditorHtml(formHtml.value)
   } catch (err: any) {
     modalError.value = err?.data?.statusMessage || 'Erro ao carregar post'
   }
@@ -232,5 +329,85 @@ function formatDate(input: string) {
   } catch {
     return input
   }
+}
+
+async function uploadImage(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input?.files?.[0]
+  if (!file) return
+
+  uploadLoading.value = true
+  uploadError.value = ''
+
+  try {
+    const form = new FormData()
+    form.append('file', file)
+    const res: any = await $fetch('/api/admin/upload', {
+      method: 'POST',
+      body: form
+    })
+
+    const url = String(res?.url || '').trim()
+    if (!url) return
+
+    const e: any = (editor as any).value
+    e?.chain().focus().setImage({ src: url }).run()
+  } catch (err: any) {
+    uploadError.value = err?.data?.statusMessage || err?.message || 'Erro ao enviar imagem'
+  } finally {
+    uploadLoading.value = false
+    if (input) input.value = ''
+  }
+}
+
+function triggerUpload() {
+  uploadInput.value?.click()
+}
+
+function toggleBold() {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleBold().run()
+}
+
+function toggleItalic() {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleItalic().run()
+}
+
+function toggleUnderline() {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleUnderline().run()
+}
+
+function toggleBulletList() {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleBulletList().run()
+}
+
+function toggleOrderedList() {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleOrderedList().run()
+}
+
+function setHeading(level: 2 | 3) {
+  const e: any = (editor as any).value
+  e?.chain().focus().toggleHeading({ level }).run()
+}
+
+function setLink() {
+  const e: any = (editor as any).value
+  if (!e) return
+
+  const current = e.getAttributes('link')?.href || ''
+  const url = window.prompt('URL do link:', current)
+  if (url === null) return
+  const trimmed = String(url || '').trim()
+
+  if (!trimmed) {
+    e.chain().focus().extendMarkRange('link').unsetLink().run()
+    return
+  }
+
+  e.chain().focus().extendMarkRange('link').setLink({ href: trimmed }).run()
 }
 </script>

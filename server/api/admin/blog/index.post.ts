@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../../db/prisma.js'
 import { requireAdminSession } from '../../../utils/adminSession.js'
+import DOMPurify from 'isomorphic-dompurify'
 
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
@@ -9,11 +10,18 @@ export default defineEventHandler(async (event) => {
 
   const titulo = String(body?.titulo || '').trim()
   const slug = String(body?.slug || '').trim()
-  const html = body?.html != null ? String(body.html) : null
+  const htmlRaw = body?.html != null ? String(body.html) : null
   const publicado = Boolean(body?.publicado)
 
   if (!titulo) throw createError({ statusCode: 400, statusMessage: 'Título obrigatório' })
   if (!slug) throw createError({ statusCode: 400, statusMessage: 'Slug obrigatório' })
+
+  const html = htmlRaw
+    ? DOMPurify.sanitize(htmlRaw, {
+        USE_PROFILES: { html: true },
+        FORBID_ATTR: ['style', 'class', 'id', 'onerror', 'onclick', 'onload']
+      })
+    : null
 
   try {
     const post = await (prisma as any).blogPost.create({

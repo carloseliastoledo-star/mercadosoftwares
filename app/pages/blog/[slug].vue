@@ -11,7 +11,7 @@
             Atualizado em {{ formatDate(post.atualizadoEm) }}
           </p>
 
-          <div class="prose prose-gray max-w-none mt-6" v-html="postHtml" />
+          <div class="prose prose-gray max-w-none mt-6" v-html="safePostHtml" />
         </div>
       </div>
     </div>
@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
+import DOMPurify from 'isomorphic-dompurify'
+
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || ''))
 
@@ -44,6 +46,12 @@ const { data, pending, error } = await useFetch<{ ok: true; post: BlogPostDto }>
 const post = computed(() => data.value?.post || null)
 
 const postHtml = computed(() => String(post.value?.html || ''))
+
+const safePostHtml = computed(() => {
+  const raw = postHtml.value
+  if (!raw) return ''
+  return DOMPurify.sanitize(raw, { USE_PROFILES: { html: true } })
+})
 
 const { siteName } = useSiteBranding()
 
