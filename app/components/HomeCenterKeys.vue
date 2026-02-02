@@ -54,7 +54,7 @@
           </div>
         </div>
 
-        <div class="mt-8 bg-white border rounded-2xl p-6 md:p-8">
+        <div v-if="!onlyBestSellers" class="mt-8 bg-white border rounded-2xl p-6 md:p-8">
           <div class="text-xs font-bold tracking-widest text-gray-500">{{ t.institutionalTitle }}</div>
           <div class="mt-3 space-y-3 text-sm md:text-base text-gray-700 leading-relaxed">
             <p>
@@ -69,7 +69,7 @@
           </div>
         </div>
 
-        <div class="mt-8 overflow-x-auto">
+        <div v-if="!onlyBestSellers" class="mt-8 overflow-x-auto">
           <div class="flex gap-6 w-max md:mx-auto py-2 px-2 md:px-0">
             <NuxtLink
               v-for="it in categoriasAtalhos"
@@ -87,7 +87,7 @@
       </div>
     </div>
 
-    <div class="bg-white border-y">
+    <div v-if="!onlyBestSellers" class="bg-white border-y">
       <div class="max-w-7xl mx-auto px-6 py-10">
         <h2 class="text-2xl font-extrabold text-gray-900 text-center">{{ t.whyTitle }}</h2>
         <p class="text-gray-600 text-center mt-2">
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <div class="bg-gray-50 border-b">
+    <div v-if="!onlyBestSellers" class="bg-gray-50 border-b">
       <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="flex items-end justify-between gap-6 flex-wrap">
           <div>
@@ -199,7 +199,7 @@
       </div>
     </div>
 
-    <div class="bg-gray-50 border-y">
+    <div v-if="!onlyBestSellers" class="bg-gray-50 border-y">
       <div class="max-w-7xl mx-auto px-6 py-12 space-y-12">
         <div v-for="section in vitrines" :key="section.title">
           <div class="flex items-end justify-between gap-6 flex-wrap">
@@ -230,7 +230,7 @@
       </div>
     </div>
 
-    <div class="bg-white border-t">
+    <div v-if="!onlyBestSellers" class="bg-white border-t">
       <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="text-center">
           <h2 class="text-3xl font-extrabold text-gray-900">{{ t.testimonialsTitle }}</h2>
@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <div class="bg-white border-t">
+    <div v-if="!onlyBestSellers" class="bg-white border-t">
       <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="grid lg:grid-cols-2 gap-10 items-center">
           <div>
@@ -322,7 +322,7 @@
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 py-12">
+    <div v-if="!onlyBestSellers" class="max-w-7xl mx-auto px-6 py-12">
       <div class="text-center">
         <h2 class="text-3xl font-extrabold text-gray-900">{{ t.faqTitle }}</h2>
         <p class="text-gray-600 mt-2">{{ t.faqSubtitle }}</p>
@@ -357,6 +357,9 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps<{ onlyBestSellers?: boolean }>()
+const onlyBestSellers = computed(() => Boolean(props.onlyBestSellers))
+
 const intl = useIntlContext()
 
 const t = computed(() => {

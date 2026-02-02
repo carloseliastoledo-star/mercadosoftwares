@@ -1,6 +1,6 @@
 <template>
   <HomeCasaSoftware v-if="isCasaDoSoftware" />
-  <HomeCenterKeys v-else />
+  <HomeCenterKeys v-else :only-best-sellers="isLicencasDigitais" />
 </template>
 
 <script setup lang="ts">
@@ -23,5 +23,10 @@ const host = computed(() => {
 const isCasaDoSoftware = computed(() => {
   if (storeSlug.value === 'casadosoftware') return true
   return host.value.includes('casadosoftware.com.br')
+})
+
+const isLicencasDigitais = computed(() => {
+  if (storeSlug.value === 'licencasdigitais') return true
+  return host.value.includes('licencasdigitais.com.br')
 })
 </script>
