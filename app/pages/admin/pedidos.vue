@@ -74,8 +74,17 @@
             <td class="px-2 py-2 align-top">
               <div v-if="!o.licencas?.length" class="text-xs text-gray-500">-</div>
               <div v-else>
-                <div class="text-[11px] text-gray-500 truncate" :title="o.licencas[0]?.status">{{ o.licencas[0]?.status }}</div>
-                <div class="font-mono text-[11px] truncate" :title="o.licencas[0]?.chave">{{ o.licencas[0]?.chave }}</div>
+                <div class="text-[11px] text-gray-500 break-words">{{ o.licencas[0]?.status }}</div>
+                <div class="flex items-start gap-2">
+                  <div class="font-mono text-[11px] break-all">{{ o.licencas[0]?.chave }}</div>
+                  <button
+                    class="text-[11px] text-blue-700 hover:text-blue-900 whitespace-nowrap"
+                    type="button"
+                    @click.stop="copyToClipboard(o.licencas[0]?.chave)"
+                  >
+                    {{ copiedText === o.licencas[0]?.chave ? 'Copiado' : 'Copiar' }}
+                  </button>
+                </div>
                 <div v-if="o.licencas.length > 1" class="text-[11px] text-gray-500">
                   +{{ o.licencas.length - 1 }}
                 </div>
@@ -295,6 +304,23 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'admin' })
+
+const copiedText = ref('')
+
+async function copyToClipboard(value?: string) {
+  const text = (value || '').trim()
+  if (!text) return
+
+  try {
+    await navigator.clipboard.writeText(text)
+    copiedText.value = text
+    setTimeout(() => {
+      if (copiedText.value === text) copiedText.value = ''
+    }, 1200)
+  } catch {
+    // ignore
+  }
+}
 
 type ProdutoDto = {
   id: string
