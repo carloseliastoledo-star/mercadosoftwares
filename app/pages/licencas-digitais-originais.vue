@@ -216,6 +216,32 @@ useHead({
           }
         ]
       })
+    },
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Eletrokeys LTDA',
+        url: 'https://licencasdigitais.com.br',
+        logo: 'https://licencasdigitais.com.br/logo.png',
+        description: 'Empresa especializada em licenças digitais originais, ativação legal e suporte ao cliente.',
+        contactPoint: {
+          '@type': 'ContactPoint',
+          telephone: '+55-11-0000-0000',
+          contactType: 'customer support',
+          areaServed: 'BR',
+          availableLanguage: 'Portuguese'
+        },
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'BR'
+        },
+        sameAs: [
+          'https://instagram.com/suaempresa',
+          'https://facebook.com/suaempresa'
+        ]
+      })
     }
   ]
 })
