@@ -218,7 +218,7 @@ const { siteName, logoPath, supportEmail, topbarText, topbarLink, whatsappNumber
 
 const safeSiteName = computed(() => {
   const n = String(siteName.value || '').trim()
-  return n || 'Casa do Software'
+  return n || 'Licenças Digitais'
 })
 
 const intl = useIntlContext()
