@@ -130,9 +130,93 @@
         </div>
       </div>
     </section>
+
+    <section class="max-w-4xl mx-auto py-16 px-4">
+      <h2 class="text-2xl font-bold text-center mb-8">
+        Perguntas Frequentes
+      </h2>
+
+      <div class="space-y-4">
+        <div class="bg-gray-100 p-6 rounded-xl">
+          <h3 class="font-semibold">O que é uma licença digital?</h3>
+          <p class="text-gray-700 mt-2">
+            É um código único utilizado para ativar o software online,
+            validando nos servidores oficiais do fabricante.
+          </p>
+        </div>
+
+        <div class="bg-gray-100 p-6 rounded-xl">
+          <h3 class="font-semibold">Como funciona a ativação?</h3>
+          <p class="text-gray-700 mt-2">
+            Após inserir a chave nas configurações do sistema,
+            o software valida automaticamente pela internet.
+          </p>
+        </div>
+
+        <div class="bg-gray-100 p-6 rounded-xl">
+          <h3 class="font-semibold">Recebo suporte?</h3>
+          <p class="text-gray-700 mt-2">
+            Sim, há canais de atendimento para auxiliar na instalação e ativação.
+          </p>
+        </div>
+
+        <div class="bg-gray-100 p-6 rounded-xl">
+          <h3 class="font-semibold">É emitida documentação fiscal?</h3>
+          <p class="text-gray-700 mt-2">
+            Sim, a empresa mantém transparência e documentação conforme legislação.
+          </p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({ layout: 'blank' })
+
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'O que é uma licença digital?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'É um código único utilizado para ativar o software diretamente online, validando nos servidores oficiais do fabricante.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'Como funciona a ativação?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Após inserir a chave nas configurações do sistema, o software valida automaticamente pela internet.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'Recebo suporte?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Sim, há canais de atendimento disponíveis para auxiliar na instalação e ativação.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'É emitida documentação fiscal?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Sim, a empresa mantém transparência e documentação conforme legislação vigente.'
+            }
+          }
+        ]
+      })
+    }
+  ]
+})
 </script>
