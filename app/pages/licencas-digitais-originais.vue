@@ -174,75 +174,80 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'blank' })
 
-useHead({
-  script: [
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
     {
-      type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: 'O que é uma licença digital?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'É um código único utilizado para ativar o software diretamente online, validando nos servidores oficiais do fabricante.'
-            }
-          },
-          {
-            '@type': 'Question',
-            name: 'Como funciona a ativação?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Após inserir a chave nas configurações do sistema, o software valida automaticamente pela internet.'
-            }
-          },
-          {
-            '@type': 'Question',
-            name: 'Recebo suporte?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Sim, há canais de atendimento disponíveis para auxiliar na instalação e ativação.'
-            }
-          },
-          {
-            '@type': 'Question',
-            name: 'É emitida documentação fiscal?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Sim, a empresa mantém transparência e documentação conforme legislação vigente.'
-            }
-          }
-        ]
-      })
+      '@type': 'Question',
+      name: 'O que é uma licença digital?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'É um código único utilizado para ativar o software diretamente online, validando nos servidores oficiais do fabricante.'
+      }
     },
     {
-      type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: 'Eletrokeys LTDA',
-        url: 'https://licencasdigitais.com.br',
-        logo: 'https://licencasdigitais.com.br/logo.png',
-        description: 'Empresa especializada em licenças digitais originais, ativação legal e suporte ao cliente.',
-        contactPoint: {
-          '@type': 'ContactPoint',
-          telephone: '+55-11-0000-0000',
-          contactType: 'customer support',
-          areaServed: 'BR',
-          availableLanguage: 'Portuguese'
-        },
-        address: {
-          '@type': 'PostalAddress',
-          addressCountry: 'BR'
-        },
-        sameAs: [
-          'https://instagram.com/suaempresa',
-          'https://facebook.com/suaempresa'
-        ]
-      })
+      '@type': 'Question',
+      name: 'Como funciona a ativação?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Após inserir a chave nas configurações do sistema, o software valida automaticamente pela internet.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Recebo suporte?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sim, há canais de atendimento disponíveis para auxiliar na instalação e ativação.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'É emitida documentação fiscal?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sim, a empresa mantém transparência e documentação conforme legislação vigente.'
+      }
     }
   ]
+})
+
+const organizationJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Eletrokeys LTDA',
+  url: 'https://licencasdigitais.com.br',
+  logo: 'https://licencasdigitais.com.br/logo.png',
+  description: 'Empresa especializada em licenças digitais originais, ativação legal e suporte ao cliente.',
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: '+55 11 00000-0000',
+      contactType: 'customer support',
+      areaServed: 'BR',
+      availableLanguage: 'Portuguese'
+    }
+  ],
+  sameAs: ['https://www.instagram.com/seuperfil', 'https://www.facebook.com/seuperfil']
+})
+
+useServerHead({
+  script: [
+    {
+      id: 'jsonld-faq',
+      type: 'application/ld+json',
+      innerHTML: faqJsonLd
+    },
+    {
+      id: 'jsonld-organization',
+      type: 'application/ld+json',
+      innerHTML: organizationJsonLd
+    }
+  ],
+  __dangerouslyDisableSanitizersByTagID: {
+    'jsonld-faq': ['innerHTML'],
+    'jsonld-organization': ['innerHTML']
+  }
 })
 </script>
