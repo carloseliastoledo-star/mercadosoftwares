@@ -82,30 +82,16 @@
 
         <div class="section-container relative z-10 py-32">
           <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8 fade-in-up">
-              <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span class="text-sm font-medium text-muted-foreground">
-                Empresa brasileira legalizada • CNPJ: 44.694.356/0001-48
-              </span>
-            </div>
-
-            <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 fade-in-up delay-100">
+            <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight md:leading-[1.05] mb-8 fade-in-up delay-100">
               Soluções em
               <span class="gradient-text">Conectividade</span>
               <br />
               e Tecnologia
             </h1>
 
-            <p class="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 fade-in-up delay-200">
-              A Licenças Digitais oferece licenças de software, suporte técnico e soluções digitais completas para empresas e
-              profissionais.
+            <p class="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed fade-in-up delay-200">
+              A Licenças Digitais oferece licenças de software, suporte técnico especializado e soluções digitais completas
+              para empresas e profissionais.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 fade-in-up delay-300">
@@ -278,82 +264,8 @@
             </p>
           </div>
 
-          <div class="grid lg:grid-cols-2 gap-12">
-            <div class="space-y-8">
-              <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                      <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="font-display text-lg font-semibold text-foreground mb-1">Endereço</h3>
-                    <p class="text-muted-foreground">
-                      AV PAULISTA, 1471 - Conj. 1110, Sala<br />
-                      Bela Vista - São Paulo, SP<br />
-                      CEP: 01311-927
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.86.3 1.7.54 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.06a2 2 0 0 1 2.11-.45c.8.24 1.64.42 2.5.54A2 2 0 0 1 22 16.92Z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="font-display text-lg font-semibold text-foreground mb-1">Telefone</h3>
-                    <p class="text-muted-foreground">
-                      (11) 3456-7890<br />
-                      (11) 98765-4321
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 4h16v16H4V4Z" stroke="currentColor" stroke-width="0" fill="none" />
-                      <path d="M4 4h16v16H4V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                      <path d="m22 6-10 7L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="font-display text-lg font-semibold text-foreground mb-1">Email</h3>
-                    <p class="text-muted-foreground">
-                      contato@eletrokeys.com.br<br />
-                      suporte@eletrokeys.com.br
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="glass-card rounded-2xl p-1 overflow-hidden h-48">
-                <div class="w-full h-full bg-secondary/50 rounded-xl flex items-center justify-center">
-                  <div class="text-center">
-                    <svg class="w-8 h-8 text-primary mx-auto mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                      <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
-                    </svg>
-                    <p class="text-muted-foreground text-sm">Av. Paulista, 1471 - São Paulo, SP</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-8">
+          <div class="max-w-5xl mx-auto">
+            <div class="glass-card rounded-2xl p-8 md:p-10">
               <h3 class="font-display text-2xl font-bold text-foreground mb-6">Envie sua mensagem</h3>
 
               <div v-if="isSubmitted" class="flex flex-col items-center justify-center py-16 text-center">
