@@ -42,7 +42,13 @@
           </div>
 
           <div class="hidden md:block">
-            <button type="button" class="btn-hero" @click="scrollToSection('#contato')">Fale Conosco</button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-2xl bg-[#00e5ff] px-6 py-3 font-semibold text-[#07131a] shadow-[0_0_35px_rgba(0,229,255,0.35)] transition-all duration-300 hover:shadow-[0_0_55px_rgba(0,229,255,0.55)]"
+              @click="scrollToSection('#contato')"
+            >
+              Fale Conosco
+            </button>
           </div>
 
           <button class="md:hidden p-2 text-foreground" type="button" @click="toggleMobileMenu" aria-label="Toggle menu">
@@ -84,25 +90,35 @@
           <div class="max-w-4xl mx-auto text-center">
             <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight md:leading-[1.05] mb-8 fade-in-up delay-100">
               Soluções em
-              <span class="gradient-text">Conectividade</span>
+              <span class="text-[#00e5ff]">Conectividade</span>
               <br />
               e Tecnologia
             </h1>
 
-            <p class="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed fade-in-up delay-200">
-              A Licenças Digitais oferece licenças de software, suporte técnico especializado e soluções digitais completas
-              para empresas e profissionais.
+            <p class="text-lg sm:text-xl md:text-2xl text-[#9aa6b2] max-w-3xl mx-auto mb-12 leading-relaxed fade-in-up delay-200">
+              A Licenças Digitais oferece licenças de software originais, suporte técnico
+              especializado e soluções digitais completas para empresas e profissionais.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 fade-in-up delay-300">
-              <button type="button" class="btn-hero btn-hero-xl" @click="scrollToSection('#solucoes')">
+              <button
+                type="button"
+                class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-[#00e5ff] px-8 py-4 text-base font-semibold text-[#07131a] shadow-[0_0_35px_rgba(0,229,255,0.35)] transition-all duration-300 hover:shadow-[0_0_55px_rgba(0,229,255,0.55)]"
+                @click="scrollToSection('#solucoes')"
+              >
                 Conheça Nossas Soluções
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                   <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </button>
-              <button type="button" class="btn-hero-outline btn-hero-xl" @click="scrollToSection('#contato')">Entre em Contato</button>
+              <button
+                type="button"
+                class="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl border border-[#00e5ff]/70 bg-transparent px-8 py-4 text-base font-semibold text-[#00e5ff] shadow-[0_0_22px_rgba(0,229,255,0.12)] transition-all duration-300 hover:bg-[#00e5ff]/10 hover:shadow-[0_0_40px_rgba(0,229,255,0.22)]"
+                @click="scrollToSection('#contato')"
+              >
+                Entre em Contato
+              </button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 fade-in-up delay-400">
