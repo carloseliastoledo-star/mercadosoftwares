@@ -1,9 +1,15 @@
 import { defineEventHandler, sendRedirect, type H3Event } from 'h3'
 
+function normalizeHostHeaderValue(value: unknown): string {
+  const raw = String(Array.isArray(value) ? value[0] : value || '')
+  if (!raw) return ''
+  return raw.split(',')[0]?.trim() || ''
+}
+
 function getHost(event: H3Event): string {
   const xfHost = event.node.req.headers['x-forwarded-host']
   const host = xfHost || event.node.req.headers.host
-  return String(Array.isArray(host) ? host[0] : host || '')
+  return normalizeHostHeaderValue(host)
 }
 
 function splitHostAndPort(host: string): { hostname: string; port: string } {
