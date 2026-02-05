@@ -1,5 +1,5 @@
 <template>
-  <div class="eletrokeys-theme min-h-screen bg-background overflow-x-hidden">
+  <div class="eletrokeys-theme min-h-screen bg-[#070b14] text-white bg-background overflow-x-hidden">
     <header
       class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       :class="isScrolled ? 'bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-lg' : 'bg-transparent'"
