@@ -1,15 +1,6 @@
 <template>
   <HomeCasaSoftware v-if="isCasaDoSoftware" />
-  <HomeLicencasDigitais v-else-if="isLicencasDigitais" />
-  <HomeCenterKeys v-else :only-best-sellers="false" />
-
-  <div v-if="debugHost" class="fixed bottom-3 left-3 z-[9999] max-w-[92vw] rounded-lg bg-black/70 text-white text-xs p-3">
-    <div><b>host:</b> {{ host }}</div>
-    <div><b>normalizedHost:</b> {{ normalizedHost }}</div>
-    <div><b>storeSlug:</b> {{ storeSlug }}</div>
-    <div><b>isCasaDoSoftware:</b> {{ isCasaDoSoftware }}</div>
-    <div><b>isLicencasDigitais:</b> {{ isLicencasDigitais }}</div>
-  </div>
+  <HomeCenterKeys v-else :only-best-sellers="isLicencasDigitais" />
 </template>
 
 <script setup lang="ts">
@@ -46,16 +37,6 @@ const normalizedHost = computed(() => {
   const h3 = h2.replace(/:\d+$/, '')
   const h4 = h3.replace(/^www\./, '')
   return h4.replace(/\.$/, '')
-})
-
-const debugHost = computed(() => {
-  if (process.server) return false
-  try {
-    const params = new URLSearchParams(window.location.search)
-    return params.get('debugHost') === '1'
-  } catch {
-    return false
-  }
 })
 
 const isCasaDoSoftware = computed(() => {
