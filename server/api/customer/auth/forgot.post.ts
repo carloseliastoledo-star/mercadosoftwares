@@ -2,7 +2,7 @@ import { defineEventHandler, readBody } from 'h3'
 import crypto from 'crypto'
 import prisma from '../../../db/prisma'
 import { sendMail } from '../../../utils/mailer'
-import { getStoreContext } from '../../../utils/store'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 function hashToken(token: string, secret: string) {
   return crypto.createHmac('sha256', secret).update(token).digest('hex')
@@ -20,7 +20,7 @@ function getBaseUrl(event: any) {
 }
 
 export default defineEventHandler(async (event) => {
-  const { storeSlug } = getStoreContext()
+  const ctx = getStoreContext()
   const body = await readBody(event)
 
   const email = String(body?.email || '').trim().toLowerCase()
@@ -28,12 +28,12 @@ export default defineEventHandler(async (event) => {
     return { ok: true }
   }
 
-  if (!storeSlug) {
+  if (!ctx.storeSlug) {
     return { ok: true }
   }
 
-  const customer = await prisma.customer.findUnique({
-    where: { email_storeSlug: { email, storeSlug } },
+  const customer = await prisma.customer.findFirst({
+    where: whereForStore({ email }, ctx) as any,
     select: { id: true, email: true }
   })
   if (!customer) {

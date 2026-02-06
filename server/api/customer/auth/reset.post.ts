@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import crypto from 'crypto'
-import { getStoreContext } from '../../../utils/store'
+import { getStoreContext, whereForStore } from '../../../utils/store'
 
 function hashToken(token: string, secret: string) {
   return crypto.createHmac('sha256', secret).update(token).digest('hex')
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const RESET_HANDLER_VERSION = 'reset-v3'
 
   try {
-    const { storeSlug } = getStoreContext()
+    const ctx = getStoreContext()
     const body = await readBody(event)
 
     const { default: prisma } = await import('../../../db/prisma')
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 500, statusMessage: 'Configuração de segurança ausente' })
     }
 
-    if (!storeSlug) {
+    if (!ctx.storeSlug) {
       throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
     }
 
@@ -53,11 +53,13 @@ export default defineEventHandler(async (event) => {
     const now = new Date()
 
     const customer = await (prisma as any).customer.findFirst({
-      where: {
-        passwordResetTokenHash: tokenHash,
-        passwordResetExpiresAt: { gt: now },
-        storeSlug
-      },
+      where: whereForStore(
+        {
+          passwordResetTokenHash: tokenHash,
+          passwordResetExpiresAt: { gt: now }
+        },
+        ctx
+      ) as any,
       select: { id: true, email: true }
     })
 
