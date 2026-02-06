@@ -35,9 +35,12 @@ function sign(data: string, secret: string) {
 }
 
 export function setCustomerSession(event: H3Event, payload: { customerId: string; email: string }) {
-  const secret = process.env.CUSTOMER_SESSION_SECRET || ''
+  const secret = process.env.CUSTOMER_SESSION_SECRET || process.env.CUSTOMER_RESET_SECRET || ''
   if (!secret) {
-    throw createError({ statusCode: 500, statusMessage: 'CUSTOMER_SESSION_SECRET não configurado' })
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'CUSTOMER_SESSION_SECRET não configurado'
+    })
   }
 
   const now = Math.floor(Date.now() / 1000)
@@ -80,7 +83,7 @@ export function getCustomerSession(event: H3Event): CustomerSessionPayload | nul
   const raw = getCookie(event, COOKIE_NAME)
   if (!raw) return null
 
-  const secret = process.env.CUSTOMER_SESSION_SECRET || ''
+  const secret = process.env.CUSTOMER_SESSION_SECRET || process.env.CUSTOMER_RESET_SECRET || ''
   if (!secret) return null
 
   const parts = raw.split('.')
