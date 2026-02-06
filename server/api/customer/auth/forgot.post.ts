@@ -70,10 +70,16 @@ export default defineEventHandler(async (event) => {
     data: { passwordResetTokenHash: tokenHash, passwordResetExpiresAt: expiresAt }
   })
 
+  const tokenPreview = token.length >= 8 ? `${token.slice(0, 4)}...${token.slice(-4)}` : `${token}`
+  const tokenFormatOk = /^[0-9a-f]{64}$/i.test(token)
+
   console.info('[customer-forgot] token gravado', {
     customerId: customer.id,
     storeSlug: ctx.storeSlug,
-    expiresAt: expiresAt.toISOString()
+    expiresAt: expiresAt.toISOString(),
+    tokenLength: token.length,
+    tokenFormatOk,
+    tokenPreview
   })
 
   const baseUrl = getBaseUrl(event)

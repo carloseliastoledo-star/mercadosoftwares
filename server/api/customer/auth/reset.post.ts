@@ -20,6 +20,9 @@ export default defineEventHandler(async (event) => {
     const token = String(body?.token || '').trim()
     const password = String(body?.password || '').trim()
 
+    const tokenPreview = token.length >= 8 ? `${token.slice(0, 4)}...${token.slice(-4)}` : `${token}`
+    const tokenFormatOk = /^[0-9a-f]{64}$/i.test(token)
+
     if (!token) {
       throw createError({ statusCode: 400, statusMessage: 'Token inválido' })
     }
@@ -40,7 +43,10 @@ export default defineEventHandler(async (event) => {
     console.info('[customer-reset] request', {
       storeSlug: ctx.storeSlug,
       includeLegacy: ctx.includeLegacy,
-      secretsCount: secrets.length
+      secretsCount: secrets.length,
+      tokenLength: token.length,
+      tokenFormatOk,
+      tokenPreview
     })
 
     if (!ctx.storeSlug) {
