@@ -1,8 +1,5 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import crypto from 'crypto'
-import prisma from '../../../db/prisma'
-import { hashPassword } from '../../../utils/password'
-import { setCustomerSession } from '../../../utils/customerSession'
 import { getStoreContext } from '../../../utils/store'
 
 function hashToken(token: string, secret: string) {
@@ -10,11 +7,15 @@ function hashToken(token: string, secret: string) {
 }
 
 export default defineEventHandler(async (event) => {
-  const RESET_HANDLER_VERSION = 'reset-v2'
+  const RESET_HANDLER_VERSION = 'reset-v3'
 
   try {
     const { storeSlug } = getStoreContext()
     const body = await readBody(event)
+
+    const { default: prisma } = await import('../../../db/prisma')
+    const { hashPassword } = await import('../../../utils/password')
+    const { setCustomerSession } = await import('../../../utils/customerSession')
 
     const token = String(body?.token || '').trim()
     const password = String(body?.password || '').trim()
