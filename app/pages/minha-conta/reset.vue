@@ -69,8 +69,21 @@ async function submit() {
     await navigateTo('/minha-conta')
   } catch (err: any) {
     const status = err?.statusCode || err?.response?.status
-    const msg = err?.data?.statusMessage || err?.statusMessage || err?.message
-    error.value = status ? `[${status}] ${msg || 'Não foi possível redefinir a senha'}` : msg || 'Não foi possível redefinir a senha'
+    const data = err?.data || err?.response?._data || err?.response?.data
+    const msg =
+      data?.statusMessage ||
+      data?.message ||
+      err?.statusMessage ||
+      err?.message ||
+      'Não foi possível redefinir a senha'
+
+    const finalMsg = status ? `[${status}] ${msg}` : String(msg)
+
+    if (status && status >= 400 && status < 500) {
+      error.value = finalMsg
+    } else {
+      error.value = status ? finalMsg : 'Não foi possível redefinir a senha'
+    }
   } finally {
     loading.value = false
   }
