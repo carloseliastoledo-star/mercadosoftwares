@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
     return { ok: true }
   }
 
-  const secret = process.env.CUSTOMER_RESET_SECRET || process.env.CUSTOMER_SESSION_SECRET || ''
+  const secret = String(process.env.CUSTOMER_RESET_SECRET || process.env.CUSTOMER_SESSION_SECRET || '').trim()
   if (!secret) {
     console.error('[customer-forgot] secret ausente', {
       email,
