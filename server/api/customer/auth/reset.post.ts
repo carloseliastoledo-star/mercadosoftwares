@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 500, statusMessage: 'Configuração de segurança ausente' })
     }
 
-    console.info('[customer-reset] request', {
+    console.warn('[customer-reset] request', {
       storeSlug: ctx.storeSlug,
       includeLegacy: ctx.includeLegacy,
       secretsCount: secrets.length,
@@ -154,6 +154,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const message = err?.statusMessage || (err?.message ? String(err.message) : String(err))
+    console.error('[customer-reset] internal error', {
+      statusCode,
+      message
+    })
     throw createError({
       statusCode: 500,
       statusMessage: `Erro interno ao redefinir senha (${RESET_HANDLER_VERSION}): ${message}`
