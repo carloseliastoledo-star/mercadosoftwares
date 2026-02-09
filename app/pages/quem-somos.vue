@@ -91,19 +91,22 @@ const t = computed(() => {
   }
 
   return {
-    title: 'Quem Somos',
-    intro: `${safeSiteName.value} é uma loja online focada na venda de produtos digitais e licenças de software, com entrega e suporte.`,
-    companyDataTitle: 'Dados da empresa',
+    title: 'Texto Institucional – Eletrokeys / Licenças Digitais',
+    intro:
+      'A Eletrokeys LTDA é uma empresa brasileira especializada em licenças digitais originais de software e soluções em tecnologia. Atuamos com foco em transparência, legalidade e suporte ao cliente, oferecendo orientações claras sobre ativação e utilização de softwares licenciados.',
+    companyDataTitle: 'Sobre a Empresa',
     companyLabel: 'Empresa:',
     companyTaxIdLabel: 'CNPJ:',
-    contactTitle: 'Contato e suporte',
+    contactTitle: 'Forma de Atendimento',
     emailLabel: 'E-mail:',
     supportHoursLabel: 'Atendimento:',
-    supportHoursBody: 'em horário comercial.',
-    productsTitle: 'Sobre os produtos',
+    supportHoursBody:
+      'Nosso atendimento é realizado por meio de e-mail e canais digitais, onde prestamos suporte informativo, esclarecimento de dúvidas e orientações relacionadas às licenças digitais e utilização dos softwares.',
+    productsTitle: 'O que Oferecemos',
     productsP1:
-      'Os produtos disponibilizados neste site são digitais. A entrega pode ocorrer por e-mail e/ou disponibilização em área do cliente, conforme descrito na página de cada produto.',
-    productsP2: 'Marcas e nomes de produtos mencionados pertencem aos seus respectivos proprietários.'
+      'Licenças Digitais Originais de Software; Orientações de Ativação e Instalação; Suporte ao Cliente; Informações institucionais e políticas públicas; Consultoria básica sobre utilização de softwares e serviços em nuvem.',
+    productsP2:
+      'Atendemos usuários finais, profissionais autônomos e pequenas e médias empresas que necessitam de softwares originais, orientações de ativação e suporte técnico básico para instalação e utilização.'
   }
 })
 

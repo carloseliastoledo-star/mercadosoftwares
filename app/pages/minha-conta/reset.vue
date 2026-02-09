@@ -34,7 +34,11 @@
 definePageMeta({ middleware: ['customer'] })
 
 const route = useRoute()
-const token = computed(() => String(route.query.token || ''))
+const token = computed(() => {
+  const q: any = route.query
+  const raw = q?.token ?? q?.t ?? q?.resetToken ?? q?.reset_token
+  return String(raw || '').trim()
+})
 
 const password = ref('')
 const confirm = ref('')
@@ -42,9 +46,15 @@ const loading = ref(false)
 const error = ref('')
 
 async function submit() {
+  if (loading.value) return
   error.value = ''
 
   if (!token.value) {
+    error.value = 'Token inválido'
+    return
+  }
+
+  if (!/^[a-f0-9]{64}$/i.test(token.value)) {
     error.value = 'Token inválido'
     return
   }
@@ -77,7 +87,15 @@ async function submit() {
       err?.message ||
       'Não foi possível redefinir a senha'
 
-    const finalMsg = status ? `[${status}] ${msg}` : String(msg)
+    const safeMsg =
+      !data?.statusMessage &&
+      !data?.message &&
+      typeof msg === 'string' &&
+      msg.toLowerCase().includes('is not a function')
+        ? 'Erro interno. Tente novamente.'
+        : msg
+
+    const finalMsg = status ? `[${status}] ${safeMsg}` : String(safeMsg)
 
     if (status && status >= 400 && status < 500) {
       error.value = finalMsg

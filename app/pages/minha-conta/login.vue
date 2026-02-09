@@ -87,6 +87,7 @@ const loading = ref(false)
 const error = ref('')
 
 async function submit() {
+  if (loading.value) return
   loading.value = true
   error.value = ''
 
@@ -111,7 +112,16 @@ async function submit() {
 
     await navigateTo('/minha-conta')
   } catch (err: any) {
-    error.value = err?.data?.statusMessage || 'Não foi possível continuar'
+    const status = err?.statusCode || err?.response?.status
+    const data = err?.data || err?.response?._data || err?.response?.data
+    const msg =
+      data?.statusMessage ||
+      data?.message ||
+      err?.statusMessage ||
+      err?.message ||
+      'Não foi possível continuar'
+
+    error.value = status ? `[${status}] ${msg}` : String(msg)
   } finally {
     loading.value = false
   }

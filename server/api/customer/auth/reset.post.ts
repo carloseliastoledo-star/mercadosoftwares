@@ -122,7 +122,10 @@ export default defineEventHandler(async (event) => {
       console.warn('[customer-reset] token não encontrado/expirado', {
         storeSlug: ctx.storeSlug
       })
-      throw createError({ statusCode: 400, statusMessage: 'Token inválido ou expirado' })
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Token inválido ou expirado. Solicite um novo link de redefinição.'
+      })
     }
 
     const passwordHash = hashPassword(password)

@@ -421,12 +421,12 @@
             <h3 class="font-display font-semibold text-foreground mb-4">Legal</h3>
             <ul class="space-y-3">
               <li>
-                <NuxtLink to="/politica-de-privacidade" class="text-muted-foreground hover:text-primary transition-colors">
+                <NuxtLink to="/privacidade" class="text-muted-foreground hover:text-primary transition-colors">
                   Política de Privacidade
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/termos-de-uso" class="text-muted-foreground hover:text-primary transition-colors">
+                <NuxtLink to="/termos" class="text-muted-foreground hover:text-primary transition-colors">
                   Termos de Uso
                 </NuxtLink>
               </li>
