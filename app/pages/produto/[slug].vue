@@ -214,6 +214,41 @@ const intl = useIntlContext()
 
 const { siteName } = useSiteBranding()
 
+const config = useRuntimeConfig()
+const storeSlug = computed(() => String((config.public as any)?.storeSlug || '').trim())
+
+const host = computed(() => {
+  if (process.server) {
+    try {
+      const url = useRequestURL()
+      if (url?.host) return String(url.host).toLowerCase()
+    } catch {
+      // ignore
+    }
+
+    const headers = useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host']) as Record<string, string | undefined>
+    const raw = headers?.['x-forwarded-host'] || headers?.['x-original-host'] || headers?.host || ''
+    const first = String(raw).split(',')[0]?.trim()
+    return String(first || '').toLowerCase()
+  }
+
+  return String(window.location.host || '').toLowerCase()
+})
+
+const normalizedHost = computed(() => {
+  const h0 = String(host.value || '').trim().toLowerCase()
+  const h1 = h0.replace(/^https?:\/\//, '')
+  const h2 = h1.replace(/\/.*/, '')
+  const h3 = h2.replace(/:\d+$/, '')
+  const h4 = h3.replace(/^www\./, '')
+  return h4.replace(/\.$/, '')
+})
+
+const isCasaDoSoftware = computed(() => {
+  if (normalizedHost.value.includes('casadosoftware.com.br')) return true
+  return storeSlug.value === 'casadosoftware'
+})
+
 const route = useRoute()
 const slug = route.params.slug as string
 
@@ -274,12 +309,44 @@ const safeProduct = computed(() => {
 })
 
 const seoTitle = computed(() => {
+  const slugValue = String((safeProduct.value as any)?.slug || slug || '').trim().toLowerCase()
+  if (isCasaDoSoftware.value) {
+    if (slugValue.includes('windows-11') && slugValue.includes('pro')) {
+      return 'Licença Windows 11 Pro Original – Ativação Imediata | Casa do Software'
+    }
+    if (slugValue.includes('windows-10') && slugValue.includes('pro')) {
+      return 'Windows 10 Pro Original – Licença Digital Vitalícia | Casa do Software'
+    }
+    if (slugValue.includes('office') && (slugValue.includes('365') || slugValue.includes('microsoft-365'))) {
+      return 'Office 365 Original – Licença Oficial com Entrega Imediata'
+    }
+    if (slugValue.includes('office') && slugValue.includes('2021')) {
+      return 'Office 2021 Original – Chave de Ativação Vitalícia | Casa do Software'
+    }
+  }
+
   const name = String((safeProduct.value as any)?.nome || '').trim()
   const base = String(siteName.value || 'Casa do Software')
   return name ? `${name} | ${base}` : base
 })
 
 const seoDescription = computed(() => {
+  const slugValue = String((safeProduct.value as any)?.slug || slug || '').trim().toLowerCase()
+  if (isCasaDoSoftware.value) {
+    if (slugValue.includes('windows-11') && slugValue.includes('pro')) {
+      return 'Windows 11 Pro original com chave vitalícia e entrega na hora. Instale e ative em minutos com suporte completo. Compra segura!'
+    }
+    if (slugValue.includes('windows-10') && slugValue.includes('pro')) {
+      return 'Compre Windows 10 Pro original com ativação instantânea e garantia. Licença vitalícia para PC ou notebook. Suporte incluso!'
+    }
+    if (slugValue.includes('office') && (slugValue.includes('365') || slugValue.includes('microsoft-365'))) {
+      return 'Microsoft Office 365 original para PC e Mac. Ativação rápida, conta oficial e suporte completo. Receba agora por e-mail!'
+    }
+    if (slugValue.includes('office') && slugValue.includes('2021')) {
+      return 'Licença Office 2021 original com chave permanente e instalação simples. Entrega imediata e pagamento seguro. Ative em minutos!'
+    }
+  }
+
   const rawShort = String((safeProduct.value as any)?.descricaoCurta || '').trim()
   const rawLong = String((safeProduct.value as any)?.descricao || '').trim()
 

@@ -115,8 +115,58 @@ const mailtoSupport = computed(() => {
   return email ? `mailto:${email}` : 'mailto:'
 })
 
-useSeoMeta({
-  title: `${t.value.title} | ${safeSiteName.value}`
+useSeoMeta(() => {
+  const title = `${t.value.title} | ${safeSiteName.value}`
+  const description = ''
+
+  const host = (() => {
+    if (process.server) {
+      try {
+        const url = useRequestURL()
+        if (url?.host) return String(url.host).toLowerCase()
+      } catch {
+        // ignore
+      }
+      const headers = useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host']) as Record<string, string | undefined>
+      const raw = headers?.['x-forwarded-host'] || headers?.['x-original-host'] || headers?.host || ''
+      const first = String(raw).split(',')[0]?.trim()
+      return String(first || '').toLowerCase()
+    }
+    return String(window.location.host || '').toLowerCase()
+  })()
+
+  const normalizedHost = String(host || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/\/.*/, '')
+    .replace(/:\d+$/, '')
+    .replace(/^www\./, '')
+    .replace(/\.$/, '')
+
+  if (normalizedHost.includes('casadosoftware.com.br')) {
+    const casaTitle = 'Casa do Software – Licenças Originais com Suporte Especializado'
+    const casaDesc =
+      'Somos especialistas em licenças de software originais com entrega imediata e suporte dedicado. Compra segura e atendimento rápido.'
+
+    return {
+      title: casaTitle,
+      description: casaDesc,
+      ogTitle: casaTitle,
+      ogDescription: casaDesc,
+      twitterTitle: casaTitle,
+      twitterDescription: casaDesc
+    }
+  }
+
+  return {
+    title,
+    description,
+    ogTitle: title,
+    ogDescription: description,
+    twitterTitle: title,
+    twitterDescription: description
+  }
 })
 
 useHead(() => ({

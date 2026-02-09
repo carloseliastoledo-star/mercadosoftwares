@@ -9,6 +9,10 @@ definePageMeta({ ssr: true })
 const config = useRuntimeConfig()
 const storeSlug = computed(() => String((config.public as any)?.storeSlug || '').trim())
 
+const CASA_HOME_TITLE = 'Licenças de Software Originais com Entrega Imediata | Casa do Software'
+const CASA_HOME_DESCRIPTION =
+  'Compre Windows, Office e Antivírus 100% originais com ativação imediata e suporte vitalício. Entrega rápida e pagamento seguro. Confira!'
+
 const host = computed(() => {
   if (process.server) {
     try {
@@ -47,5 +51,17 @@ const isCasaDoSoftware = computed(() => {
 const isLicencasDigitais = computed(() => {
   if (normalizedHost.value.includes('licencasdigitais.com.br')) return true
   return storeSlug.value === 'licencasdigitais'
+})
+
+useSeoMeta(() => {
+  if (!isCasaDoSoftware.value) return {}
+  return {
+    title: CASA_HOME_TITLE,
+    description: CASA_HOME_DESCRIPTION,
+    ogTitle: CASA_HOME_TITLE,
+    ogDescription: CASA_HOME_DESCRIPTION,
+    twitterTitle: CASA_HOME_TITLE,
+    twitterDescription: CASA_HOME_DESCRIPTION
+  }
 })
 </script>

@@ -33,6 +33,41 @@ const slug = String(route.params.slug || '')
 const baseUrl = useSiteUrl()
 const { siteName } = useSiteBranding()
 
+const config = useRuntimeConfig()
+const storeSlug = computed(() => String((config.public as any)?.storeSlug || '').trim())
+
+const host = computed(() => {
+  if (process.server) {
+    try {
+      const url = useRequestURL()
+      if (url?.host) return String(url.host).toLowerCase()
+    } catch {
+      // ignore
+    }
+
+    const headers = useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host']) as Record<string, string | undefined>
+    const raw = headers?.['x-forwarded-host'] || headers?.['x-original-host'] || headers?.host || ''
+    const first = String(raw).split(',')[0]?.trim()
+    return String(first || '').toLowerCase()
+  }
+
+  return String(window.location.host || '').toLowerCase()
+})
+
+const normalizedHost = computed(() => {
+  const h0 = String(host.value || '').trim().toLowerCase()
+  const h1 = h0.replace(/^https?:\/\//, '')
+  const h2 = h1.replace(/\/.*/, '')
+  const h3 = h2.replace(/:\d+$/, '')
+  const h4 = h3.replace(/^www\./, '')
+  return h4.replace(/\.$/, '')
+})
+
+const isCasaDoSoftware = computed(() => {
+  if (normalizedHost.value.includes('casadosoftware.com.br')) return true
+  return storeSlug.value === 'casadosoftware'
+})
+
 const { data, pending, error } = await useFetch(() => `/api/categorias/${slug}`, {
   server: true
 })
@@ -48,10 +83,30 @@ const canonicalUrl = computed(() => {
 })
 
 const pageTitle = computed(() => {
+  const slugValue = String(categoria.value?.slug || slug || '').trim().toLowerCase()
+  if (isCasaDoSoftware.value) {
+    if (slugValue.includes('antiv')) return 'Antivírus Original para PC – Licenças Oficiais com Desconto'
+    if (slugValue.includes('windows')) return 'Licenças Windows Originais – Windows 10 e 11 Pro | Casa do Software'
+    if (slugValue.includes('office')) return 'Microsoft Office Original – Licenças Oficiais e Vitalícias'
+  }
+
   return categoria.value?.nome ? `${categoria.value.nome} | ${siteName}` : `Categoria | ${siteName}`
 })
 
 const pageDescription = computed(() => {
+  const slugValue = String(categoria.value?.slug || slug || '').trim().toLowerCase()
+  if (isCasaDoSoftware.value) {
+    if (slugValue.includes('antiv')) {
+      return 'Proteja seu computador com antivírus original e ativação imediata. Licenças oficiais com suporte e melhor preço do Brasil.'
+    }
+    if (slugValue.includes('windows')) {
+      return 'Compre licenças Windows originais com ativação imediata e garantia vitalícia. Entrega rápida e suporte especializado.'
+    }
+    if (slugValue.includes('office')) {
+      return 'Office 365, 2021 e versões oficiais com entrega imediata. Ative hoje mesmo com suporte e pagamento seguro.'
+    }
+  }
+
   return categoria.value?.descricao || ''
 })
 
