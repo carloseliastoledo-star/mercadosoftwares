@@ -457,6 +457,7 @@ useSeoMeta({
 })
 
 useHead(() => ({
+  meta: [{ name: 'robots', content: 'noindex,nofollow' }],
   link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/checkout` }] : []
 }))
 
