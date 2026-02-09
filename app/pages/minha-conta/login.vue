@@ -109,8 +109,6 @@ async function submit() {
         }
       })
     }
-
-    await navigateTo('/minha-conta')
   } catch (err: any) {
     const status = err?.statusCode || err?.response?.status
     const data = err?.data || err?.response?._data || err?.response?.data
@@ -120,6 +118,31 @@ async function submit() {
       err?.statusMessage ||
       err?.message ||
       'Não foi possível continuar'
+
+    error.value = status ? `[${status}] ${msg}` : String(msg)
+    return
+  }
+
+  try {
+    await navigateTo('/minha-conta')
+  } catch (err: any) {
+    if (import.meta.client) {
+      try {
+        window.location.href = '/minha-conta'
+        return
+      } catch {
+        // ignore
+      }
+    }
+
+    const status = err?.statusCode || err?.response?.status
+    const data = err?.data || err?.response?._data || err?.response?.data
+    const msg =
+      data?.statusMessage ||
+      data?.message ||
+      err?.statusMessage ||
+      err?.message ||
+      'Login realizado, mas não foi possível abrir sua conta. Recarregue a página.'
 
     error.value = status ? `[${status}] ${msg}` : String(msg)
   } finally {
