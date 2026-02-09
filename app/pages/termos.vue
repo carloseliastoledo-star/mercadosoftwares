@@ -54,6 +54,8 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: 'blank' })
+
 const { siteName } = useSiteBranding()
 const intl = useIntlContext()
 const baseUrl = useSiteUrl()
