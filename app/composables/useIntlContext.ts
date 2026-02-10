@@ -8,11 +8,15 @@ type ClientIntl = {
 }
 
 function detectHost(): string {
-  if (process.server) {
-    const headers = useRequestHeaders(['x-forwarded-host', 'host']) as Record<string, string | undefined>
-    const raw = headers?.['x-forwarded-host'] || headers?.host || ''
-    const first = String(raw).split(',')[0]?.trim()
-    return String(first || '').toLowerCase()
+  if (import.meta.server) {
+    try {
+      const headers = useRequestHeaders(['x-forwarded-host', 'host']) as Record<string, string | undefined>
+      const raw = headers?.['x-forwarded-host'] || headers?.host || ''
+      const first = String(raw).split(',')[0]?.trim()
+      return String(first || '').toLowerCase()
+    } catch {
+      return ''
+    }
   }
 
   return String(window.location.host || '').toLowerCase()

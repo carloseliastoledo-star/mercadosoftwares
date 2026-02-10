@@ -226,10 +226,14 @@ const host = computed(() => {
       // ignore
     }
 
-    const headers = useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host']) as Record<string, string | undefined>
-    const raw = headers?.['x-forwarded-host'] || headers?.['x-original-host'] || headers?.host || ''
-    const first = String(raw).split(',')[0]?.trim()
-    return String(first || '').toLowerCase()
+    try {
+      const headers = useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host']) as Record<string, string | undefined>
+      const raw = headers?.['x-forwarded-host'] || headers?.['x-original-host'] || headers?.host || ''
+      const first = String(raw).split(',')[0]?.trim()
+      return String(first || '').toLowerCase()
+    } catch {
+      return ''
+    }
   }
 
   return String(window.location.host || '').toLowerCase()
