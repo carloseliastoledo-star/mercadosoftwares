@@ -6,11 +6,18 @@ export default defineEventHandler((event) => {
   const reqUrl = getRequestURL(event)
   const base = (String(process.env.SITE_URL || '').trim() || reqUrl.origin).replace(/\/$/, '')
 
+  const host = String(reqUrl?.host || '').toLowerCase()
+  const isCasaDoSoftware = host.includes('casadosoftware.com.br')
+
   const name = String(process.env.SITE_NAME || '').trim() || 'Site'
   const shortName = String(process.env.SITE_SHORT_NAME || '').trim() || name
   const themeColor = String(process.env.SITE_THEME_COLOR || '').trim() || '#2563eb'
   const backgroundColor = String(process.env.SITE_BACKGROUND_COLOR || '').trim() || '#ffffff'
-  const iconPath = String(process.env.SITE_LOGO_PATH || '').trim() || '/logo.png'
+
+  const envIcon = String(process.env.SITE_LOGO_PATH || '').trim()
+  const iconPath = envIcon && envIcon !== '/logo.png'
+    ? envIcon
+    : (isCasaDoSoftware ? '/logo-casa-do-software.png' : '/logo-licencasdigitais.png')
 
   return JSON.stringify(
     {

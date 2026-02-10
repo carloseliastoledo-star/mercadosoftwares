@@ -259,6 +259,10 @@ function buyNow(event: Event) {
       <img
         :src="productImage"
         :alt="productName"
+        loading="lazy"
+        decoding="async"
+        width="520"
+        height="180"
         class="w-full h-[180px] object-contain"
         referrerpolicy="no-referrer"
         @error="onImageError"
