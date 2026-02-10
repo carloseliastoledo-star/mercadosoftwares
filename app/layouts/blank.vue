@@ -4,7 +4,10 @@
       <div class="max-w-6xl mx-auto px-6">
         <div class="h-16 md:h-20 flex items-center justify-between gap-6">
           <NuxtLink to="/" class="flex items-center gap-3 min-w-0">
-            <img :src="logoPath" :alt="siteName" class="h-10 md:h-12 w-auto" />
+            <picture>
+              <source v-if="logoWebpPath" :srcset="logoWebpPath" type="image/webp" />
+              <img :src="logoPath" :alt="siteName" class="h-10 md:h-12 w-auto" />
+            </picture>
             <span class="text-sm md:text-base font-extrabold tracking-tight text-gray-900 truncate">
               {{ siteName }}
             </span>
@@ -25,7 +28,10 @@
       <div class="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-10 text-sm text-gray-600">
         <div>
           <div class="flex items-center gap-3">
-            <img :src="logoPath" :alt="siteName" class="h-10 w-auto" />
+            <picture>
+              <source v-if="logoWebpPath" :srcset="logoWebpPath" type="image/webp" />
+              <img :src="logoPath" :alt="siteName" class="h-10 w-auto" />
+            </picture>
             <div class="font-extrabold text-gray-900">{{ siteName }}</div>
           </div>
           <p class="mt-3">
@@ -71,14 +77,21 @@
 <script setup lang="ts">
 const { siteName, logoPath, supportEmail, whatsappNumber } = useSiteBranding()
 
+const logoWebpPath = computed(() => {
+  const raw = String(logoPath || '').trim()
+  if (!raw) return ''
+  if (raw.endsWith('.png')) return raw.replace(/\.png$/i, '.webp')
+  return ''
+})
+
 const whatsappLabel = computed(() => {
-  const raw = String(whatsappNumber.value || '').trim()
+  const raw = String(whatsappNumber || '').trim()
   if (!raw) return ''
   return raw
 })
 
 const whatsappHref = computed(() => {
-  const raw = String(whatsappNumber.value || '').trim()
+  const raw = String(whatsappNumber || '').trim()
   if (!raw) return ''
   const digits = raw.replace(/\D/g, '')
   if (!digits) return ''

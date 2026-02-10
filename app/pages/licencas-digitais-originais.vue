@@ -173,7 +173,7 @@ useHead({
         "@type": "Organization",
         "name": "Eletrokeys LTDA",
         "url": "https://licencasdigitais.com.br",
-        "logo": "https://licencasdigitais.com.br/logo.png",
+        "logo": "https://licencasdigitais.com.br/logo-licencasdigitais.png",
         "description": "Empresa especializada em licenças digitais originais, ativação legal e suporte ao cliente.",
         "contactPoint": [
           {

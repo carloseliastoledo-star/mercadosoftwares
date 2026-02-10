@@ -37,6 +37,12 @@
           <img
             :src="safeImage"
             :alt="safeProduct.nome"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+            width="520"
+            height="520"
+            sizes="(max-width: 1024px) 100vw, 520px"
             class="w-full max-w-[520px] max-h-[520px] object-contain"
             referrerpolicy="no-referrer"
             @error="onImageError"

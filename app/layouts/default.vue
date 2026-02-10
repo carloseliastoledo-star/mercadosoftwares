@@ -31,7 +31,10 @@
             </button>
 
             <NuxtLink to="/" class="flex items-center gap-3 min-w-0">
-              <img :src="logoPath" :alt="siteName" class="h-12 md:h-14 w-auto" />
+              <picture>
+                <source v-if="logoWebpPath" :srcset="logoWebpPath" type="image/webp" />
+                <img :src="logoPath" :alt="siteName" class="h-12 md:h-14 w-auto" />
+              </picture>
               <span class="hidden sm:block text-base md:text-lg font-extrabold tracking-tight text-gray-900 truncate">
                 {{ siteName }}
               </span>
@@ -103,7 +106,10 @@
       <div class="absolute inset-y-0 left-0 w-[85%] max-w-sm bg-white shadow-xl flex flex-col">
         <div class="px-5 py-4 border-b flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <img :src="logoPath" :alt="siteName" class="h-12 w-auto" />
+            <picture>
+              <source v-if="logoWebpPath" :srcset="logoWebpPath" type="image/webp" />
+              <img :src="logoPath" :alt="siteName" class="h-12 w-auto" />
+            </picture>
             <div class="font-extrabold text-gray-900">{{ siteName }}</div>
           </div>
           <button
@@ -216,8 +222,15 @@
 <script setup lang="ts">
 const { siteName, logoPath, supportEmail, topbarText, topbarLink, whatsappNumber } = useSiteBranding()
 
+const logoWebpPath = computed(() => {
+  const raw = String(logoPath || '').trim()
+  if (!raw) return ''
+  if (raw.endsWith('.png')) return raw.replace(/\.png$/i, '.webp')
+  return ''
+})
+
 const safeSiteName = computed(() => {
-  const n = String(siteName.value || '').trim()
+  const n = String(siteName || '').trim()
   return n || 'Licenças Digitais'
 })
 
