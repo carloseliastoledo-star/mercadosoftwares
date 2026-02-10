@@ -5,6 +5,11 @@ export default defineNuxtConfig({
 
   ssr: true,
 
+  sourcemap: {
+    client: true,
+    server: false,
+  },
+
   app: {
     head: {
       link: [
