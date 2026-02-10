@@ -312,6 +312,27 @@ const safeProduct = computed(() => {
   }
 })
 
+const safeImage = computed(() => {
+  const image = String((safeProduct.value as any)?.imagem || '')
+  if (!image) return '/products/placeholder.svg'
+
+  if (image.startsWith('http://')) {
+    return image.replace(/^http:\/\//, 'https://')
+  }
+
+  return image
+})
+
+const absoluteImageUrl = computed(() => {
+  const raw = String(safeImage.value || '').trim()
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  const origin = String(baseUrl || '').trim()
+  if (!origin) return raw
+  if (!raw.startsWith('/')) return `${origin}/${raw}`
+  return `${origin}${raw}`
+})
+
 const seoTitle = computed(() => {
   const slugValue = String((safeProduct.value as any)?.slug || slug || '').trim().toLowerCase()
   if (isCasaDoSoftware.value) {
@@ -441,27 +462,6 @@ const safeDescriptionHtml = computed(() => {
   return DOMPurify.sanitize(normalized, {
     USE_PROFILES: { html: true }
   })
-})
-
-const safeImage = computed(() => {
-  const image = String((safeProduct.value as any)?.imagem || '')
-  if (!image) return '/products/placeholder.svg'
-
-  if (image.startsWith('http://')) {
-    return image.replace(/^http:\/\//, 'https://')
-  }
-
-  return image
-})
-
-const absoluteImageUrl = computed(() => {
-  const raw = String(safeImage.value || '').trim()
-  if (!raw) return ''
-  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
-  const origin = String(baseUrl || '').trim()
-  if (!origin) return raw
-  if (!raw.startsWith('/')) return `${origin}/${raw}`
-  return `${origin}${raw}`
 })
 
 function onImageError(e: Event) {
