@@ -9,6 +9,8 @@ definePageMeta({ ssr: true })
 const config = useRuntimeConfig()
 const storeSlug = computed(() => String((config.public as any)?.storeSlug || '').trim())
 
+const baseUrl = useSiteUrl()
+
 const CASA_HOME_TITLE = 'Licenças Originais Windows e Office | Casa do Software'
 const CASA_HOME_DESCRIPTION =
   'Compre licenças digitais originais Windows 10, 11 e Office com entrega imediata e suporte técnico.'
@@ -96,6 +98,8 @@ useHead(() => {
     if (h) siteUrl = `https://${h}`
   }
 
+  const canonicalBase = String(baseUrl || siteUrl || '').trim().replace(/\/+$/, '')
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -114,7 +118,7 @@ useHead(() => {
   }
 
   return {
-    link: siteUrl ? [{ rel: 'canonical', href: `${siteUrl}/` }] : [],
+    link: canonicalBase ? [{ rel: 'canonical', href: `${canonicalBase}/` }] : [],
     script: [
       {
         type: 'application/ld+json',
