@@ -364,36 +364,58 @@ const seoDescription = computed(() => {
   return textOnly.length > 155 ? textOnly.slice(0, 155) : textOnly
 })
 
-useHead(() => ({
-  title: seoTitle.value,
-  meta: [{ name: 'description', content: seoDescription.value }],
-  link: canonicalUrl.value ? [{ rel: 'canonical', href: canonicalUrl.value }] : [],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: String((safeProduct.value as any)?.nome || '').trim() || undefined,
-        description: String(seoDescription.value || '').trim() || undefined,
-        image: absoluteImageUrl.value ? [absoluteImageUrl.value] : undefined,
-        sku: String((safeProduct.value as any)?.id || '').trim() || undefined,
-        brand: {
-          '@type': 'Brand',
-          name: String(siteName.value || 'Casa do Software')
-        },
-        offers: {
-          '@type': 'Offer',
-          url: canonicalUrl.value || undefined,
-          priceCurrency: String((safeProduct.value as any)?.currency || intl.currency.value || 'BRL'),
-          price: Number((safeProduct.value as any)?.preco || 0) || undefined,
-          availability: 'https://schema.org/InStock',
-          itemCondition: 'https://schema.org/NewCondition'
-        }
-      })
+useHead(() => {
+  const title = seoTitle.value
+  const description = seoDescription.value
+  const link = canonicalUrl.value ? [{ rel: 'canonical', href: canonicalUrl.value }] : []
+
+  const p = safeProduct.value as any
+  const hasProduct = !pending.value && !error.value && String(p?.nome || '').trim()
+
+  if (!hasProduct) {
+    return {
+      title,
+      meta: [{ name: 'description', content: description }],
+      link
     }
-  ]
-}))
+  }
+
+  const price = Number(p?.preco || 0)
+  const priceCurrency = String(p?.currency || intl.currency.value || 'BRL')
+
+  const jsonLd: any = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: String(p?.nome || '').trim() || undefined,
+    description: String(description || '').trim() || undefined,
+    image: absoluteImageUrl.value ? [absoluteImageUrl.value] : undefined,
+    sku: String(p?.id || '').trim() || undefined,
+    brand: {
+      '@type': 'Brand',
+      name: String(siteName.value || 'Casa do Software')
+    },
+    offers: {
+      '@type': 'Offer',
+      url: canonicalUrl.value || undefined,
+      priceCurrency,
+      price: price > 0 ? price : undefined,
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition'
+    }
+  }
+
+  return {
+    title,
+    meta: [{ name: 'description', content: description }],
+    link,
+    script: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(jsonLd)
+      }
+    ]
+  }
+})
 
 useSeoMeta(() => {
   const title = seoTitle.value
