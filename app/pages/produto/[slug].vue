@@ -264,6 +264,16 @@ const canonicalUrl = computed(() => {
   return baseUrl ? `${baseUrl}/produto/${s}` : ''
 })
 
+const absoluteImageUrl = computed(() => {
+  const raw = String(safeImage.value || '').trim()
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  const origin = String(baseUrl || '').trim()
+  if (!origin) return raw
+  if (!raw.startsWith('/')) return `${origin}/${raw}`
+  return `${origin}${raw}`
+})
+
 const { data, pending, error } = await useFetch(
   () => `/api/products/${slug}`,
   { server: true }
@@ -367,7 +377,32 @@ const seoDescription = computed(() => {
 useHead(() => ({
   title: seoTitle.value,
   meta: [{ name: 'description', content: seoDescription.value }],
-  link: canonicalUrl.value ? [{ rel: 'canonical', href: canonicalUrl.value }] : []
+  link: canonicalUrl.value ? [{ rel: 'canonical', href: canonicalUrl.value }] : [],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: String((safeProduct.value as any)?.nome || '').trim() || undefined,
+        description: String(seoDescription.value || '').trim() || undefined,
+        image: absoluteImageUrl.value ? [absoluteImageUrl.value] : undefined,
+        sku: String((safeProduct.value as any)?.id || '').trim() || undefined,
+        brand: {
+          '@type': 'Brand',
+          name: String(siteName.value || 'Casa do Software')
+        },
+        offers: {
+          '@type': 'Offer',
+          url: canonicalUrl.value || undefined,
+          priceCurrency: String((safeProduct.value as any)?.currency || intl.currency.value || 'BRL'),
+          price: Number((safeProduct.value as any)?.preco || 0) || undefined,
+          availability: 'https://schema.org/InStock',
+          itemCondition: 'https://schema.org/NewCondition'
+        }
+      })
+    }
+  ]
 }))
 
 useSeoMeta(() => {
