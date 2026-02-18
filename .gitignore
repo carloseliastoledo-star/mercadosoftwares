@@ -18,6 +18,7 @@ logs
 .fleet
 .idea
 .windsurf/
+*.code-workspace
 
 # Local env files
 .env

@@ -13,7 +13,7 @@
 
       <!-- Título -->
       <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8">
-        {{ safeProduct.nome }}
+        {{ pageH1 }}
       </h1>
 
       <!-- Loading -->
@@ -262,6 +262,18 @@ const isCasaDoSoftware = computed(() => {
 const route = useRoute()
 const slug = route.params.slug as string
 
+const isOffice365FiveLicenses = computed(() => {
+  const s = String(slug || '').trim().toLowerCase()
+  return s === 'microsoft-office-365-vitalicio-5-licencas-pc-mac-android-ou-ios-1-tb-one-drive'
+})
+
+const pageH1 = computed(() => {
+  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
+    return 'Licença Office 365 Original para PC e Mac – Entrega Instantânea'
+  }
+  return String(safeProduct.value.nome || '')
+})
+
 const baseUrl = useSiteUrl()
 
 const canonicalUrl = computed(() => {
@@ -349,6 +361,10 @@ const seoTitle = computed(() => {
       return 'Windows 10 Pro Original – Licença Digital Vitalícia | Casa do Software'
     }
     if (slugValue.includes('office') && (slugValue.includes('365') || slugValue.includes('microsoft-365'))) {
+      if (isOffice365FiveLicenses.value) {
+        return 'Licença Microsoft 365 Original PC e Mac | Entrega imediata'
+      }
+
       return 'Office 365 Original – Licença Oficial com Entrega Imediata'
     }
     if (slugValue.includes('office') && slugValue.includes('2021')) {
@@ -371,6 +387,10 @@ const seoDescription = computed(() => {
       return 'Compre Windows 10 Pro original com ativação instantânea e garantia. Licença vitalícia para PC ou notebook. Suporte incluso!'
     }
     if (slugValue.includes('office') && (slugValue.includes('365') || slugValue.includes('microsoft-365'))) {
+      if (isOffice365FiveLicenses.value) {
+        return 'Comprar licença do pacote Office permanente nunca foi tão fácil. Original, ativação rápida, conta oficial, suporte completo e envio imediato por email.'
+      }
+
       return 'Microsoft Office 365 original para PC e Mac. Ativação rápida, conta oficial e suporte completo. Receba agora por e-mail!'
     }
     if (slugValue.includes('office') && slugValue.includes('2021')) {
@@ -459,6 +479,86 @@ useSeoMeta(() => {
 })
 
 const safeDescriptionHtml = computed(() => {
+  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
+    const content = `
+<h2>Licença Office 365 Original Microsoft (Entrega Digital)</h2>
+<p>Tenha acesso ao pacote Office 365 original com os principais aplicativos da Microsoft para produtividade no dia a dia. Com a licença Office 365, você utiliza ferramentas como Word, Excel, PowerPoint, Outlook e OneNote, sempre com atualizações durante o período da assinatura.</p>
+<p>Ideal para quem deseja comprar licença de forma segura, prática e com suporte especializado.</p>
+
+<h3>O que está incluso no Pacote Office 365</h3>
+<p>Ao adquirir a licença Office 365, você terá acesso a:</p>
+<ul>
+  <li>Word</li>
+  <li>Excel</li>
+  <li>PowerPoint</li>
+  <li>Outlook</li>
+  <li>OneNote</li>
+  <li>Atualizações automáticas enquanto a assinatura estiver ativa</li>
+</ul>
+<p>Tudo em um único pacote, com acesso aos recursos mais recentes da Microsoft Office.</p>
+
+<h3>Compatibilidade e uso da Licença Office 365</h3>
+<p>A licença Office 365 pode ser utilizada em até 5 dispositivos simultaneamente, conforme as regras do serviço, incluindo:</p>
+<ul>
+  <li>PC</li>
+  <li>Mac</li>
+  <li>Tablet</li>
+  <li>Smartphone</li>
+</ul>
+<p>Compatível com diferentes sistemas, ideal para quem trabalha ou estuda em mais de um dispositivo.</p>
+
+<h2>Como funciona a entrega da Licença Office 365</h2>
+<p>Após a confirmação do pagamento, a entrega é 100% digital:</p>
+<ul>
+  <li>Você recebe login e senha para acesso ao Microsoft 365</li>
+  <li>A ativação é rápida e simples</li>
+  <li>O acesso é válido pelo período contratado</li>
+</ul>
+<p>Nossa equipe oferece suporte em horário comercial para auxiliar no primeiro acesso, instalação e configuração da licença.</p>
+
+<h3>Suporte e segurança</h3>
+<p>Ao comprar a licença Office 365 na Casa do Software, você conta com:</p>
+<ul>
+  <li>Conta oficial</li>
+  <li>Ativação segura</li>
+  <li>Suporte para dúvidas iniciais e configuração</li>
+</ul>
+<p>Tudo para garantir uma experiência tranquila desde o primeiro acesso.</p>
+
+<h3>Informações importantes</h3>
+<ul>
+  <li>Entrega digital, sem envio físico</li>
+  <li>Guarde os dados de acesso para futuras referências</li>
+  <li>Produto original Microsoft</li>
+  <li>Licença válida conforme período contratado</li>
+</ul>
+
+<h2>FAQ</h2>
+
+<h3>O que é licença 365?</h3>
+<p>A licença 365 é o acesso ao Microsoft 365, que inclui aplicativos como Word, Excel, PowerPoint, Outlook e OneNote, com atualizações durante o período da assinatura.</p>
+
+<h3>Qual é o valor da licença do Office 365?</h3>
+<p>O valor da licença do Office 365 pode variar conforme o plano e o período contratado. Consulte o preço atualizado nesta página antes de finalizar a compra.</p>
+
+<h3>Por que comprar licença do Microsoft Office 365?</h3>
+<p>Ao comprar a licença do Microsoft Office 365, você garante acesso ao pacote Office original, com atualizações constantes, compatibilidade com vários dispositivos e suporte para ativação e uso.</p>
+
+<h3>Como ativar o pacote Office 365?</h3>
+<p>Após a confirmação do pagamento, você recebe login e senha por email para acessar o Microsoft 365. Basta fazer o login na conta informada e seguir as instruções para ativação nos dispositivos desejados. Caso precise, oferecemos suporte para ajudar na ativação.</p>
+
+<h3>E se eu comprar e não receber a licença 365 no meu e-mail?</h3>
+<p>Caso não localize o e-mail, verifique a caixa de spam ou lixo eletrônico. Se ainda assim não receber, basta entrar em contato com nosso suporte para que o envio seja verificado e resolvido rapidamente.</p>
+
+<h3>A licença 365 da Casa do Software é oficial?</h3>
+<p>Sim. A licença 365 da Casa do Software é original e oficial, com acesso por conta válida da Microsoft e ativação segura.</p>
+`
+
+    return DOMPurify.sanitize(content, {
+      USE_PROFILES: { html: true }
+    })
+  }
+
   const raw = String((safeProduct.value as any)?.descricao || '').trim()
   if (!raw) return ''
 
