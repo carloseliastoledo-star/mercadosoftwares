@@ -1,37 +1,14 @@
 export function useSiteBranding() {
   const config = useRuntimeConfig()
 
-  const storeSlug = String((config.public as any)?.storeSlug || '').trim()
-
-  const host = computed(() => {
-    if (import.meta.server) {
-      try {
-        const headers = useRequestHeaders(['x-forwarded-host', 'host']) as Record<string, string | undefined>
-        const raw = headers?.['x-forwarded-host'] || headers?.host || ''
-        const first = String(raw).split(',')[0]?.trim()
-        return String(first || '').toLowerCase()
-      } catch {
-        return ''
-      }
-    }
-
-    return String(window.location.host || '').toLowerCase()
-  })
-
-  const isCasaDoSoftware = computed(() => {
-    if (host.value.includes('licencasdigitais.com.br')) return false
-    if (host.value.includes('casadosoftware.com.br')) return true
-    return storeSlug === 'casadosoftware'
-  })
-
-  const defaultSiteName = computed(() => (isCasaDoSoftware.value ? 'Casa do Software' : 'Licenças Digitais'))
-  const defaultLogoPath = computed(() => (isCasaDoSoftware.value ? '/logo-casa-do-software.png' : '/logo-licencasdigitais.png'))
+  const defaultSiteName = 'Mercado Softwares'
+  const defaultLogoPath = '/logo-mercadosoftwares.svg'
 
   const rawName = String((config.public as any)?.siteName || '').trim()
-  const siteName = rawName && rawName !== 'Site' ? rawName : defaultSiteName.value
+  const siteName = rawName && rawName !== 'Site' ? rawName : defaultSiteName
 
   const rawLogo = String(config.public.logoPath || '').trim()
-  const logoPath = rawLogo && rawLogo !== '/logo.png' ? rawLogo : defaultLogoPath.value
+  const logoPath = rawLogo && rawLogo !== '/logo.png' ? rawLogo : defaultLogoPath
   const supportEmail = String(config.public.supportEmail || '').trim() || ''
   const topbarText = String(config.public.topbarText || '').trim() || ''
   const topbarLink = String(config.public.topbarLink || '').trim() || ''

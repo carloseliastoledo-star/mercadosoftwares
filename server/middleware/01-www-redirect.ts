@@ -29,11 +29,10 @@ export default defineEventHandler((event: H3Event) => {
   const { hostname, port } = splitHostAndPort(host)
   const lower = hostname.toLowerCase()
 
-  if (lower !== 'www.casadosoftware.com.br' && lower !== 'www.licencasdigitais.com.br') return
+  if (lower !== 'mercadosoftwares.com.br') return
 
   const rawUrl = event.node.req.url || '/'
-  const apex = lower === 'www.licencasdigitais.com.br' ? 'licencasdigitais.com.br' : 'casadosoftware.com.br'
-  const targetHost = `${apex}${port}`
+  const targetHost = `www.mercadosoftwares.com.br${port}`
   const location = `https://${targetHost}${rawUrl}`
 
   return sendRedirect(event, location, 301)
