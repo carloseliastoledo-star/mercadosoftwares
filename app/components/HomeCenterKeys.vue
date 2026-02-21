@@ -154,18 +154,6 @@
         <div v-else-if="categoriasError" class="text-center py-12 text-red-600">
           {{ t.errorCategories }}
         </div>
-
-        <div v-else class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <NuxtLink
-            v-for="c in categoriasHomeFiltered"
-            :key="c.id"
-            :to="`/categoria/${c.slug}`"
-            class="bg-white border rounded-2xl p-5 hover:shadow-sm transition"
-          >
-            <div class="font-bold text-gray-900">{{ c.nome }}</div>
-            <div class="text-xs text-gray-500 mt-1">/categoria/{{ c.slug }}/</div>
-          </NuxtLink>
-        </div>
       </div>
     </div>
 
