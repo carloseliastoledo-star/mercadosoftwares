@@ -68,6 +68,6 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ layout: 'blank' as any })
 </script>
