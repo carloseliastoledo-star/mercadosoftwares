@@ -562,7 +562,32 @@ const safeDescriptionHtml = computed(() => {
   if (!raw) return ''
 
   const hasHtml = /<\s*\/?\s*[a-z][\s\S]*>/i.test(raw)
-  const normalized = hasHtml ? raw : raw.replace(/\r\n/g, '\n').replace(/\n/g, '<br />')
+  const escapeHtml = (s: string) =>
+    s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+
+  const renderPlainText = (text: string) => {
+    const lines = text.replace(/\r\n/g, '\n').split('\n')
+    return lines
+      .map((line) => {
+        if (isCasaDoSoftware.value) {
+          const h3 = line.match(/^\s*###\s+(.+)\s*$/)
+          if (h3) return `<h3>${escapeHtml(h3[1] || '')}</h3>`
+
+          const h2 = line.match(/^\s*##\s+(.+)\s*$/)
+          if (h2) return `<h2>${escapeHtml(h2[1] || '')}</h2>`
+        }
+
+        return escapeHtml(line)
+      })
+      .join('<br />')
+  }
+
+  const normalized = hasHtml ? raw : renderPlainText(raw)
 
   return DOMPurify.sanitize(normalized, {
     USE_PROFILES: { html: true }
