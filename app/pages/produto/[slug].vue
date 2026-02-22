@@ -570,6 +570,26 @@ const safeDescriptionHtml = computed(() => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;')
 
+  const isSimpleHtmlForConversion = (html: string) => {
+    // Consider HTML "simple" when it only uses wrappers / line-break tags.
+    // In this case we can safely convert it back to text lines and apply ##/### headings.
+    const stripped = html
+      .replace(/<\s*br\s*\/?>/gi, '')
+      .replace(/<\/?\s*(p|div|span)\b[^>]*>/gi, '')
+      .trim()
+
+    return !/<\s*\/?\s*[a-z][\s\S]*>/i.test(stripped)
+  }
+
+  const htmlToTextLines = (html: string) => {
+    return html
+      .replace(/<\s*br\s*\/?>/gi, '\n')
+      .replace(/<\s*\/\s*(p|div)\s*>/gi, '\n')
+      .replace(/<\s*(p|div)\b[^>]*>/gi, '')
+      .replace(/<\/?\s*span\b[^>]*>/gi, '')
+      .replace(/&nbsp;/gi, ' ')
+  }
+
   const renderPlainText = (text: string) => {
     const lines = text.replace(/\r\n/g, '\n').split('\n')
     return lines
@@ -587,7 +607,15 @@ const safeDescriptionHtml = computed(() => {
       .join('<br />')
   }
 
-  const normalized = hasHtml ? raw : renderPlainText(raw)
+  const normalized = (() => {
+    if (!hasHtml) return renderPlainText(raw)
+
+    if (isCasaDoSoftware.value && isSimpleHtmlForConversion(raw)) {
+      return renderPlainText(htmlToTextLines(raw))
+    }
+
+    return raw
+  })()
 
   return DOMPurify.sanitize(normalized, {
     USE_PROFILES: { html: true }
