@@ -621,6 +621,17 @@ const safeDescriptionHtml = computed(() => {
       '$1<h2>$2</h2>'
     )
 
+    // Handle headings right after an opening tag (e.g. <p>## Title<br ...> or <p><strong>## Title</strong><br ...>).
+    // We stop at the next <br ...> or end-of-block to avoid swallowing subsequent content.
+    out = out.replace(
+      /(>\s*)(?:<[^>]+>\s*)*###\s*([\s\S]*?)(?=<\s*br\b[^>]*>|<\/\s*(p|div|li|span)\b|$)/gi,
+      '$1<h3>$2</h3>'
+    )
+    out = out.replace(
+      /(>\s*)(?:<[^>]+>\s*)*##\s*([\s\S]*?)(?=<\s*br\b[^>]*>|<\/\s*(p|div|li|span)\b|$)/gi,
+      '$1<h2>$2</h2>'
+    )
+
     // Handle headings at the beginning of the HTML.
     out = out.replace(/^\s*###\s*([^<\n\r]+)/i, '<h3>$1</h3>')
     out = out.replace(/^\s*##\s*([^<\n\r]+)/i, '<h2>$1</h2>')
