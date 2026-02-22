@@ -173,7 +173,7 @@ useHead({
         "@type": "Organization",
         "name": "MERCADO SOFTWARES LTDA",
         "url": "https://www.mercadosoftwares.com.br",
-        "logo": "https://www.mercadosoftwares.com.br/logo-mercadosoftwares.svg",
+        "logo": "https://www.mercadosoftwares.com.br/logo-mercadosoftwares.png",
         "description": "Empresa especializada em licenças digitais e suporte ao cliente.",
         "contactPoint": [
           {

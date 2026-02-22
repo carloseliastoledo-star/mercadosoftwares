@@ -13,8 +13,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: 'icon', href: process.env.SITE_LOGO_PATH || '/logo.png' },
-        { rel: 'apple-touch-icon', href: process.env.SITE_LOGO_PATH || '/logo.png' },
+        { rel: 'icon', href: process.env.SITE_LOGO_PATH || '/logo-mercadosoftwares.png' },
+        { rel: 'apple-touch-icon', href: process.env.SITE_LOGO_PATH || '/logo-mercadosoftwares.png' },
         { rel: 'manifest', href: '/api/site.webmanifest' }
       ],
       meta: [

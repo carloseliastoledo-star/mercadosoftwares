@@ -2,7 +2,7 @@ export function useSiteBranding() {
   const config = useRuntimeConfig()
 
   const defaultSiteName = 'Mercado Softwares'
-  const defaultLogoPath = '/logo-mercadosoftwares.svg'
+  const defaultLogoPath = '/logo-mercadosoftwares.png'
 
   const rawName = String((config.public as any)?.siteName || '').trim()
   const siteName = rawName && rawName !== 'Site' ? rawName : defaultSiteName
