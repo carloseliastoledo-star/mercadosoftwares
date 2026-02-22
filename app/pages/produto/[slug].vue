@@ -373,7 +373,7 @@ const seoTitle = computed(() => {
   }
 
   const name = String((safeProduct.value as any)?.nome || '').trim()
-  const base = String(siteName.value || 'Casa do Software')
+  const base = String(siteName || 'Casa do Software')
   return name ? `${name} | ${base}` : base
 })
 
@@ -439,7 +439,7 @@ useHead(() => {
     sku: String(p?.id || '').trim() || undefined,
     brand: {
       '@type': 'Brand',
-      name: String(siteName.value || 'Casa do Software')
+      name: String(siteName || 'Casa do Software')
     },
     offers: {
       '@type': 'Offer',
@@ -464,18 +464,15 @@ useHead(() => {
   }
 })
 
-useSeoMeta(() => {
-  const title = seoTitle.value
-  const description = seoDescription.value
-
-  return {
-    title,
-    description,
-    ogTitle: title,
-    ogDescription: description,
-    twitterTitle: title,
-    twitterDescription: description
-  }
+const seoMetaTitle = computed(() => seoTitle.value)
+const seoMetaDescription = computed(() => seoDescription.value)
+useSeoMeta({
+  title: seoMetaTitle,
+  description: seoMetaDescription,
+  ogTitle: seoMetaTitle,
+  ogDescription: seoMetaDescription,
+  twitterTitle: seoMetaTitle,
+  twitterDescription: seoMetaDescription
 })
 
 const safeDescriptionHtml = computed(() => {
@@ -590,6 +587,40 @@ const safeDescriptionHtml = computed(() => {
       .replace(/&nbsp;/gi, ' ')
   }
 
+  const convertHeadingsInsideHtml = (html: string) => {
+    let out = html
+
+    // Handle common block wrappers.
+    out = out.replace(
+      /<(p|div|li|span)(\s[^>]*)?>\s*###\s*([\s\S]*?)\s*<\/\1>/gi,
+      '<h3>$3</h3>'
+    )
+    out = out.replace(
+      /<(p|div|li|span)(\s[^>]*)?>\s*##\s*([\s\S]*?)\s*<\/\1>/gi,
+      '<h2>$3</h2>'
+    )
+
+    // Handle cases where the marker is wrapped by inner tags (e.g. <p><strong>## Title</strong></p>).
+    out = out.replace(
+      /<(p|div|li|span)(\s[^>]*)?>\s*(?:<[^>]+>\s*)*###\s*([\s\S]*?)\s*(?:<\/[^>]+>\s*)*<\/\1>/gi,
+      '<h3>$3</h3>'
+    )
+    out = out.replace(
+      /<(p|div|li|span)(\s[^>]*)?>\s*(?:<[^>]+>\s*)*##\s*([\s\S]*?)\s*(?:<\/[^>]+>\s*)*<\/\1>/gi,
+      '<h2>$3</h2>'
+    )
+
+    // Handle headings after line breaks (keeps the rest of the HTML intact).
+    out = out.replace(/(<\s*br\s*\/?>\s*)###\s*([^<\n\r]+)/gi, '$1<h3>$2</h3>')
+    out = out.replace(/(<\s*br\s*\/?>\s*)##\s*([^<\n\r]+)/gi, '$1<h2>$2</h2>')
+
+    // Handle headings at the beginning of the HTML.
+    out = out.replace(/^\s*###\s*([^<\n\r]+)/i, '<h3>$1</h3>')
+    out = out.replace(/^\s*##\s*([^<\n\r]+)/i, '<h2>$1</h2>')
+
+    return out
+  }
+
   const renderPlainText = (text: string) => {
     const lines = text.replace(/\r\n/g, '\n').split('\n')
     return lines
@@ -612,6 +643,10 @@ const safeDescriptionHtml = computed(() => {
 
     if (isCasaDoSoftware.value && isSimpleHtmlForConversion(raw)) {
       return renderPlainText(htmlToTextLines(raw))
+    }
+
+    if (isCasaDoSoftware.value && /(^|[\n\r]|<\s*br\s*\/?>)\s*##/i.test(raw)) {
+      return convertHeadingsInsideHtml(raw)
     }
 
     return raw
