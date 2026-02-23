@@ -282,6 +282,38 @@
         {{ t.errorProducts }}
       </div>
 
+      <div v-else-if="isLicencasDigitais" class="mt-8 relative">
+        <button
+          type="button"
+          class="hidden md:inline-flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white border shadow-sm hover:bg-gray-50"
+          aria-label="Previous"
+          @click="scrollBestSellers(-1)"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          class="hidden md:inline-flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white border shadow-sm hover:bg-gray-50"
+          aria-label="Next"
+          @click="scrollBestSellers(1)"
+        >
+          ›
+        </button>
+
+        <div
+          ref="bestSellersRow"
+          class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 -mx-2 px-2"
+        >
+          <div
+            v-for="product in products"
+            :key="product.id + (product.imagem || product.image || '')"
+            class="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[320px]"
+          >
+            <ProductCard :product="product" />
+          </div>
+        </div>
+      </div>
+
       <div v-else class="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <ProductCard
           v-for="product in products"
@@ -501,6 +533,15 @@ const { data, pending, error } = await useFetch<any[]>('/api/products/best-selle
 })
 
 const products = computed(() => (data.value as any[]) || [])
+
+const bestSellersRow = ref<HTMLElement | null>(null)
+
+function scrollBestSellers(direction: 1 | -1) {
+  const el = bestSellersRow.value
+  if (!el) return
+  const delta = Math.max(280, Math.round(el.clientWidth * 0.9))
+  el.scrollBy({ left: direction * delta, behavior: 'smooth' })
+}
 
 const {
   data: categoriasData,
