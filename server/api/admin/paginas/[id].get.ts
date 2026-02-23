@@ -5,10 +5,12 @@ import { requireAdminSession } from '../../../utils/adminSession'
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
 
+  const prismaAny = prisma as any
+
   const id = String(event.context.params?.id || '')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id obrigatório' })
 
-  const pagina = await prisma.pagina.findUnique({
+  const pagina = await prismaAny.pagina.findUnique({
     where: { id },
     select: {
       id: true,
@@ -16,6 +18,8 @@ export default defineEventHandler(async (event) => {
       slug: true,
       conteudo: true,
       publicado: true,
+      showInFooter: true,
+      footerOrder: true,
       criadoEm: true,
       atualizadoEm: true
     }

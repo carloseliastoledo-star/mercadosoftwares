@@ -216,6 +216,8 @@ model Pagina {
   slug        String   @unique
   conteudo    String?  @db.Text
   publicado   Boolean  @default(false)
+  showInFooter Boolean @default(false)
+  footerOrder Int?
   criadoEm    DateTime @default(now()) @db.DateTime(0)
   atualizadoEm DateTime @updatedAt @db.DateTime(0)
 }

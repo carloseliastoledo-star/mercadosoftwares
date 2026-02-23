@@ -7,6 +7,8 @@ import { Prisma } from '@prisma/client'
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
 
+  const prismaAny = prisma as any
+
   const id = String(event.context.params?.id || '')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id obrigatório' })
 
@@ -24,19 +26,25 @@ export default defineEventHandler(async (event) => {
   const conteudoRaw = body?.conteudo != null ? String(body.conteudo) : null
   const conteudo = conteudoRaw != null ? DOMPurify.sanitize(conteudoRaw) : null
   const publicado = Boolean(body?.publicado)
+  const showInFooter = Boolean(body?.showInFooter)
+  const footerOrder = body?.footerOrder === null || body?.footerOrder === undefined || body?.footerOrder === ''
+    ? null
+    : Number(body.footerOrder)
 
   if (!titulo) throw createError({ statusCode: 400, statusMessage: 'Título obrigatório' })
   if (!slug) throw createError({ statusCode: 400, statusMessage: 'Slug obrigatório' })
   if (slug.length < 2) throw createError({ statusCode: 400, statusMessage: 'Slug inválido' })
 
   try {
-    const pagina = await prisma.pagina.update({
+    const pagina = await prismaAny.pagina.update({
       where: { id },
       data: {
         titulo,
         slug,
         conteudo,
-        publicado
+        publicado,
+        showInFooter,
+        footerOrder
       },
       select: {
         id: true,
@@ -44,6 +52,8 @@ export default defineEventHandler(async (event) => {
         slug: true,
         conteudo: true,
         publicado: true,
+        showInFooter: true,
+        footerOrder: true,
         criadoEm: true,
         atualizadoEm: true
       }

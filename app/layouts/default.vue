@@ -273,7 +273,17 @@
               <span class="font-semibold text-gray-700">Email:</span>
               <span class="ml-1">service@gvgmallglobal.com</span>
             </div>
-            <template v-if="footerPolicyLinksParsed.length">
+            <template v-if="footerLinksFromPages.length">
+              <NuxtLink
+                v-for="l in footerLinksFromPages"
+                :key="l.label + l.to"
+                :to="l.to"
+                class="block hover:underline"
+              >
+                {{ l.label }}
+              </NuxtLink>
+            </template>
+            <template v-else-if="footerPolicyLinksParsed.length">
               <NuxtLink
                 v-for="l in footerPolicyLinksParsed"
                 :key="l.label + l.to"
@@ -503,6 +513,8 @@ const { cart } = useCart()
 
 const { data: siteSettings } = await useFetch('/api/site-settings', { server: true })
 
+const { data: footerPagesData } = await useFetch('/api/paginas/footer', { server: true })
+
 const { data } = await useFetch<{ ok: true; paginas: PaginaLinkDto[] }>('/api/paginas', {
   server: true
 })
@@ -531,6 +543,14 @@ const mainMenu = computed(() => {
 const cartCount = computed(() => (cart.value || []).length)
 
 type FooterPolicyLinkDto = { label: string; to: string }
+
+const footerLinksFromPages = computed<FooterPolicyLinkDto[]>(() => {
+  const pages = (footerPagesData.value as any)?.paginas
+  if (!Array.isArray(pages)) return []
+  return pages
+    .map((p: any) => ({ label: String(p?.titulo || '').trim(), to: `/paginas/${String(p?.slug || '').trim()}` }))
+    .filter((it) => it.label && it.to)
+})
 
 const footerPolicyLinksParsed = computed<FooterPolicyLinkDto[]>(() => {
   const raw = String((siteSettings.value as any)?.settings?.footerPolicyLinks || '').trim()

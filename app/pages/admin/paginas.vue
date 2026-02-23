@@ -24,6 +24,7 @@
             <th class="p-3 text-left">Título</th>
             <th class="p-3 text-left">Slug</th>
             <th class="p-3 text-left">Publicado</th>
+            <th class="p-3 text-left">Rodapé</th>
             <th class="p-3 text-left">Atualizado</th>
             <th class="p-3 text-left">Ações</th>
           </tr>
@@ -38,6 +39,14 @@
                 :class="p.publicado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'"
               >
                 {{ p.publicado ? 'SIM' : 'NÃO' }}
+              </span>
+            </td>
+            <td class="p-3">
+              <span
+                class="px-2 py-1 rounded text-xs"
+                :class="p.showInFooter ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'"
+              >
+                {{ p.showInFooter ? 'SIM' : 'NÃO' }}
               </span>
             </td>
             <td class="p-3 text-xs text-gray-600">{{ formatDate(p.atualizadoEm) }}</td>
@@ -108,6 +117,17 @@
               <label for="pub" class="text-sm">Publicar no site</label>
             </div>
 
+            <div class="flex items-center gap-2">
+              <input id="footer" v-model="formShowInFooter" type="checkbox" class="h-4 w-4" />
+              <label for="footer" class="text-sm">Mostrar no rodapé</label>
+            </div>
+
+            <div v-if="formShowInFooter" class="max-w-xs">
+              <label class="block font-medium mb-2">Ordem no rodapé (opcional)</label>
+              <input v-model="formFooterOrder" type="number" class="w-full border rounded-lg p-3" placeholder="Ex: 1" />
+              <p class="text-xs text-gray-500 mt-2">Menor número aparece primeiro. Se vazio, usa ordem de criação.</p>
+            </div>
+
             <div v-if="modalMessage" class="text-green-700 text-sm font-medium">{{ modalMessage }}</div>
             <div v-if="modalError" class="text-red-700 text-sm font-medium">{{ modalError }}</div>
           </div>
@@ -138,6 +158,8 @@ type PaginaListItem = {
   titulo: string
   slug: string
   publicado: boolean
+  showInFooter: boolean
+  footerOrder: number | null
   criadoEm: string
   atualizadoEm: string
 }
@@ -148,6 +170,8 @@ type PaginaDetail = {
   slug: string
   conteudo: string | null
   publicado: boolean
+  showInFooter: boolean
+  footerOrder: number | null
   criadoEm: string
   atualizadoEm: string
 }
@@ -166,6 +190,8 @@ const formSlug = ref('')
 const formConteudo = ref('')
 const formIsHtml = ref(false)
 const formPublicado = ref(false)
+const formShowInFooter = ref(false)
+const formFooterOrder = ref<string>('')
 
 const modalLoading = ref(false)
 const modalMessage = ref('')
@@ -178,6 +204,8 @@ function openCreate() {
   formConteudo.value = ''
   formIsHtml.value = false
   formPublicado.value = false
+  formShowInFooter.value = false
+  formFooterOrder.value = ''
   modalMessage.value = ''
   modalError.value = ''
   showModal.value = true
@@ -196,6 +224,10 @@ async function openEdit(id: string) {
     formConteudo.value = res.pagina.conteudo || ''
     formIsHtml.value = /<\s*[a-z][\s\S]*>/i.test(String(res.pagina.conteudo || ''))
     formPublicado.value = Boolean(res.pagina.publicado)
+    formShowInFooter.value = Boolean((res.pagina as any).showInFooter)
+    formFooterOrder.value = (res.pagina as any).footerOrder === null || (res.pagina as any).footerOrder === undefined
+      ? ''
+      : String((res.pagina as any).footerOrder)
   } catch (err: any) {
     modalError.value = err?.data?.statusMessage || 'Erro ao carregar página'
   }
@@ -221,7 +253,9 @@ async function saveModal() {
       titulo: formTitulo.value,
       slug: formSlug.value,
       conteudo: formConteudo.value,
-      publicado: formPublicado.value
+      publicado: formPublicado.value,
+      showInFooter: formShowInFooter.value,
+      footerOrder: formFooterOrder.value
     }
 
     if (editingId.value) {
