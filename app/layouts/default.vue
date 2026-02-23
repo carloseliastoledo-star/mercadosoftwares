@@ -17,7 +17,7 @@
     </div>
 
     <!-- HEADER -->
-    <header class="border-b bg-white sticky top-0 z-40">
+    <header v-if="!isLicencasDigitais" class="border-b bg-white sticky top-0 z-40">
       <div class="max-w-7xl mx-auto px-6">
         <div class="h-16 md:h-20 flex items-center justify-between gap-4">
           <div class="flex items-center gap-4 min-w-0">
@@ -97,6 +97,52 @@
             <span aria-hidden="true">{{ menuIcon(it.label) }}</span>
             {{ it.label }}
           </NuxtLink>
+        </div>
+      </div>
+    </header>
+
+    <header v-else class="bg-white border-b sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="h-20 flex items-center justify-between gap-6">
+          <NuxtLink to="/" class="flex items-center gap-3 min-w-0">
+            <picture>
+              <source v-if="logoWebpPath" :srcset="logoWebpPath" type="image/webp" />
+              <img :src="logoPath" :alt="siteName" class="h-10 md:h-12 w-auto" />
+            </picture>
+          </NuxtLink>
+
+          <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-800">
+            <NuxtLink to="/categoria/windows" class="hover:text-blue-600">Windows</NuxtLink>
+            <NuxtLink to="/categoria/windows-server" class="hover:text-blue-600">Windows Server</NuxtLink>
+            <NuxtLink to="/categoria/office" class="hover:text-blue-600">Office</NuxtLink>
+            <NuxtLink to="/categoria/corel" class="hover:text-blue-600">Corel</NuxtLink>
+            <NuxtLink to="/categoria/autodesk" class="hover:text-blue-600">Autodesk</NuxtLink>
+            <NuxtLink to="/blog" class="hover:text-blue-600">Blog</NuxtLink>
+          </nav>
+
+          <div class="flex items-center gap-3">
+            <form class="hidden md:flex w-[360px]" @submit.prevent="submitSearch">
+              <input
+                v-model="search"
+                type="search"
+                :placeholder="t.searchPlaceholder"
+                class="w-full h-10 rounded-l-md border border-gray-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-blue-600/30 focus:border-blue-600"
+              />
+              <button type="submit" class="h-10 px-4 rounded-r-md bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm">
+                {{ t.searchButton }}
+              </button>
+            </form>
+
+            <NuxtLink to="/checkout" class="relative inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 hover:bg-gray-50">
+              <span aria-hidden="true">🛒</span>
+              <span
+                v-if="cartCount > 0"
+                class="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-bold flex items-center justify-center"
+              >
+                {{ cartCount }}
+              </span>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </header>
