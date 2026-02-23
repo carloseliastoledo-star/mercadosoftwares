@@ -121,6 +121,30 @@
           </nav>
 
           <div class="flex items-center gap-3">
+            <div class="hidden md:flex items-center gap-2">
+              <select
+                class="h-10 rounded-md border border-gray-200 bg-white px-2 text-xs font-semibold text-gray-800"
+                :value="intl.language"
+                aria-label="Language"
+                @change="onLangChange"
+              >
+                <option value="pt">PT</option>
+                <option value="en">EN</option>
+                <option value="es">ES</option>
+              </select>
+
+              <select
+                class="h-10 rounded-md border border-gray-200 bg-white px-2 text-xs font-semibold text-gray-800"
+                :value="intl.currencyLower"
+                aria-label="Currency"
+                @change="onCurrencyChange"
+              >
+                <option value="usd">USD</option>
+                <option value="eur">EUR</option>
+                <option value="brl">BRL</option>
+              </select>
+            </div>
+
             <form class="hidden md:flex w-[360px]" @submit.prevent="submitSearch">
               <input
                 v-model="search"
@@ -506,6 +530,22 @@ function submitSearch() {
     return
   }
   navigateTo({ path: '/produtos', query: { q } })
+}
+
+function onLangChange(e: Event) {
+  const next = String((e.target as HTMLSelectElement)?.value || '').trim().toLowerCase()
+  if (next === 'pt' || next === 'en' || next === 'es') {
+    intl.setLanguage(next)
+    if (!process.server) window.location.reload()
+  }
+}
+
+function onCurrencyChange(e: Event) {
+  const next = String((e.target as HTMLSelectElement)?.value || '').trim().toLowerCase()
+  if (next === 'brl' || next === 'usd' || next === 'eur') {
+    intl.setCurrency(next)
+    if (!process.server) window.location.reload()
+  }
 }
 
 function menuIcon(label: string) {
