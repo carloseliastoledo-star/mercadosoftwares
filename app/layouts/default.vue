@@ -271,7 +271,7 @@
           <div class="mt-4 space-y-2 text-gray-600">
             <div>
               <span class="font-semibold text-gray-700">Email:</span>
-              <span class="ml-1">service@gvgmall.com</span>
+              <span class="ml-1">service@gvgmallglobal.com</span>
             </div>
             <template v-if="footerPolicyLinksParsed.length">
               <NuxtLink
