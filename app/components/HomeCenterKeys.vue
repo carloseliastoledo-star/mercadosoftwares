@@ -21,7 +21,7 @@
             <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/40" />
           </div>
 
-          <div class="px-6 py-10 md:px-12 md:py-12">
+          <div class="relative z-10 px-6 py-10 md:px-12 md:py-12">
             <div class="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <div class="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-widest text-amber-200 bg-amber-500/15 border border-amber-500/20 px-3 py-1 rounded-full">
@@ -70,16 +70,8 @@
                 </div>
               </div>
 
-              <div class="hidden lg:block relative">
-                <img
-                  src="/licencasdigitais-gvg/hero-woman.png"
-                  alt=""
-                  class="w-full max-w-[520px] ml-auto object-contain"
-                  loading="eager"
-                  decoding="async"
-                />
-
-                <div class="absolute top-6 left-0 right-0 grid grid-cols-2 gap-3 max-w-[420px]">
+              <div class="hidden lg:block">
+                <div class="grid grid-cols-2 gap-3">
                   <NuxtLink to="/categoria/windows" class="rounded-2xl bg-white/10 border border-white/10 p-4 hover:bg-white/15 transition">
                     <div class="text-xs font-extrabold tracking-widest text-white/70">CATEGORY</div>
                     <div class="mt-2 text-lg font-extrabold text-white">Windows</div>
