@@ -114,7 +114,7 @@
           <NuxtLink to="/" class="flex items-center gap-3 min-w-0">
             <picture>
               <source v-if="effectiveLogoWebpPath" :srcset="effectiveLogoWebpPath" type="image/webp" />
-              <img :src="effectiveLogoPath" :alt="siteName" class="h-10 md:h-12 w-auto" />
+              <img :src="effectiveLogoPath" :alt="siteName" class="h-12 md:h-14 w-auto" />
             </picture>
           </NuxtLink>
 
@@ -196,12 +196,13 @@
 
     <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 md:hidden">
       <div class="absolute inset-0 bg-black/40" @click="mobileMenuOpen = false" />
-      <div class="absolute inset-y-0 left-0 w-[85%] max-w-sm bg-white shadow-xl flex flex-col">
+
+      <div class="absolute inset-y-0 left-0 w-80 max-w-[90%] bg-white shadow-xl flex flex-col">
         <div class="px-5 py-4 border-b flex items-center justify-between">
           <div class="flex items-center gap-3">
             <picture>
               <source v-if="effectiveLogoWebpPath" :srcset="effectiveLogoWebpPath" type="image/webp" />
-              <img :src="effectiveLogoPath" :alt="siteName" class="h-12 w-auto" />
+              <img :src="effectiveLogoPath" :alt="siteName" class="h-14 w-auto" />
             </picture>
             <div class="font-extrabold text-gray-900">{{ siteName }}</div>
           </div>

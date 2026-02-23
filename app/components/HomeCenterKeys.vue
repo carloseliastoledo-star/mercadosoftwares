@@ -4,106 +4,80 @@
       <div class="max-w-7xl mx-auto px-6 pt-8 pb-10">
         <div
           v-if="isLicencasDigitais"
-          class="relative rounded-3xl overflow-hidden border border-black/10 shadow-sm"
+          class="rounded-3xl overflow-hidden border border-black/10 shadow-sm bg-[#eef6fb]"
         >
-          <div class="absolute inset-0">
-            <picture>
-              <source media="(max-width: 767px)" srcset="/licencasdigitais-gvg/hero-mobile.png" />
+          <div class="grid md:grid-cols-2 gap-0">
+            <div class="relative min-h-[240px] md:min-h-[300px] lg:min-h-[340px]">
               <img
-                src="/licencasdigitais-gvg/hero.png"
+                src="/licencasdigitais-gvg/hero-woman.png"
                 alt=""
-                class="h-full w-full object-cover"
+                class="absolute inset-0 h-full w-full object-cover"
                 loading="eager"
                 decoding="async"
                 fetchpriority="high"
               />
-            </picture>
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/40" />
-          </div>
+              <div class="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent" />
 
-          <div class="relative z-10 px-6 py-10 md:px-12 md:py-12">
-            <div class="grid lg:grid-cols-2 gap-8 items-center">
-              <div>
-                <div class="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-widest text-amber-200 bg-amber-500/15 border border-amber-500/20 px-3 py-1 rounded-full">
-                  {{ t.heroBadge }}
-                </div>
-                <h1 class="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight text-white">
-                  {{ t.heroTitle }}
-                  <span class="block text-cyan-200">{{ t.heroSubtitle }}</span>
-                </h1>
-                <p class="mt-4 text-white/80 text-sm md:text-base leading-relaxed">
-                  {{ t.heroDescription }}
-                </p>
+              <div class="relative z-10 p-6 md:p-10">
+                <div class="max-w-sm">
+                  <div class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
+                    Promotion of
+                    <span class="block">the Week!</span>
+                  </div>
+                  <p class="mt-3 text-sm text-gray-700">
+                    Take advantage of special
+                    <br />
+                    offers on GVGMALL!
+                  </p>
 
-                <div class="mt-6 flex flex-col sm:flex-row gap-3">
-                  <NuxtLink
-                    to="/produtos"
-                    class="bg-amber-400 hover:bg-amber-300 text-neutral-950 font-extrabold px-6 py-3 rounded-xl transition text-center"
-                  >
-                    {{ t.heroPrimaryCta }}
-                  </NuxtLink>
-                  <NuxtLink
-                    to="/checkout"
-                    class="bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold px-6 py-3 rounded-xl transition text-center"
-                  >
-                    Comprar agora
-                  </NuxtLink>
-                </div>
-
-                <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-white/85">
-                  <div class="flex items-center gap-2">
-                    <span class="text-emerald-300">✔</span>
-                    Immediate shipping
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-emerald-300">✔</span>
-                    Monitored order
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-emerald-300">✔</span>
-                    Need assistance?
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-emerald-300">✔</span>
-                    Secure purchase
+                  <div class="mt-6">
+                    <NuxtLink
+                      to="/produtos"
+                      class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-black/10 hover:bg-gray-50"
+                    >
+                      Shop now
+                    </NuxtLink>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div class="hidden lg:block">
-                <div class="grid grid-cols-2 gap-3">
-                  <NuxtLink to="/categoria/windows" class="rounded-2xl bg-black/25 backdrop-blur-sm border border-white/20 p-4 hover:bg-black/35 transition">
-                    <div class="text-xs font-extrabold tracking-widest text-white/70">CATEGORY</div>
-                    <div class="mt-2 text-lg font-extrabold text-white">Windows</div>
-                  </NuxtLink>
-                  <NuxtLink to="/categoria/office" class="rounded-2xl bg-black/25 backdrop-blur-sm border border-white/20 p-4 hover:bg-black/35 transition">
-                    <div class="text-xs font-extrabold tracking-widest text-white/70">CATEGORY</div>
-                    <div class="mt-2 text-lg font-extrabold text-white">Office</div>
-                  </NuxtLink>
-                  <NuxtLink to="/categoria/windows-server" class="rounded-2xl bg-black/25 backdrop-blur-sm border border-white/20 p-4 hover:bg-black/35 transition">
-                    <div class="text-xs font-extrabold tracking-widest text-white/70">CATEGORY</div>
-                    <div class="mt-2 text-lg font-extrabold text-white">Windows Server</div>
-                  </NuxtLink>
-                  <NuxtLink to="/categoria/autodesk" class="rounded-2xl bg-black/25 backdrop-blur-sm border border-white/20 p-4 hover:bg-black/35 transition">
-                    <div class="text-xs font-extrabold tracking-widest text-white/70">CATEGORY</div>
-                    <div class="mt-2 text-lg font-extrabold text-white">Autodesk</div>
-                  </NuxtLink>
+            <div class="relative min-h-[240px] md:min-h-[300px] lg:min-h-[340px] bg-[#eef6fb]">
+              <div class="relative z-10 p-6 md:p-10 h-full flex items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center w-full">
+                  <div>
+                    <div class="text-2xl md:text-3xl font-extrabold text-gray-900">
+                      Windows 11 Pro +
+                      <span class="block">Office 365 Pro</span>
+                    </div>
+                    <p class="mt-3 text-sm text-gray-700 max-w-xs">
+                      Get the ultimate productivity
+                      <br />
+                      and security package!
+                    </p>
+                    <div class="mt-6">
+                      <NuxtLink
+                        to="/produtos"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-black/10 hover:bg-gray-50"
+                      >
+                        Buy Now
+                      </NuxtLink>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-center sm:justify-end">
+                    <img
+                      src="/licencasdigitais-gvg/promo.png"
+                      alt=""
+                      class="w-[220px] md:w-[260px] lg:w-[280px] h-auto"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div v-if="isLicencasDigitais && !onlyBestSellers" class="mt-6">
-          <NuxtLink to="/produtos" class="block overflow-hidden rounded-2xl border bg-white hover:shadow-sm transition">
-            <img
-              src="/licencasdigitais-gvg/promo.png"
-              alt=""
-              class="w-full h-auto"
-              loading="lazy"
-              decoding="async"
-            />
-          </NuxtLink>
         </div>
 
         <div v-if="isLicencasDigitais && onlyBestSellers" class="mt-10">
