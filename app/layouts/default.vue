@@ -248,7 +248,72 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-gray-100 border-t mt-20">
+    <footer v-if="isLicencasDigitais" class="bg-slate-950 text-slate-200 mt-20">
+      <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-10 text-sm">
+        <div class="md:col-span-1">
+          <img src="/licencasdigitais-gvg/logo-footer.svg" :alt="siteName" class="h-9 w-auto" loading="lazy" decoding="async" />
+          <p class="mt-4 text-slate-300">
+            {{ footerDescriptionText }}
+          </p>
+          <div class="mt-5 text-xs text-slate-400 space-y-1">
+            <p><span class="font-semibold text-slate-200">Razão Social:</span> {{ companyLegalName }}</p>
+            <p><span class="font-semibold text-slate-200">CNPJ:</span> {{ companyCnpj }}</p>
+            <p><span class="font-semibold text-slate-200">Endereço:</span> {{ companyAddress }}</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs font-extrabold tracking-widest text-slate-400">INSTITUCIONAL</div>
+          <ul class="mt-4 space-y-2">
+            <li v-for="l in footerInstitutionalLinks" :key="l.to">
+              <NuxtLink :to="l.to" class="hover:text-white">{{ l.label }}</NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="text-xs font-extrabold tracking-widest text-slate-400">CATEGORIAS</div>
+          <ul class="mt-4 space-y-2">
+            <li><NuxtLink to="/categoria/windows" class="hover:text-white">Windows</NuxtLink></li>
+            <li><NuxtLink to="/categoria/windows-server" class="hover:text-white">Windows Server</NuxtLink></li>
+            <li><NuxtLink to="/categoria/office" class="hover:text-white">Office</NuxtLink></li>
+            <li><NuxtLink to="/categoria/corel" class="hover:text-white">Corel</NuxtLink></li>
+            <li><NuxtLink to="/categoria/autodesk" class="hover:text-white">Autodesk</NuxtLink></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="text-xs font-extrabold tracking-widest text-slate-400">SUPORTE</div>
+          <div class="mt-4 space-y-2 text-slate-300">
+            <div class="font-semibold text-slate-200">{{ t.footerSupportTitle }}</div>
+            <div>{{ t.footerSupportSubtitle }}</div>
+            <div>{{ t.footerIntlSupport }}</div>
+            <div v-if="supportEmail" class="font-semibold text-slate-200">{{ supportEmail }}</div>
+            <div v-if="whatsappHref" class="font-semibold text-slate-200">
+              <a class="hover:underline" :href="whatsappHref" target="_blank" rel="noopener noreferrer">
+                {{ t.whatsappPrefix }} {{ whatsappLabel }}
+              </a>
+            </div>
+            <div class="pt-2 text-xs text-slate-400 space-y-1">
+              <p><span class="font-semibold text-slate-200">Telefone/Whatsapp:</span> {{ companyPhone }}</p>
+              <p><span class="font-semibold text-slate-200">E-mail:</span> {{ companyEmail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          <div>© {{ new Date().getFullYear() }} {{ siteName }} — {{ t.rightsReserved }}</div>
+          <div class="flex items-center gap-4">
+            <NuxtLink to="/privacidade" class="hover:text-white">{{ t.footerPrivacy }}</NuxtLink>
+            <NuxtLink to="/termos" class="hover:text-white">{{ t.footerTerms }}</NuxtLink>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <footer v-else class="bg-gray-100 border-t mt-20">
       <div class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-gray-600">
 
         <div>
@@ -260,12 +325,7 @@
 
         <div>
           <h3 class="font-semibold text-gray-800 mb-2">{{ footerLinksTitleText }}</h3>
-          <ul v-if="isLicencasDigitais" class="space-y-2">
-            <li v-for="l in footerInstitutionalLinks" :key="l.to">
-              <NuxtLink :to="l.to" class="hover:text-blue-600">{{ l.label }}</NuxtLink>
-            </li>
-          </ul>
-          <ul v-else class="space-y-2">
+          <ul class="space-y-2">
             <li><NuxtLink to="/produtos" class="hover:text-blue-600">{{ t.footerProducts }}</NuxtLink></li>
             <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">{{ t.footerTutorials }}</NuxtLink></li>
             <li><NuxtLink to="/blog" class="hover:text-blue-600">{{ t.footerBlog }}</NuxtLink></li>

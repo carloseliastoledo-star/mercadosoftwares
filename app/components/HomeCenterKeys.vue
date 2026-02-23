@@ -7,14 +7,17 @@
           class="relative rounded-3xl overflow-hidden border border-black/10 shadow-sm"
         >
           <div class="absolute inset-0">
-            <img
-              src="/licencasdigitais-gvg/hero.png"
-              alt=""
-              class="h-full w-full object-cover"
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
-            />
+            <picture>
+              <source media="(max-width: 767px)" srcset="/licencasdigitais-gvg/hero-mobile.png" />
+              <img
+                src="/licencasdigitais-gvg/hero.png"
+                alt=""
+                class="h-full w-full object-cover"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
+            </picture>
             <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/40" />
           </div>
 
