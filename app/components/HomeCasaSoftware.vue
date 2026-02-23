@@ -178,13 +178,13 @@
                 to="/produtos"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition text-center"
               >
-                Comprar agora
+                {{ $t('buy_now') }}
               </NuxtLink>
               <NuxtLink
                 to="/tutoriais"
                 class="border border-blue-600 text-blue-700 hover:bg-white font-semibold px-6 py-3 rounded-lg transition text-center"
               >
-                Ver tutoriais
+                {{ $t('view_tutorials') }}
               </NuxtLink>
             </div>
           </div>

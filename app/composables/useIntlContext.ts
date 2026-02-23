@@ -54,6 +54,25 @@ function detectHost(): string {
   return String(window.location.host || '').toLowerCase()
 }
 
+function detectLanguageFromPath(): 'pt' | 'en' | 'es' | null {
+  try {
+    if (import.meta.server) {
+      const url = useRequestURL()
+      const pathname = String(url?.pathname || '')
+      if (pathname === '/en' || pathname.startsWith('/en/')) return 'en'
+      if (pathname === '/es' || pathname.startsWith('/es/')) return 'es'
+      return null
+    }
+
+    const path = String(window.location.pathname || '')
+    if (path === '/en' || path.startsWith('/en/')) return 'en'
+    if (path === '/es' || path.startsWith('/es/')) return 'es'
+    return null
+  } catch {
+    return null
+  }
+}
+
 export function useIntlContext() {
   const host = computed(() => detectHost())
 
@@ -64,6 +83,9 @@ export function useIntlContext() {
   const countryCode = computed(() => String(countryCookie.value || '').trim().toUpperCase())
 
   const language = computed<ClientIntl['language']>(() => {
+    const fromPath = detectLanguageFromPath()
+    if (fromPath) return fromPath
+
     const c = normalizeLanguage(langCookie.value)
     if (c) return c
 

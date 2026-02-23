@@ -2,6 +2,8 @@
 import { computed } from 'vue'
 import { useIntlContext } from '#imports'
 
+const { t } = useI18n()
+
 const intl = useIntlContext()
 
 interface Product {
@@ -93,9 +95,7 @@ const pixLabel = computed(() => {
 })
 
 const buyNowLabel = computed(() => {
-  if (intl.language.value === 'en') return 'Buy now'
-  if (intl.language.value === 'es') return 'Comprar ahora'
-  return 'Comprar agora'
+  return t('buy_now')
 })
 
 const productOldPrice = computed(() => {
