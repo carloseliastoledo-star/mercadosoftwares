@@ -338,25 +338,6 @@ const { data, pending, error } = await useFetch(
   { server: true }
 )
 
-const viewItemTracked = ref(false)
-
-watch(
-  () => safeProduct.value,
-  (p) => {
-    if (!import.meta.client) return
-    if (viewItemTracked.value) return
-    if (!p || !(p as any).id) return
-    viewItemTracked.value = true
-
-    try {
-      trackViewItem(p)
-    } catch {
-      // ignore
-    }
-  },
-  { immediate: true }
-)
-
 const safeProduct = computed(() => {
   const p = data.value
 
@@ -399,6 +380,25 @@ const safeProduct = computed(() => {
     descricao: descricaoLonga
   }
 })
+
+const viewItemTracked = ref(false)
+
+watch(
+  () => safeProduct.value,
+  (p) => {
+    if (!import.meta.client) return
+    if (viewItemTracked.value) return
+    if (!p || !(p as any).id) return
+    viewItemTracked.value = true
+
+    try {
+      trackViewItem(p)
+    } catch {
+      // ignore
+    }
+  },
+  { immediate: true }
+)
 
 const pageH1 = computed(() => {
   if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
