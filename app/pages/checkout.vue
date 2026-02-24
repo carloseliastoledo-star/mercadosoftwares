@@ -451,8 +451,7 @@ const config = useRuntimeConfig()
 const isIntl = computed(() => intl.isIntl.value)
 
 const useStripeCheckout = computed(() => {
-  const c = String(intl.countryCode.value || '').trim().toUpperCase()
-  return !!c && c !== 'BR'
+  return isIntl.value
 })
 
 const { siteName } = useSiteBranding()
