@@ -451,7 +451,9 @@ const config = useRuntimeConfig()
 const isIntl = computed(() => intl.isIntl.value)
 
 const useStripeCheckout = computed(() => {
-  return isIntl.value
+  const c = String(intl.countryCode.value || '').trim().toUpperCase()
+  if (!c) return false
+  return c !== 'BR'
 })
 
 const { siteName } = useSiteBranding()
@@ -578,8 +580,10 @@ const acceptedTerms = ref(false)
 const finalizeLoading = ref(false)
 const finalizeError = ref('')
 
-const intlCountryCode = ref('')
-const intlCurrency = ref('usd')
+const intlCountryCode = ref(String(intl.countryCode.value || '').trim().toUpperCase())
+const intlCurrency = ref<'usd' | 'eur'>(
+  (String(intl.currencyLower.value || 'usd').toLowerCase() === 'eur' ? 'eur' : 'usd') as any
+)
 
 watch(
   () => intl.countryCode.value,
@@ -587,6 +591,10 @@ watch(
     const v = String(next || '').trim().toUpperCase()
     if (intlCountryCode.value === v) return
     intlCountryCode.value = v
+
+    const cur = String(intl.currencyLower.value || '').toLowerCase()
+    if (cur === 'eur') intlCurrency.value = 'eur'
+    else if (cur === 'usd') intlCurrency.value = 'usd'
   },
   { immediate: true }
 )

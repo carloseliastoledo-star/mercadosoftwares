@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError, getCookie } from 'h3'
 import Stripe from 'stripe'
 import prisma from '#root/server/db/prisma'
 import { getStoreContext } from '#root/server/utils/store'
@@ -8,6 +8,11 @@ function round2(n: number) {
 }
 
 export default defineEventHandler(async (event) => {
+  const country = String(getCookie(event, 'ld_country') || '').trim().toUpperCase()
+  if (country === 'BR' || !country) {
+    throw createError({ statusCode: 403, statusMessage: 'Stripe disponível apenas para pagamentos fora do Brasil' })
+  }
+
   const { storeSlug } = getStoreContext(event)
   if (!storeSlug) {
     throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })

@@ -116,11 +116,9 @@ export function useIntlContext() {
   })
 
   const currencyLower = computed<ClientIntl['currencyLower']>(() => {
-    const c = normalizeCurrency(currencyCookie.value)
-    if (c) return c
-
     const country = String(countryCode.value || '').trim().toUpperCase()
-    if (country === 'BR' || !country) return 'brl'
+
+    if (country === 'BR') return 'brl'
 
     const eur = new Set([
       'AT',
@@ -151,8 +149,15 @@ export function useIntlContext() {
       'ES'
     ])
 
-    if (eur.has(country)) return 'eur'
-    return 'usd'
+    if (country) {
+      if (eur.has(country)) return 'eur'
+      return 'usd'
+    }
+
+    const c = normalizeCurrency(currencyCookie.value)
+    if (c) return c
+
+    return 'brl'
   })
 
   const currency = computed<ClientIntl['currency']>(() => {

@@ -1,9 +1,14 @@
-import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError, getCookie } from 'h3'
 import prisma from '../../db/prisma.js'
 import { getMpPayment } from '../../utils/mercadopago.js'
 import { getStoreContext } from '../../utils/store'
 
 export default defineEventHandler(async (event) => {
+  const country = String(getCookie(event, 'ld_country') || '').trim().toUpperCase()
+  if (country && country !== 'BR') {
+    throw createError({ statusCode: 403, statusMessage: 'Mercado Pago disponível apenas no Brasil' })
+  }
+
   const { storeSlug } = getStoreContext(event)
   const body = await readBody(event)
 
