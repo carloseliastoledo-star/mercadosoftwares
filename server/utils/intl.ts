@@ -2,18 +2,20 @@ import type { H3Event } from 'h3'
 import { getCookie, getRequestHeader } from 'h3'
 
 export type IntlContext = {
-  language: 'pt' | 'en' | 'es'
-  locale: 'pt-BR' | 'en-US' | 'es-ES'
+  language: 'pt' | 'en' | 'es' | 'it' | 'fr'
+  locale: 'pt-BR' | 'en-US' | 'es-ES' | 'it-IT' | 'fr-FR'
   currency: 'brl' | 'usd' | 'eur'
   host: string
 }
 
-function normalizeLanguage(input: unknown): 'pt' | 'en' | 'es' | null {
+function normalizeLanguage(input: unknown): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
   const v = String(input || '').trim().toLowerCase()
   if (!v) return null
   if (v === 'pt' || v === 'pt-br' || v.startsWith('pt')) return 'pt'
   if (v === 'en' || v === 'en-us' || v.startsWith('en')) return 'en'
   if (v === 'es' || v === 'es-es' || v.startsWith('es')) return 'es'
+  if (v === 'it' || v === 'it-it' || v.startsWith('it')) return 'it'
+  if (v === 'fr' || v === 'fr-fr' || v.startsWith('fr')) return 'fr'
   return null
 }
 
@@ -26,7 +28,7 @@ function normalizeCurrency(input: unknown): 'brl' | 'usd' | 'eur' | null {
   return null
 }
 
-function detectLanguageFromAcceptLanguage(raw: unknown): 'pt' | 'en' | 'es' | null {
+function detectLanguageFromAcceptLanguage(raw: unknown): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
   const s = String(raw || '').trim().toLowerCase()
   if (!s) return null
   const parts = s
@@ -38,6 +40,17 @@ function detectLanguageFromAcceptLanguage(raw: unknown): 'pt' | 'en' | 'es' | nu
     const lang = normalizeLanguage(base)
     if (lang) return lang
   }
+  return null
+}
+
+function detectLanguageFromPath(event?: H3Event): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
+  if (!event) return null
+  const raw = String((event as any).path || (event as any).node?.req?.url || '')
+  const pathname = raw.split('?')[0] || ''
+  if (pathname === '/en' || pathname.startsWith('/en/')) return 'en'
+  if (pathname === '/es' || pathname.startsWith('/es/')) return 'es'
+  if (pathname === '/it' || pathname.startsWith('/it/')) return 'it'
+  if (pathname === '/fr' || pathname.startsWith('/fr/')) return 'fr'
   return null
 }
 
@@ -110,20 +123,26 @@ export function getIntlContext(event?: H3Event): IntlContext {
   const cookieCountry = String(getCookie(event as any, 'ld_country') || '').trim().toUpperCase()
 
   const acceptLang = detectLanguageFromAcceptLanguage(getRequestHeader(event as any, 'accept-language'))
+  const pathLang = detectLanguageFromPath(event)
   const headerCountry = readCountryCode(event)
   const inferredHostCountry = host.endsWith('.com.br') || host.includes('.com.br:') ? 'BR' : ''
   const country = cookieCountry || headerCountry || inferredHostCountry
 
-  let language: 'pt' | 'en' | 'es' = 'pt'
+  let language: 'pt' | 'en' | 'es' | 'it' | 'fr' = 'pt'
   let currency: 'brl' | 'usd' | 'eur' = 'brl'
 
   const isEn = host.startsWith('en.')
   const isEs = host.startsWith('es.')
+  const isIt = host.startsWith('it.')
+  const isFr = host.startsWith('fr.')
 
-  if (cookieLang) language = cookieLang
+  if (pathLang) language = pathLang
+  else if (cookieLang) language = cookieLang
   else if (acceptLang) language = acceptLang
   else if (isEn) language = 'en'
   else if (isEs) language = 'es'
+  else if (isIt) language = 'it'
+  else if (isFr) language = 'fr'
 
   if (country) {
     if (country === 'BR') currency = 'brl'
@@ -135,6 +154,15 @@ export function getIntlContext(event?: H3Event): IntlContext {
     currency = language === 'pt' ? 'brl' : language === 'es' ? 'eur' : 'usd'
   }
 
-  const locale = language === 'en' ? 'en-US' : language === 'es' ? 'es-ES' : 'pt-BR'
+  const locale =
+    language === 'en'
+      ? 'en-US'
+      : language === 'es'
+        ? 'es-ES'
+        : language === 'it'
+          ? 'it-IT'
+          : language === 'fr'
+            ? 'fr-FR'
+            : 'pt-BR'
   return { language, locale, currency, host }
 }

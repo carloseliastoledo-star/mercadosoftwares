@@ -74,7 +74,7 @@
                 class="shrink-0 rounded-xl border px-3 py-2 text-xs font-extrabold transition"
                 :class="currentLocaleCode === code ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'"
                 :aria-label="`Language ${String(code).toUpperCase()}`"
-                @click="setLocale(code)"
+                @click="onSelectLocale(code)"
               >
                 {{ String(code).toUpperCase() }}
               </button>
@@ -491,7 +491,7 @@ const safeSiteName = computed(() => {
 
 const intl = useIntlContext()
 
-const { locale } = useI18n()
+const { locale, setLocale: setNuxtLocale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 const supportedLocales = ['pt', 'en', 'es', 'it', 'fr'] as const
@@ -754,20 +754,25 @@ function cycleLocale() {
   if (!process.server) window.location.reload()
 }
 
-function setLocale(next: SupportedLocale) {
+async function onSelectLocale(next: SupportedLocale) {
   try {
     intl.setLanguage(next)
   } catch {
     // ignore
   }
 
-  const path = switchLocalePath(next)
-  if (path) {
-    navigateTo(path)
+  try {
+    await setNuxtLocale(next)
     return
+  } catch {
+    // ignore
   }
 
-  if (!process.server) window.location.reload()
+  const path = switchLocalePath(next)
+  if (path) {
+    await navigateTo(path)
+    return
+  }
 }
 
 function onLangChange(e: Event) {

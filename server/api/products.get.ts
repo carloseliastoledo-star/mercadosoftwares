@@ -51,7 +51,13 @@ export default defineEventHandler(async (event) => {
 
     const intl = getIntlContext(event)
 
-    const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
+    const url = event.node?.req?.url || ''
+    const queryString = String(url).split('?')[1] || ''
+    const params = new URLSearchParams(queryString)
+    const queryLang = String(params.get('lang') || '').trim().toLowerCase()
+    const langFromQuery = queryLang === 'en' || queryLang === 'es' || queryLang === 'it' || queryLang === 'fr' ? queryLang : ''
+
+    const lang = langFromQuery || (intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : intl.language === 'it' ? 'it' : intl.language === 'fr' ? 'fr' : 'pt')
 
     const products = await (prisma as any).produto.findMany({
       where: {
@@ -60,8 +66,16 @@ export default defineEventHandler(async (event) => {
       select: {
         id: true,
         nome: true,
+        nomeEn: true,
+        nomeEs: true,
+        nomeIt: true,
+        nomeFr: true,
         slug: true,
         descricao: true,
+        descricaoEn: true,
+        descricaoEs: true,
+        descricaoIt: true,
+        descricaoFr: true,
         preco: true,
         precoAntigo: true,
         imagem: true,
@@ -76,7 +90,15 @@ export default defineEventHandler(async (event) => {
         },
         produtoCategorias: { select: { categoria: { select: { slug: true } } } },
         tutorialTitulo: true,
+        tutorialTituloEn: true,
+        tutorialTituloEs: true,
+        tutorialTituloIt: true,
+        tutorialTituloFr: true,
         tutorialSubtitulo: true,
+        tutorialSubtituloEn: true,
+        tutorialSubtituloEs: true,
+        tutorialSubtituloIt: true,
+        tutorialSubtituloFr: true,
         criadoEm: true
       },
       orderBy: {
@@ -99,10 +121,59 @@ export default defineEventHandler(async (event) => {
       const effectivePrice = effective.amount
       const effectiveOldPrice = effective.oldAmount
 
-      const translatedName = autoTranslateText(p.nome, { lang }) || p.nome
-      const translatedDescription = autoTranslateText(p.descricao, { lang }) || p.descricao
-      const translatedTutorialTitle = autoTranslateText(p.tutorialTitulo, { lang }) || p.tutorialTitulo
-      const translatedTutorialSubtitle = autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo
+      const dbName =
+        lang === 'en'
+          ? p.nomeEn
+          : lang === 'es'
+            ? p.nomeEs
+            : lang === 'it'
+              ? p.nomeIt
+              : lang === 'fr'
+                ? p.nomeFr
+                : null
+
+      const dbDescription =
+        lang === 'en'
+          ? p.descricaoEn
+          : lang === 'es'
+            ? p.descricaoEs
+            : lang === 'it'
+              ? p.descricaoIt
+              : lang === 'fr'
+                ? p.descricaoFr
+                : null
+
+      const dbTutorialTitle =
+        lang === 'en'
+          ? p.tutorialTituloEn
+          : lang === 'es'
+            ? p.tutorialTituloEs
+            : lang === 'it'
+              ? p.tutorialTituloIt
+              : lang === 'fr'
+                ? p.tutorialTituloFr
+                : null
+
+      const dbTutorialSubtitle =
+        lang === 'en'
+          ? p.tutorialSubtituloEn
+          : lang === 'es'
+            ? p.tutorialSubtituloEs
+            : lang === 'it'
+              ? p.tutorialSubtituloIt
+              : lang === 'fr'
+                ? p.tutorialSubtituloFr
+                : null
+
+      const translatedName = (typeof dbName === 'string' && dbName.trim()) ? dbName : (autoTranslateText(p.nome, { lang }) || p.nome)
+      const baseDescription = typeof p.descricao === 'string' ? p.descricao : ''
+      const translatedDescription = (typeof dbDescription === 'string' && dbDescription.trim()) ? dbDescription : (autoTranslateText(baseDescription, { lang }) || baseDescription)
+      const translatedTutorialTitle = (typeof dbTutorialTitle === 'string' && dbTutorialTitle.trim())
+        ? dbTutorialTitle
+        : (autoTranslateText(p.tutorialTitulo, { lang }) || p.tutorialTitulo)
+      const translatedTutorialSubtitle = (typeof dbTutorialSubtitle === 'string' && dbTutorialSubtitle.trim())
+        ? dbTutorialSubtitle
+        : (autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo)
 
       return {
         id: p.id,

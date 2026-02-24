@@ -56,10 +56,13 @@ export default defineEventHandler(async (event) => {
   const { storeSlug } = getStoreContext()
 
   const intl = getIntlContext(event)
-  const lang = intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : 'pt'
-
   const query = getQuery(event)
   const includeTutorial = String((query as any)?.includeTutorial || '').trim() === '1'
+
+  const queryLang = String((query as any)?.lang || '').trim().toLowerCase()
+  const langFromQuery = queryLang === 'en' || queryLang === 'es' || queryLang === 'it' || queryLang === 'fr' ? queryLang : ''
+
+  const lang = langFromQuery || (intl.language === 'en' ? 'en' : intl.language === 'es' ? 'es' : intl.language === 'it' ? 'it' : intl.language === 'fr' ? 'fr' : 'pt')
 
   if (!rawSlug) {
     throw createError({
@@ -81,17 +84,37 @@ export default defineEventHandler(async (event) => {
     select: {
       id: true,
       nome: true,
+      nomeEn: true,
+      nomeEs: true,
+      nomeIt: true,
+      nomeFr: true,
       slug: true,
       finalUrl: true,
       descricao: true,
+      descricaoEn: true,
+      descricaoEs: true,
+      descricaoIt: true,
+      descricaoFr: true,
       preco: true,
       precoAntigo: true,
       ativo: true,
       imagem: true,
       cardItems: true,
       tutorialTitulo: true,
+      tutorialTituloEn: true,
+      tutorialTituloEs: true,
+      tutorialTituloIt: true,
+      tutorialTituloFr: true,
       tutorialSubtitulo: true,
+      tutorialSubtituloEn: true,
+      tutorialSubtituloEs: true,
+      tutorialSubtituloIt: true,
+      tutorialSubtituloFr: true,
       tutorialConteudo: true,
+      tutorialConteudoEn: true,
+      tutorialConteudoEs: true,
+      tutorialConteudoIt: true,
+      tutorialConteudoFr: true,
       criadoEm: true,
       precosLoja: {
         where: { storeSlug: storeSlug || undefined },
@@ -127,12 +150,71 @@ export default defineEventHandler(async (event) => {
     currencyRows: (product as any).precosMoeda || []
   })
 
-  const translatedName = autoTranslateText(product.nome, { lang }) || product.nome
-  const translatedDescription = autoTranslateText(description, { lang }) || description
-  const translatedTutorialTitle = autoTranslateText(product.tutorialTitulo, { lang }) || product.tutorialTitulo
-  const translatedTutorialSubtitle = autoTranslateText(product.tutorialSubtitulo, { lang }) || product.tutorialSubtitulo
+  const dbName =
+    lang === 'en'
+      ? (product as any).nomeEn
+      : lang === 'es'
+        ? (product as any).nomeEs
+        : lang === 'it'
+          ? (product as any).nomeIt
+          : lang === 'fr'
+            ? (product as any).nomeFr
+            : null
+
+  const dbDescription =
+    lang === 'en'
+      ? (product as any).descricaoEn
+      : lang === 'es'
+        ? (product as any).descricaoEs
+        : lang === 'it'
+          ? (product as any).descricaoIt
+          : lang === 'fr'
+            ? (product as any).descricaoFr
+            : null
+
+  const dbTutorialTitle =
+    lang === 'en'
+      ? (product as any).tutorialTituloEn
+      : lang === 'es'
+        ? (product as any).tutorialTituloEs
+        : lang === 'it'
+          ? (product as any).tutorialTituloIt
+          : lang === 'fr'
+            ? (product as any).tutorialTituloFr
+            : null
+
+  const dbTutorialSubtitle =
+    lang === 'en'
+      ? (product as any).tutorialSubtituloEn
+      : lang === 'es'
+        ? (product as any).tutorialSubtituloEs
+        : lang === 'it'
+          ? (product as any).tutorialSubtituloIt
+          : lang === 'fr'
+            ? (product as any).tutorialSubtituloFr
+            : null
+
+  const dbTutorialContent =
+    lang === 'en'
+      ? (product as any).tutorialConteudoEn
+      : lang === 'es'
+        ? (product as any).tutorialConteudoEs
+        : lang === 'it'
+          ? (product as any).tutorialConteudoIt
+          : lang === 'fr'
+            ? (product as any).tutorialConteudoFr
+            : null
+
+  const translatedName = (typeof dbName === 'string' && dbName.trim()) ? dbName : (autoTranslateText(product.nome, { lang }) || product.nome)
+  const translatedDescription = (typeof dbDescription === 'string' && dbDescription.trim()) ? dbDescription : (autoTranslateText(description, { lang }) || description)
+  const translatedTutorialTitle = (typeof dbTutorialTitle === 'string' && dbTutorialTitle.trim())
+    ? dbTutorialTitle
+    : (autoTranslateText(product.tutorialTitulo, { lang }) || product.tutorialTitulo)
+  const translatedTutorialSubtitle = (typeof dbTutorialSubtitle === 'string' && dbTutorialSubtitle.trim())
+    ? dbTutorialSubtitle
+    : (autoTranslateText(product.tutorialSubtitulo, { lang }) || product.tutorialSubtitulo)
   const translatedTutorialContent = includeTutorial
-    ? (autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo)
+    ? ((typeof dbTutorialContent === 'string' && dbTutorialContent.trim()) ? dbTutorialContent : (autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo))
     : null
 
   return {

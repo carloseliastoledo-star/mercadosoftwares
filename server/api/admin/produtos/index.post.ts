@@ -78,11 +78,19 @@ export default defineEventHandler(async (event) => {
     const created = await (prisma as any).produto.create({
       data: {
         nome: body.nome,
+        nomeEn: typeof body.nomeEn === 'string' ? body.nomeEn : undefined,
+        nomeEs: typeof body.nomeEs === 'string' ? body.nomeEs : undefined,
+        nomeIt: typeof body.nomeIt === 'string' ? body.nomeIt : undefined,
+        nomeFr: typeof body.nomeFr === 'string' ? body.nomeFr : undefined,
         slug: body.slug,
         finalUrl,
         preco: Number(body.preco),
         precoAntigo: precoAntigo === null || Number.isNaN(precoAntigo) ? null : precoAntigo,
         descricao,
+        descricaoEn: typeof body.descricaoEn === 'string' ? body.descricaoEn : undefined,
+        descricaoEs: typeof body.descricaoEs === 'string' ? body.descricaoEs : undefined,
+        descricaoIt: typeof body.descricaoIt === 'string' ? body.descricaoIt : undefined,
+        descricaoFr: typeof body.descricaoFr === 'string' ? body.descricaoFr : undefined,
         ativo: body.ativo ?? true,
         imagem,
         cardItems,
@@ -106,8 +114,20 @@ export default defineEventHandler(async (event) => {
             }
           : {}),
         tutorialTitulo: body.tutorialTitulo,
+        tutorialTituloEn: typeof body.tutorialTituloEn === 'string' ? body.tutorialTituloEn : undefined,
+        tutorialTituloEs: typeof body.tutorialTituloEs === 'string' ? body.tutorialTituloEs : undefined,
+        tutorialTituloIt: typeof body.tutorialTituloIt === 'string' ? body.tutorialTituloIt : undefined,
+        tutorialTituloFr: typeof body.tutorialTituloFr === 'string' ? body.tutorialTituloFr : undefined,
         tutorialSubtitulo: body.tutorialSubtitulo,
-        tutorialConteudo: body.tutorialConteudo
+        tutorialSubtituloEn: typeof body.tutorialSubtituloEn === 'string' ? body.tutorialSubtituloEn : undefined,
+        tutorialSubtituloEs: typeof body.tutorialSubtituloEs === 'string' ? body.tutorialSubtituloEs : undefined,
+        tutorialSubtituloIt: typeof body.tutorialSubtituloIt === 'string' ? body.tutorialSubtituloIt : undefined,
+        tutorialSubtituloFr: typeof body.tutorialSubtituloFr === 'string' ? body.tutorialSubtituloFr : undefined,
+        tutorialConteudo: body.tutorialConteudo,
+        tutorialConteudoEn: typeof body.tutorialConteudoEn === 'string' ? body.tutorialConteudoEn : undefined,
+        tutorialConteudoEs: typeof body.tutorialConteudoEs === 'string' ? body.tutorialConteudoEs : undefined,
+        tutorialConteudoIt: typeof body.tutorialConteudoIt === 'string' ? body.tutorialConteudoIt : undefined,
+        tutorialConteudoFr: typeof body.tutorialConteudoFr === 'string' ? body.tutorialConteudoFr : undefined
       }
     })
 

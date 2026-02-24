@@ -17,9 +17,17 @@ model Produto {
   id        String    @id @default(uuid())
   wcProductId Int?     @unique
   nome      String
+  nomeEn    String?
+  nomeEs    String?
+  nomeIt    String?
+  nomeFr    String?
   slug      String    @unique
   finalUrl  String?
   descricao String?   @db.Text
+  descricaoEn String? @db.Text
+  descricaoEs String? @db.Text
+  descricaoIt String? @db.Text
+  descricaoFr String? @db.Text
   preco     Float
   precoAntigo Float?
   ativo     Boolean   @default(true)
@@ -29,8 +37,20 @@ model Produto {
   googleAdsConversionValue    Float?
   googleAdsConversionCurrency String?
   tutorialTitulo    String?
+  tutorialTituloEn  String?
+  tutorialTituloEs  String?
+  tutorialTituloIt  String?
+  tutorialTituloFr  String?
   tutorialSubtitulo String?
+  tutorialSubtituloEn String?
+  tutorialSubtituloEs String?
+  tutorialSubtituloIt String?
+  tutorialSubtituloFr String?
   tutorialConteudo  String?   @db.Text
+  tutorialConteudoEn String?  @db.Text
+  tutorialConteudoEs String?  @db.Text
+  tutorialConteudoIt String?  @db.Text
+  tutorialConteudoFr String?  @db.Text
   criadoEm  DateTime  @default(now()) @db.DateTime(0)
   licencas  Licenca[]
   orders    Order[]

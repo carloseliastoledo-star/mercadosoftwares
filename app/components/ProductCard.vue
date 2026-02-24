@@ -85,12 +85,16 @@ const isBrl = computed(() => productCurrencyLower.value === 'brl')
 const installmentsLabel = computed(() => {
   if (intl.language.value === 'en') return 'up to 12x of'
   if (intl.language.value === 'es') return 'hasta 12x de'
+  if (intl.language.value === 'it') return 'fino a 12x da'
+  if (intl.language.value === 'fr') return "jusqu'à 12x de"
   return 'em até 12x de'
 })
 
 const pixLabel = computed(() => {
   if (intl.language.value === 'en') return 'PIX upfront payment'
   if (intl.language.value === 'es') return 'Pago al contado con PIX'
+  if (intl.language.value === 'it') return 'Pagamento in contanti con PIX'
+  if (intl.language.value === 'fr') return 'Paiement comptant avec PIX'
   return 'Pagamento à vista no PIX'
 })
 
@@ -187,6 +191,32 @@ const defaultIncludedItems = computed(() => {
     ]
   }
 
+  if (intl.language.value === 'it') {
+    return [
+      'Consegna rapida dopo la conferma',
+      'Licenza digitale permanente',
+      'Supporto 24/7',
+      '1 PC',
+      'Versione professionale con funzionalità avanzate',
+      'Compatibile con Windows 10 e 11',
+      'Attivazione permanente',
+      'Nessun rinnovo necessario'
+    ]
+  }
+
+  if (intl.language.value === 'fr') {
+    return [
+      'Livraison rapide après confirmation',
+      'Licence numérique permanente',
+      'Support 24/7',
+      '1 PC',
+      'Version professionnelle avec fonctionnalités avancées',
+      'Compatible avec Windows 10 et 11',
+      'Activation permanente',
+      'Aucun renouvellement requis'
+    ]
+  }
+
   return [
     'Envio imediato após confirmação',
     'Licença digital permanente',
@@ -238,7 +268,36 @@ const includedItems = computed(() => {
     'Sem renovação': 'Sin renovación'
   }
 
-  const dict = intl.language.value === 'en' ? dictEn : dictEs
+  const dictIt: Record<string, string> = {
+    'Envio imediato após confirmação': 'Consegna rapida dopo la conferma',
+    'Envio rápido após confirmação': 'Consegna rapida dopo la conferma',
+    'Licença digital permanente': 'Licenza digitale permanente',
+    'Licença digital': 'Licenza digitale',
+    'Suporte 24/7': 'Supporto 24/7',
+    'Suporte em horário comercial': 'Supporto negli orari di ufficio',
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatibile con Windows 10 e 11',
+    'Ativação permanente': 'Attivazione permanente',
+    'Sem renovação necessária': 'Nessun rinnovo necessario',
+    'Sem renovação': 'Nessun rinnovo necessario'
+  }
+
+  const dictFr: Record<string, string> = {
+    'Envio imediato após confirmação': 'Livraison rapide après confirmation',
+    'Envio rápido após confirmação': 'Livraison rapide après confirmation',
+    'Licença digital permanente': 'Licence numérique permanente',
+    'Licença digital': 'Licence numérique',
+    'Suporte 24/7': 'Support 24/7',
+    'Suporte em horário comercial': "Support pendant les heures ouvrées",
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatible avec Windows 10 et 11',
+    'Ativação permanente': 'Activation permanente',
+    'Sem renovação necessária': 'Aucun renouvellement requis',
+    'Sem renovação': 'Aucun renouvellement requis'
+  }
+
+  const lang = intl.language.value
+  const dict = lang === 'en' ? dictEn : lang === 'es' ? dictEs : lang === 'it' ? dictIt : dictFr
   return items.map((it) => dict[it] || it)
 })
 

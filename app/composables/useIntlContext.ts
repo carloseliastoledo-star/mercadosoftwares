@@ -56,19 +56,9 @@ function detectHost(): string {
   return String(window.location.host || '').toLowerCase()
 }
 
-function detectLanguageFromPath(): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
+function detectLanguageFromPath(pathname: string): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
   try {
-    if (import.meta.server) {
-      const url = useRequestURL()
-      const pathname = String(url?.pathname || '')
-      if (pathname === '/en' || pathname.startsWith('/en/')) return 'en'
-      if (pathname === '/es' || pathname.startsWith('/es/')) return 'es'
-      if (pathname === '/it' || pathname.startsWith('/it/')) return 'it'
-      if (pathname === '/fr' || pathname.startsWith('/fr/')) return 'fr'
-      return null
-    }
-
-    const path = String(window.location.pathname || '')
+    const path = String(pathname || '')
     if (path === '/en' || path.startsWith('/en/')) return 'en'
     if (path === '/es' || path.startsWith('/es/')) return 'es'
     if (path === '/it' || path.startsWith('/it/')) return 'it'
@@ -82,6 +72,23 @@ function detectLanguageFromPath(): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
 export function useIntlContext() {
   const host = computed(() => detectHost())
 
+  const i18n = useI18n()
+
+  const route = useRoute()
+
+  const pathname = computed(() => {
+    if (import.meta.server) {
+      try {
+        const url = useRequestURL()
+        return String(url?.pathname || '')
+      } catch {
+        return ''
+      }
+    }
+
+    return String(route.path || '')
+  })
+
   const langCookie = useCookie<string | null>('ld_lang', { sameSite: 'lax', path: '/' })
   const currencyCookie = useCookie<string | null>('ld_currency', { sameSite: 'lax', path: '/' })
   const countryCookie = useCookie<string | null>('ld_country', { sameSite: 'lax', path: '/' })
@@ -89,7 +96,10 @@ export function useIntlContext() {
   const countryCode = computed(() => String(countryCookie.value || '').trim().toUpperCase())
 
   const language = computed<ClientIntl['language']>(() => {
-    const fromPath = detectLanguageFromPath()
+    const fromI18n = normalizeLanguage(i18n?.locale?.value)
+    if (fromI18n) return fromI18n
+
+    const fromPath = detectLanguageFromPath(pathname.value)
     if (fromPath) return fromPath
 
     const c = normalizeLanguage(langCookie.value)

@@ -134,14 +134,14 @@
             v-if="isMicrosoft365"
             class="rounded-xl border bg-gray-50 p-5 text-sm text-gray-700"
           >
-            <div class="font-semibold text-gray-900">Microsoft 365 / Office 365 — como funciona</div>
+            <div class="font-semibold text-gray-900">{{ t.ms365HowTitle }}</div>
             <ul class="mt-3 list-disc pl-5 space-y-2">
-              <li>Assinatura anual (12 meses), conforme descrito no produto.</li>
-              <li>Entrega por conta fornecida (login e senha) após a confirmação do pagamento.</li>
-              <li>O acesso é feito com a conta fornecida (não é ativação em uma conta Microsoft pessoal já existente).</li>
+              <li>{{ t.ms365Bullet1 }}</li>
+              <li>{{ t.ms365Bullet2 }}</li>
+              <li>{{ t.ms365Bullet3 }}</li>
             </ul>
             <div class="mt-3">
-              Dúvidas? Consulte <NuxtLink class="text-blue-600 hover:underline" to="/entrega-digital">Entrega digital</NuxtLink>.
+              {{ t.ms365HelpPrefix }} <NuxtLink class="text-blue-600 hover:underline" to="/entrega-digital">{{ t.ms365HelpLink }}</NuxtLink>.
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@
 
           <div>
             <h3 class="text-xl font-bold text-blue-700">
-              {{ safeProduct.tutorialTitulo }}
+              {{ t.tutorialCardTitle }}
             </h3>
             <p class="text-blue-700 text-sm mt-1">
               {{ safeProduct.tutorialSubtitulo }}
@@ -171,7 +171,7 @@
           :to="`/tutoriais/${safeProduct.slug}`"
           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
         >
-          → Ver Tutorial
+          → {{ t.viewTutorial }}
         </NuxtLink>
       </div>
 
@@ -182,7 +182,7 @@
       >
         <section>
           <h2 class="text-2xl font-bold mb-3">
-            Descrição Detalhada
+            {{ t.detailedDescription }}
           </h2>
 
           <div
@@ -196,7 +196,7 @@
         v-if="data"
         :class="whyPriceCardClass"
       >
-        <h2 class="text-2xl font-bold mb-3">Por que nosso preço é mais acessível?</h2>
+        <h2 class="text-2xl font-bold mb-3">{{ t.whyPriceTitle }}</h2>
         <p class="text-gray-700 leading-relaxed">
           Nossos preços são mais acessíveis porque trabalhamos com distribuição digital, sem custos de mídia física, logística ou intermediários.
         </p>
@@ -320,6 +320,8 @@ const whyPriceCardClass = computed(() => {
 const route = useRoute()
 const slug = route.params.slug as string
 
+const lang = computed(() => intl.language.value)
+
 const isOffice365FiveLicenses = computed(() => {
   const s = String(slug || '').trim().toLowerCase()
   return s === 'microsoft-office-365-vitalicio-5-licencas-pc-mac-android-ou-ios-1-tb-one-drive'
@@ -334,8 +336,12 @@ const canonicalUrl = computed(() => {
 })
 
 const { data, pending, error } = await useFetch(
-  () => `/api/products/${slug}`,
-  { server: true }
+  () => `/api/products/${slug}?lang=${encodeURIComponent(String(lang.value || 'pt'))}`,
+  {
+    server: true,
+    watch: [lang],
+    key: computed(() => `product:${String(slug || '')}:${String(lang.value || 'pt')}`)
+  }
 )
 
 const safeProduct = computed(() => {
@@ -862,7 +868,17 @@ const t = computed(() => {
       digitalDelivery: 'Digital delivery • Available',
       freeRefund: 'Free refund up to 7 days after purchase',
       guarantee: 'Guaranteed purchase. If you are not satisfied, we refund you',
-      emailDelivery: 'Delivered by email after confirmation'
+      emailDelivery: 'Delivered by email after confirmation',
+      tutorialCardTitle: 'Activation tutorial',
+      viewTutorial: 'View tutorial',
+      detailedDescription: 'Detailed description',
+      whyPriceTitle: 'Why is our price more affordable?',
+      ms365HowTitle: 'Microsoft 365 / Office 365 — how it works',
+      ms365Bullet1: 'Annual subscription (12 months), as described in the product.',
+      ms365Bullet2: 'Delivery via a provided account (login and password) after payment confirmation.',
+      ms365Bullet3: 'Access is via the provided account (it is not activation on an existing personal Microsoft account).',
+      ms365HelpPrefix: 'Questions? See',
+      ms365HelpLink: 'Digital delivery'
     }
   }
 
@@ -879,7 +895,71 @@ const t = computed(() => {
       digitalDelivery: 'Entrega digital • Disponible',
       freeRefund: 'Devolución gratis hasta 7 días después de la compra',
       guarantee: 'Compra garantizada. Si no queda satisfecho, le devolvemos su dinero',
-      emailDelivery: 'Envío por e-mail tras la confirmación'
+      emailDelivery: 'Envío por e-mail tras la confirmación',
+      tutorialCardTitle: 'Tutorial de activación',
+      viewTutorial: 'Ver tutorial',
+      detailedDescription: 'Descripción detallada',
+      whyPriceTitle: '¿Por qué nuestro precio es más accesible?',
+      ms365HowTitle: 'Microsoft 365 / Office 365 — cómo funciona',
+      ms365Bullet1: 'Suscripción anual (12 meses), según se describe en el producto.',
+      ms365Bullet2: 'Entrega mediante una cuenta proporcionada (usuario y contraseña) tras la confirmación del pago.',
+      ms365Bullet3: 'El acceso se realiza con la cuenta proporcionada (no es activación en una cuenta Microsoft personal ya existente).',
+      ms365HelpPrefix: '¿Dudas? Consulta',
+      ms365HelpLink: 'Entrega digital'
+    }
+  }
+
+  if (intl.language.value === 'it') {
+    return {
+      home: 'Home',
+      products: 'Prodotti',
+      loading: 'Caricamento prodotto...',
+      notFound: 'Prodotto non trovato.',
+      buy: 'Acquista',
+      included: "Cosa è incluso:",
+      installmentsPrefix: 'fino a 12x da',
+      pixLabel: 'Pagamento in contanti con PIX',
+      digitalDelivery: 'Consegna digitale • Disponibile',
+      freeRefund: 'Rimborso gratuito fino a 7 giorni dopo l’acquisto',
+      guarantee: 'Acquisto garantito. Se non sei soddisfatto, rimborsiamo',
+      emailDelivery: 'Consegnato via email dopo la conferma',
+      tutorialCardTitle: 'Tutorial di attivazione',
+      viewTutorial: 'Vedi tutorial',
+      detailedDescription: 'Descrizione dettagliata',
+      whyPriceTitle: 'Perché il nostro prezzo è più conveniente?',
+      ms365HowTitle: 'Microsoft 365 / Office 365 — come funziona',
+      ms365Bullet1: 'Abbonamento annuale (12 mesi), come descritto nel prodotto.',
+      ms365Bullet2: 'Consegna tramite un account fornito (login e password) dopo la conferma del pagamento.',
+      ms365Bullet3: "L'accesso avviene con l'account fornito (non è un’attivazione su un account Microsoft personale già esistente).",
+      ms365HelpPrefix: 'Dubbi? Vedi',
+      ms365HelpLink: 'Consegna digitale'
+    }
+  }
+
+  if (intl.language.value === 'fr') {
+    return {
+      home: 'Accueil',
+      products: 'Produits',
+      loading: 'Chargement du produit...',
+      notFound: 'Produit introuvable.',
+      buy: 'Acheter',
+      included: 'Ce qui est inclus :',
+      installmentsPrefix: "jusqu'à 12x de",
+      pixLabel: 'Paiement comptant avec PIX',
+      digitalDelivery: 'Livraison numérique • Disponible',
+      freeRefund: 'Remboursement gratuit jusqu’à 7 jours après l’achat',
+      guarantee: 'Achat garanti. Si vous n’êtes pas satisfait, nous remboursons',
+      emailDelivery: 'Livré par e-mail après confirmation',
+      tutorialCardTitle: "Tutoriel d’activation",
+      viewTutorial: 'Voir le tutoriel',
+      detailedDescription: 'Description détaillée',
+      whyPriceTitle: 'Pourquoi notre prix est-il plus abordable ?',
+      ms365HowTitle: 'Microsoft 365 / Office 365 — comment ça marche',
+      ms365Bullet1: 'Abonnement annuel (12 mois), comme décrit dans le produit.',
+      ms365Bullet2: 'Livraison via un compte fourni (identifiant et mot de passe) après confirmation du paiement.',
+      ms365Bullet3: "L'accès se fait avec le compte fourni (ce n'est pas une activation sur un compte Microsoft personnel existant).",
+      ms365HelpPrefix: 'Des questions ? Voir',
+      ms365HelpLink: 'Livraison numérique'
     }
   }
 
@@ -895,7 +975,17 @@ const t = computed(() => {
     digitalDelivery: 'Entrega digital • Disponível',
     freeRefund: 'Devolução grátis. Até 7 dias a partir do recebimento',
     guarantee: 'Compra garantida. Saia satisfeito ou devolvemos seu dinheiro',
-    emailDelivery: 'Envio por e-mail após confirmação'
+    emailDelivery: 'Envio por e-mail após confirmação',
+    tutorialCardTitle: 'Tutorial de Ativação',
+    viewTutorial: 'Ver Tutorial',
+    detailedDescription: 'Descrição Detalhada',
+    whyPriceTitle: 'Por que nosso preço é mais acessível?',
+    ms365HowTitle: 'Microsoft 365 / Office 365 — como funciona',
+    ms365Bullet1: 'Assinatura anual (12 meses), conforme descrito no produto.',
+    ms365Bullet2: 'Entrega por conta fornecida (login e senha) após a confirmação do pagamento.',
+    ms365Bullet3: 'O acesso é feito com a conta fornecida (não é ativação em uma conta Microsoft pessoal já existente).',
+    ms365HelpPrefix: 'Dúvidas? Consulte',
+    ms365HelpLink: 'Entrega digital'
   }
 })
 

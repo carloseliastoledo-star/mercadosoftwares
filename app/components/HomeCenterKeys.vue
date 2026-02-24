@@ -21,13 +21,13 @@
               <div class="relative z-10 p-6 md:p-10">
                 <div class="max-w-sm">
                   <div class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-                    Promotion of
-                    <span class="block">the Week!</span>
+                    {{ t.promoTitleLine1 }}
+                    <span class="block">{{ t.promoTitleLine2 }}</span>
                   </div>
                   <p class="mt-3 text-sm text-gray-700">
-                    Take advantage of special
+                    {{ t.promoDescLine1 }}
                     <br />
-                    offers on GVGMALL!
+                    {{ t.promoDescLine2 }}
                   </p>
 
                   <div class="mt-6">
@@ -35,7 +35,7 @@
                       to="/produtos"
                       class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-black/10 hover:bg-gray-50"
                     >
-                      Shop now
+                      {{ t.promoCtaShopNow }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -60,7 +60,7 @@
                         to="/produto/microsoft-office-365-vitalicio-microsoft-windows-11-pro-1-licenca"
                         class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-black/10 hover:bg-gray-50"
                       >
-                        Buy Now
+                        {{ t.promoCtaBuyNow }}
                       </NuxtLink>
                     </div>
                   </div>
@@ -135,7 +135,7 @@
 
           <div class="mt-16">
             <div class="text-center">
-              <h2 class="text-4xl md:text-5xl font-light text-slate-700">Releases</h2>
+              <h2 class="text-4xl md:text-5xl font-light text-slate-700">{{ t.releasesTitle }}</h2>
             </div>
 
             <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -169,23 +169,23 @@
               <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 text-center">
                 <div>
                   <div class="mx-auto w-14 h-14 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-2xl">✉</div>
-                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">E-MAILING</div>
-                  <div class="mt-2 text-sm text-gray-500">Immediate shipping, delivery time up to 90 minutes.</div>
+                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">{{ t.homeFeature1Title }}</div>
+                  <div class="mt-2 text-sm text-gray-500">{{ t.homeFeature1Body }}</div>
                 </div>
                 <div>
                   <div class="mx-auto w-14 h-14 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-2xl">🛒</div>
-                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">MONITORED ORDER</div>
-                  <div class="mt-2 text-sm text-gray-500">Receive your order in the comfort of your own home with delivery digital e-mail.</div>
+                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">{{ t.homeFeature2Title }}</div>
+                  <div class="mt-2 text-sm text-gray-500">{{ t.homeFeature2Body }}</div>
                 </div>
                 <div>
                   <div class="mx-auto w-14 h-14 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center text-2xl">🎧</div>
-                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">NEED ASSISTANCE?</div>
-                  <div class="mt-2 text-sm text-gray-500">High-quality support team available 24/7.</div>
+                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">{{ t.homeFeature3Title }}</div>
+                  <div class="mt-2 text-sm text-gray-500">{{ t.homeFeature3Body }}</div>
                 </div>
                 <div>
                   <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl">🔒</div>
-                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">SECURE PURCHASE</div>
-                  <div class="mt-2 text-sm text-gray-500">100% secure technology, site protected with SSL Certificate.</div>
+                  <div class="mt-4 font-extrabold text-sm tracking-widest text-gray-900">{{ t.homeFeature4Title }}</div>
+                  <div class="mt-2 text-sm text-gray-500">{{ t.homeFeature4Body }}</div>
                 </div>
               </div>
             </div>
@@ -666,9 +666,15 @@ const {
   server: true
 })
 
-const t = computed(() => {
+const t = computed<Record<string, string>>(() => {
   if (intl.language.value === 'en') {
     return {
+      promoTitleLine1: 'Promotion of',
+      promoTitleLine2: 'the Week!',
+      promoDescLine1: 'Take advantage of special',
+      promoDescLine2: 'offers on GVGMALL!',
+      promoCtaShopNow: 'Shop now',
+      promoCtaBuyNow: 'Buy Now',
       heroBadge: 'Microsoft Partner Network',
       heroTitle: 'Digital Licenses',
       heroSubtitle: 'delivered by email',
@@ -695,6 +701,7 @@ const t = computed(() => {
       whyCard4Body: 'Português • Español • English',
       bestSellersTitle: 'Best sellers',
       viewAll: 'View all',
+      releasesTitle: 'Releases',
       categoriesTitle: 'Categories',
       categoriesSubtitle: 'Quickly find what you need.',
       categoriesViewAll: 'View all',
@@ -705,6 +712,14 @@ const t = computed(() => {
       loadingProducts: 'Loading products...',
       errorProducts: 'Error loading products.',
       comingSoon: 'Coming soon.',
+      homeFeature1Title: 'E-MAILING',
+      homeFeature1Body: 'Immediate shipping, delivery time up to 90 minutes.',
+      homeFeature2Title: 'MONITORED ORDER',
+      homeFeature2Body: 'Receive your order in the comfort of your own home with delivery digital e-mail.',
+      homeFeature3Title: 'NEED ASSISTANCE?',
+      homeFeature3Body: 'High-quality support team available 24/7.',
+      homeFeature4Title: 'SECURE PURCHASE',
+      homeFeature4Body: '100% secure technology, site protected with SSL Certificate.',
       testimonialsTitle: 'What our customers say',
       testimonialsSubtitle: 'Real reviews from customers who have already purchased with us',
       howItWorksTitle: 'How it works',
@@ -732,6 +747,12 @@ const t = computed(() => {
 
   if (intl.language.value === 'es') {
     return {
+      promoTitleLine1: 'Promoción de',
+      promoTitleLine2: 'la semana',
+      promoDescLine1: 'Aprovecha las ofertas',
+      promoDescLine2: 'especiales en GVGMALL!',
+      promoCtaShopNow: 'Comprar ahora',
+      promoCtaBuyNow: 'Comprar ahora',
       heroBadge: 'Microsoft Partner Network',
       heroTitle: 'Licencias Digitales',
       heroSubtitle: 'con envío por e-mail',
@@ -758,6 +779,7 @@ const t = computed(() => {
       whyCard4Body: 'Português • Español • English',
       bestSellersTitle: 'Más vendidos',
       viewAll: 'Ver todos',
+      releasesTitle: 'Lanzamientos',
       categoriesTitle: 'Categorías',
       categoriesSubtitle: 'Encuentra rápidamente lo que necesitas.',
       categoriesViewAll: 'Ver todas',
@@ -768,6 +790,14 @@ const t = computed(() => {
       loadingProducts: 'Cargando productos...',
       errorProducts: 'Error al cargar productos.',
       comingSoon: 'Próximamente.',
+      homeFeature1Title: 'ENVÍO POR EMAIL',
+      homeFeature1Body: 'Envío inmediato, tiempo de entrega de hasta 90 minutos.',
+      homeFeature2Title: 'PEDIDO MONITOREADO',
+      homeFeature2Body: 'Recibe tu pedido cómodamente con entrega digital por e-mail.',
+      homeFeature3Title: '¿NECESITAS AYUDA?',
+      homeFeature3Body: 'Equipo de soporte de alta calidad disponible 24/7.',
+      homeFeature4Title: 'COMPRA SEGURA',
+      homeFeature4Body: 'Tecnología 100% segura, sitio protegido con certificado SSL.',
       testimonialsTitle: 'Lo que dicen nuestros clientes',
       testimonialsSubtitle: 'Reseñas reales de quienes ya compraron con nosotros',
       howItWorksTitle: 'Cómo funciona',
@@ -793,7 +823,169 @@ const t = computed(() => {
     }
   }
 
+  if (intl.language.value === 'it') {
+    return {
+      promoTitleLine1: 'Promozione della',
+      promoTitleLine2: 'settimana!',
+      promoDescLine1: 'Approfitta delle offerte',
+      promoDescLine2: 'speciali su GVGMALL!',
+      promoCtaShopNow: 'Acquista ora',
+      promoCtaBuyNow: 'Acquista ora',
+      heroBadge: 'Microsoft Partner Network',
+      heroTitle: 'Licenze Digitali',
+      heroSubtitle: 'con consegna via email',
+      heroDescription: 'Windows, Office e Windows Server con consegna digitale rapida dopo la conferma.',
+      heroPrimaryCta: 'Vedi offerte',
+      heroSecondaryCta: 'Come attivare',
+      heroBullet1: 'Consegna rapida dopo la conferma',
+      heroBullet2: 'Consegna digitale',
+      heroBullet3: 'Supporto specializzato',
+      heroIntl: 'Supporto internazionale in portoghese, spagnolo e inglese',
+      institutionalTitle: 'ISTITUZIONALE',
+      institutionalP1: 'Siamo un’azienda indipendente specializzata nella vendita di licenze software digitali per uso personale e professionale.',
+      institutionalP2: 'Lavoriamo con sistemi operativi e app di produttività in versione digitale, con pagamento unico e attivazione online.',
+      institutionalP3: 'Non siamo lo store ufficiale di nessun marchio. Tutti i marchi citati appartengono ai rispettivi proprietari.',
+      whyTitle: 'Perché scegliere',
+      whySubtitle: 'Un’esperienza semplice e sicura dall’inizio alla fine.',
+      whyCard1Title: 'Consegna Digitale Immediata',
+      whyCard1Body: 'Invio automatico via email dopo la conferma del pagamento.',
+      whyCard2Title: 'Pagamento Unico',
+      whyCard2Body: 'Nessun addebito ricorrente o abbonamento.',
+      whyCard3Title: 'Supporto per Attivazione',
+      whyCard3Body: 'Assistenza remota per aiutarti con l’installazione.',
+      whyCard4Title: 'Supporto Internazionale',
+      whyCard4Body: 'Português • Español • English',
+      bestSellersTitle: 'Più venduti',
+      viewAll: 'Vedi tutti',
+      releasesTitle: 'Novità',
+      categoriesTitle: 'Categorie',
+      categoriesSubtitle: 'Trova rapidamente ciò di cui hai bisogno.',
+      categoriesViewAll: 'Vedi tutte',
+      categoryBadge: 'CATEGORIA',
+      viewAllInline: 'Vedi tutto',
+      loadingCategories: 'Caricamento categorie...',
+      errorCategories: 'Errore nel caricamento delle categorie.',
+      loadingProducts: 'Caricamento prodotti...',
+      errorProducts: 'Errore nel caricamento dei prodotti.',
+      comingSoon: 'In arrivo.',
+      homeFeature1Title: 'CONSEGNA VIA EMAIL',
+      homeFeature1Body: 'Spedizione immediata, tempo di consegna fino a 90 minuti.',
+      homeFeature2Title: 'ORDINE MONITORATO',
+      homeFeature2Body: 'Ricevi il tuo ordine comodamente con consegna digitale via email.',
+      homeFeature3Title: 'HAI BISOGNO DI AIUTO?',
+      homeFeature3Body: 'Team di supporto di alta qualità disponibile 24/7.',
+      homeFeature4Title: 'ACQUISTO SICURO',
+      homeFeature4Body: 'Tecnologia 100% sicura, sito protetto con certificato SSL.',
+      testimonialsTitle: 'Cosa dicono i nostri clienti',
+      testimonialsSubtitle: 'Recensioni reali di chi ha già acquistato da noi',
+      howItWorksTitle: 'Come funziona',
+      howItWorksSubtitle: 'Un processo semplice: scegli, paga e ricevi la tua chiave.',
+      step1Title: 'Scegli il prodotto',
+      step1Body: 'Guarda i dettagli e seleziona l’opzione ideale.',
+      step2Title: 'Completa il pagamento',
+      step2Body: 'Pagamento online con conferma rapida.',
+      step3Title: 'Attiva con il tutorial',
+      step3Body: 'Segui il tutorial passo dopo passo per il tuo prodotto.',
+      helpNeedHelp: 'Hai bisogno di aiuto?',
+      helpTitle: 'Supporto specializzato',
+      helpBody: 'Se hai domande durante l’attivazione, il nostro supporto può aiutarti.',
+      helpCtaBuy: 'Acquista ora',
+      helpCtaTutorials: 'Vedi tutorial',
+      faqTitle: 'Domande frequenti',
+      faqSubtitle: 'Chiarisci i tuoi dubbi prima di acquistare.',
+      vitrineWindowsSubtitle: 'Licenze digitali Windows consegnate via email.',
+      vitrineOfficeSubtitle: 'Suite Office e Microsoft 365 per tutti i giorni.',
+      vitrineWindowsServerSubtitle: 'Licenze per server e ambienti aziendali.',
+      shortcutAntivirus: 'Antivirus',
+      shortcutBestSellers: 'Più venduti'
+    }
+  }
+
+  if (intl.language.value === 'fr') {
+    return {
+      promoTitleLine1: 'Promotion de la',
+      promoTitleLine2: 'semaine !',
+      promoDescLine1: 'Profitez des offres',
+      promoDescLine2: 'spéciales sur GVGMALL !',
+      promoCtaShopNow: 'Acheter maintenant',
+      promoCtaBuyNow: 'Acheter maintenant',
+      heroBadge: 'Microsoft Partner Network',
+      heroTitle: 'Licences numériques',
+      heroSubtitle: 'livrées par e-mail',
+      heroDescription: 'Windows, Office et Windows Server avec livraison numérique rapide après confirmation.',
+      heroPrimaryCta: 'Voir les offres',
+      heroSecondaryCta: 'Comment activer',
+      heroBullet1: 'Livraison rapide après confirmation',
+      heroBullet2: 'Livraison numérique',
+      heroBullet3: 'Support spécialisé',
+      heroIntl: 'Support international en portugais, espagnol et anglais',
+      institutionalTitle: 'INSTITUTIONNEL',
+      institutionalP1: 'Nous sommes une entreprise indépendante spécialisée dans la vente de licences logicielles numériques pour un usage personnel et professionnel.',
+      institutionalP2: 'Nous travaillons avec des systèmes d’exploitation et des applications de productivité en version numérique, avec paiement unique et activation en ligne.',
+      institutionalP3: 'Nous ne sommes pas la boutique officielle d’une marque. Toutes les marques citées appartiennent à leurs propriétaires respectifs.',
+      whyTitle: 'Pourquoi choisir',
+      whySubtitle: 'Une expérience simple et sécurisée du début à la fin.',
+      whyCard1Title: 'Livraison numérique instantanée',
+      whyCard1Body: 'Envoi automatique par e-mail après confirmation du paiement.',
+      whyCard2Title: 'Paiement unique',
+      whyCard2Body: 'Aucune charge récurrente ou abonnement.',
+      whyCard3Title: 'Support d’activation',
+      whyCard3Body: 'Assistance à distance pour aider à l’installation.',
+      whyCard4Title: 'Support international',
+      whyCard4Body: 'Português • Español • English',
+      bestSellersTitle: 'Meilleures ventes',
+      viewAll: 'Voir tout',
+      releasesTitle: 'Nouveautés',
+      categoriesTitle: 'Catégories',
+      categoriesSubtitle: 'Trouvez rapidement ce dont vous avez besoin.',
+      categoriesViewAll: 'Voir toutes',
+      categoryBadge: 'CATÉGORIE',
+      viewAllInline: 'Voir tout',
+      loadingCategories: 'Chargement des catégories...',
+      errorCategories: 'Erreur lors du chargement des catégories.',
+      loadingProducts: 'Chargement des produits...',
+      errorProducts: 'Erreur lors du chargement des produits.',
+      comingSoon: 'Bientôt.',
+      homeFeature1Title: 'LIVRAISON PAR E-MAIL',
+      homeFeature1Body: "Expédition immédiate, délai de livraison jusqu'à 90 minutes.",
+      homeFeature2Title: 'COMMANDE SUIVIE',
+      homeFeature2Body: 'Recevez votre commande confortablement avec livraison numérique par e-mail.',
+      homeFeature3Title: 'BESOIN D’AIDE ?',
+      homeFeature3Body: 'Équipe de support de haute qualité disponible 24/7.',
+      homeFeature4Title: 'ACHAT SÉCURISÉ',
+      homeFeature4Body: 'Technologie 100% sécurisée, site protégé par certificat SSL.',
+      testimonialsTitle: 'Ce que disent nos clients',
+      testimonialsSubtitle: 'Avis réels de clients qui ont déjà acheté chez nous',
+      howItWorksTitle: 'Comment ça marche',
+      howItWorksSubtitle: 'Un processus simple : choisir, payer et recevoir votre clé.',
+      step1Title: 'Choisissez le produit',
+      step1Body: 'Voir les détails et sélectionner l’option idéale.',
+      step2Title: 'Finalisez le paiement',
+      step2Body: 'Paiement en ligne avec confirmation rapide.',
+      step3Title: 'Activez avec le tutoriel',
+      step3Body: 'Suivez le tutoriel étape par étape pour votre produit.',
+      helpNeedHelp: 'Besoin d’aide ?',
+      helpTitle: 'Support spécialisé',
+      helpBody: 'Si vous avez des questions pendant l’activation, notre support peut vous aider.',
+      helpCtaBuy: 'Acheter maintenant',
+      helpCtaTutorials: 'Voir les tutoriels',
+      faqTitle: 'Questions fréquentes',
+      faqSubtitle: 'Éclaircissez vos doutes avant d’acheter.',
+      vitrineWindowsSubtitle: 'Licences Windows numériques livrées par e-mail.',
+      vitrineOfficeSubtitle: 'Suites Office et Microsoft 365 pour le quotidien.',
+      vitrineWindowsServerSubtitle: 'Licences pour serveurs et environnements d’entreprise.',
+      shortcutAntivirus: 'Antivirus',
+      shortcutBestSellers: 'Meilleures ventes'
+    }
+  }
+
   return {
+    promoTitleLine1: 'Promoção da',
+    promoTitleLine2: 'Semana!',
+    promoDescLine1: 'Aproveite ofertas',
+    promoDescLine2: 'especiais na GVGMALL!',
+    promoCtaShopNow: 'Ver ofertas',
+    promoCtaBuyNow: 'Comprar agora',
     heroBadge: 'Parceiro Microsoft Network',
     heroTitle: 'Licenças Digitais',
     heroSubtitle: 'com envio por e-mail',
@@ -820,6 +1012,7 @@ const t = computed(() => {
     whyCard4Body: 'Português • Español • English',
     bestSellersTitle: 'Mais vendidos',
     viewAll: 'Ver todos',
+    releasesTitle: 'Lançamentos',
     categoriesTitle: 'Categorias',
     categoriesSubtitle: 'Encontre rapidamente o que você precisa.',
     categoriesViewAll: 'Ver todas',
@@ -830,6 +1023,14 @@ const t = computed(() => {
     loadingProducts: 'Carregando produtos...',
     errorProducts: 'Erro ao carregar produtos.',
     comingSoon: 'Em breve.',
+    homeFeature1Title: 'ENTREGA POR E-MAIL',
+    homeFeature1Body: 'Envio imediato, tempo de entrega de até 90 minutos.',
+    homeFeature2Title: 'PEDIDO MONITORADO',
+    homeFeature2Body: 'Receba seu pedido no conforto da sua casa com entrega digital por e-mail.',
+    homeFeature3Title: 'PRECISA DE AJUDA?',
+    homeFeature3Body: 'Equipe de suporte de alta qualidade disponível 24/7.',
+    homeFeature4Title: 'COMPRA SEGURA',
+    homeFeature4Body: 'Tecnologia 100% segura, site protegido com Certificado SSL.',
     testimonialsTitle: 'O que nossos clientes dizem',
     testimonialsSubtitle: 'Avaliações reais de quem já comprou conosco',
     howItWorksTitle: 'Como funciona',

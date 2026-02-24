@@ -1,0 +1,22 @@
+-- AlterTable
+ALTER TABLE `Produto`
+  ADD COLUMN `nomeEn` VARCHAR(191) NULL,
+  ADD COLUMN `nomeEs` VARCHAR(191) NULL,
+  ADD COLUMN `nomeIt` VARCHAR(191) NULL,
+  ADD COLUMN `nomeFr` VARCHAR(191) NULL,
+  ADD COLUMN `descricaoEn` TEXT NULL,
+  ADD COLUMN `descricaoEs` TEXT NULL,
+  ADD COLUMN `descricaoIt` TEXT NULL,
+  ADD COLUMN `descricaoFr` TEXT NULL,
+  ADD COLUMN `tutorialTituloEn` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialTituloEs` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialTituloIt` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialTituloFr` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialSubtituloEn` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialSubtituloEs` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialSubtituloIt` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialSubtituloFr` VARCHAR(191) NULL,
+  ADD COLUMN `tutorialConteudoEn` TEXT NULL,
+  ADD COLUMN `tutorialConteudoEs` TEXT NULL,
+  ADD COLUMN `tutorialConteudoIt` TEXT NULL,
+  ADD COLUMN `tutorialConteudoFr` TEXT NULL;
