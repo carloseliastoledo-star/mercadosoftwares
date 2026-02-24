@@ -462,37 +462,6 @@ useSeoMeta({
   title: `Checkout | ${siteName}`
 })
 
-const beginCheckoutTracked = ref(false)
-
-watch(
-  () => product.value,
-  (p) => {
-    if (!import.meta.client) return
-    if (beginCheckoutTracked.value) return
-    if (!p) return
-
-    beginCheckoutTracked.value = true
-
-    try {
-      trackBeginCheckout({
-        currency: String((p as any)?.currency || 'BRL'),
-        total: Number((p as any)?.price ?? (p as any)?.preco ?? 0),
-        items: [
-          {
-            item_id: String((p as any)?.id || ''),
-            item_name: String((p as any)?.nome || (p as any)?.name || ''),
-            price: Number((p as any)?.price ?? (p as any)?.preco ?? 0),
-            quantity: 1
-          }
-        ]
-      })
-    } catch {
-      // ignore
-    }
-  },
-  { immediate: true }
-)
-
 useHead(() => ({
   meta: [{ name: 'robots', content: 'noindex,nofollow' }],
   link: baseUrl ? [{ rel: 'canonical', href: `${baseUrl}/checkout` }] : []
@@ -551,6 +520,37 @@ const product = computed(() => {
     shortDescription: p.shortDescription ?? p.description ?? ''
   }
 })
+
+const beginCheckoutTracked = ref(false)
+
+watch(
+  () => product.value,
+  (p) => {
+    if (!import.meta.client) return
+    if (beginCheckoutTracked.value) return
+    if (!p) return
+
+    beginCheckoutTracked.value = true
+
+    try {
+      trackBeginCheckout({
+        currency: String((p as any)?.currency || 'BRL'),
+        total: Number((p as any)?.price ?? (p as any)?.preco ?? 0),
+        items: [
+          {
+            item_id: String((p as any)?.id || ''),
+            item_name: String((p as any)?.nome || (p as any)?.name || ''),
+            price: Number((p as any)?.price ?? (p as any)?.preco ?? 0),
+            quantity: 1
+          }
+        ]
+      })
+    } catch {
+      // ignore
+    }
+  },
+  { immediate: true }
+)
 
 const paymentTab = ref<'pix' | 'card'>('pix')
 
