@@ -8,7 +8,7 @@ function round2(n: number) {
 }
 
 export default defineEventHandler(async (event) => {
-  const { storeSlug } = getStoreContext()
+  const { storeSlug } = getStoreContext(event)
   if (!storeSlug) {
     throw createError({ statusCode: 500, statusMessage: 'STORE_SLUG não configurado' })
   }

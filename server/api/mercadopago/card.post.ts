@@ -5,7 +5,7 @@ import { processMercadoPagoPayment } from '../../utils/mercadopagoWebhook.js'
 import { getStoreContext } from '../../utils/store'
 
 export default defineEventHandler(async (event) => {
-  const { storeSlug } = getStoreContext()
+  const { storeSlug } = getStoreContext(event)
   const body = await readBody(event)
 
   const produtoId = String(body?.produtoId || '')
