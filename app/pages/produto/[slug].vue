@@ -325,13 +325,6 @@ const isOffice365FiveLicenses = computed(() => {
   return s === 'microsoft-office-365-vitalicio-5-licencas-pc-mac-android-ou-ios-1-tb-one-drive'
 })
 
-const pageH1 = computed(() => {
-  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
-    return 'Licença Office 365 Original para PC e Mac – Entrega Instantânea'
-  }
-  return String(safeProduct.value.nome || '')
-})
-
 const baseUrl = useSiteUrl()
 
 const canonicalUrl = computed(() => {
@@ -405,6 +398,13 @@ const safeProduct = computed(() => {
     descricaoCurta,
     descricao: descricaoLonga
   }
+})
+
+const pageH1 = computed(() => {
+  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
+    return 'Licença Office 365 Original para PC e Mac – Entrega Instantânea'
+  }
+  return String(safeProduct.value.nome || '')
 })
 
 const safeImage = computed(() => {
