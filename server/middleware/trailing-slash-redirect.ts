@@ -25,9 +25,10 @@ export default defineEventHandler(async (event: H3Event) => {
   // Special case: old WP/Woo product permalink with trailing slash.
   // If the requested slug does not exist, but we have a product that stored
   // that old permalink in finalUrl, redirect directly to the current slug.
-  const m = path.match(/^\/produto\/([^\/]+)\/+$/)
+  const m = path.match(/^\/(?:(en|es|it|fr)\/)?produto\/([^\/]+)\/+$/)
   if (m) {
-    const requestedSlug = decodeURIComponent(String(m[1] || '')).trim()
+    const localePrefix = m[1] ? `/${m[1]}` : ''
+    const requestedSlug = decodeURIComponent(String(m[2] || '')).trim()
     if (requestedSlug) {
       const direct = await prisma.produto.findUnique({ where: { slug: requestedSlug }, select: { id: true } })
       if (!direct) {
@@ -42,7 +43,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
         if (byFinalUrl?.slug) {
           const search = event.node.req.url?.split('?')[1]
-          const target = `/produto/${byFinalUrl.slug}`
+          const target = `${localePrefix}/produto/${byFinalUrl.slug}`
           const location = search ? `${target}?${search}` : target
           return sendRedirect(event, location, 301)
         }

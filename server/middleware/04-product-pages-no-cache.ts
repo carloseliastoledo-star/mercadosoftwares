@@ -19,7 +19,7 @@ export default defineEventHandler((event: H3Event) => {
   if (shouldIgnore(path)) return
 
   // Only for product pages HTML
-  if (!path.startsWith('/produto/')) return
+  if (!path.startsWith('/produto/') && !/^\/(en|es|it|fr)\/produto\//.test(path)) return
 
   setHeader(event, 'cache-control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
   setHeader(event, 'pragma', 'no-cache')

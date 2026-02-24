@@ -22,11 +22,14 @@ export default defineEventHandler(async (event: H3Event) => {
 
   if (shouldIgnore(path)) return
 
-  // Produto: /produto/<slug> or /produto/<slug>/ (trailing slash middleware will normalize too)
-  const m = path.match(/^\/produto\/([^\/]+)\/?$/)
+  // Produto: /produto/<slug> or /produto/<slug>/
+  // Also support locale prefix: /en|es|it|fr/produto/<slug>
+  const m = path.match(/^\/(?:(en|es|it|fr)\/)?produto\/([^\/]+)\/?$/)
   if (!m) return
 
-  const requestedSlug = decodeURIComponent(m[1] || '').trim()
+  const localePrefix = m[1] ? `/${m[1]}` : ''
+
+  const requestedSlug = decodeURIComponent(m[2] || '').trim()
   if (!requestedSlug) return
 
   // If a product with this slug exists, do nothing
@@ -48,7 +51,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   if (!byFinalUrl?.slug) return
 
-  const targetPath = `/produto/${byFinalUrl.slug}`
+  const targetPath = `${localePrefix}/produto/${byFinalUrl.slug}`
   const location = query ? `${targetPath}?${query}` : targetPath
   return sendRedirect(event, location, 301)
 })
