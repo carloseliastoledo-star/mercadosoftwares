@@ -66,6 +66,20 @@
           </form>
 
           <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 overflow-x-auto max-w-[180px] sm:max-w-none">
+              <button
+                v-for="code in supportedLocales"
+                :key="code"
+                type="button"
+                class="shrink-0 rounded-xl border px-3 py-2 text-xs font-extrabold transition"
+                :class="currentLocaleCode === code ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'"
+                :aria-label="`Language ${String(code).toUpperCase()}`"
+                @click="setLocale(code)"
+              >
+                {{ String(code).toUpperCase() }}
+              </button>
+            </div>
+
             <NuxtLink
               to="/minha-conta/login"
               class="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-blue-600"
@@ -154,6 +168,8 @@
                 <option value="pt">PT</option>
                 <option value="en">EN</option>
                 <option value="es">ES</option>
+                <option value="it">IT</option>
+                <option value="fr">FR</option>
               </select>
 
               <select
@@ -475,6 +491,20 @@ const safeSiteName = computed(() => {
 
 const intl = useIntlContext()
 
+const { locale } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
+
+const supportedLocales = ['pt', 'en', 'es', 'it', 'fr'] as const
+type SupportedLocale = (typeof supportedLocales)[number]
+
+const currentLocaleCode = computed<SupportedLocale>(() => {
+  const raw = String(locale.value || '').trim().toLowerCase()
+  const code = raw.split('-')[0] as SupportedLocale
+  return (supportedLocales as readonly string[]).includes(code) ? code : 'pt'
+})
+
+const currentLocaleLabel = computed(() => String(currentLocaleCode.value || 'pt').toUpperCase())
+
 const route = useRoute()
 
 const mobileMenuOpen = ref(false)
@@ -704,11 +734,56 @@ function submitSearch() {
   navigateTo({ path: '/produtos', query: { q } })
 }
 
+function cycleLocale() {
+  const current = currentLocaleCode.value
+  const idx = supportedLocales.indexOf(current)
+  const next = supportedLocales[(idx + 1) % supportedLocales.length]
+
+  try {
+    intl.setLanguage(next)
+  } catch {
+    // ignore
+  }
+
+  const path = switchLocalePath(next)
+  if (path) {
+    navigateTo(path)
+    return
+  }
+
+  if (!process.server) window.location.reload()
+}
+
+function setLocale(next: SupportedLocale) {
+  try {
+    intl.setLanguage(next)
+  } catch {
+    // ignore
+  }
+
+  const path = switchLocalePath(next)
+  if (path) {
+    navigateTo(path)
+    return
+  }
+
+  if (!process.server) window.location.reload()
+}
+
 function onLangChange(e: Event) {
   const next = String((e.target as HTMLSelectElement)?.value || '').trim().toLowerCase()
-  if (next === 'pt' || next === 'en' || next === 'es') {
-    intl.setLanguage(next)
-    if (!process.server) window.location.reload()
+  if (next === 'pt' || next === 'en' || next === 'es' || next === 'it' || next === 'fr') {
+    try {
+      intl.setLanguage(next)
+    } catch {
+      // ignore
+    }
+
+    const path = switchLocalePath(next)
+    if (path) {
+      navigateTo(path)
+      return
+    }
   }
 }
 
@@ -770,6 +845,8 @@ function onCountryChange(e: Event) {
   else intl.setCurrency('usd')
 
   if (next === 'ES') intl.setLanguage('es')
+  else if (next === 'IT') intl.setLanguage('it')
+  else if (next === 'FR') intl.setLanguage('fr')
   else if (next === 'US' || next === 'GB') intl.setLanguage('en')
   else if (next === 'BR' || next === 'PT') intl.setLanguage('pt')
 

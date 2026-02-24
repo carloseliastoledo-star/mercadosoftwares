@@ -1,6 +1,6 @@
 <template>
   <section class="bg-gray-50 min-h-screen py-12">
-    <div v-if="isIntl" class="max-w-3xl mx-auto px-6">
+    <div v-if="useStripeCheckout" class="max-w-3xl mx-auto px-6">
       <div class="mb-8">
         <h1 class="text-4xl font-extrabold text-gray-900">{{ intlTitle }}</h1>
         <p class="text-gray-600 mt-2">{{ intlSubtitle }}</p>
@@ -445,11 +445,16 @@ import { useIntlContext } from '#imports'
 import { trackBeginCheckout } from '~/services/analytics'
 
 const intl = useIntlContext()
-
 const route = useRoute()
 const config = useRuntimeConfig()
 
 const isIntl = computed(() => intl.isIntl.value)
+
+const useStripeCheckout = computed(() => {
+  const c = String(intl.countryCode.value || '').trim().toUpperCase()
+  return !!c && c !== 'BR'
+})
+
 const { siteName } = useSiteBranding()
 const baseUrl = useSiteUrl()
 
@@ -577,17 +582,16 @@ const finalizeError = ref('')
 const intlCountryCode = ref('')
 const intlCurrency = ref('usd')
 
-watchEffect(() => {
-  if (!isIntl.value) return
-  const preferred = intl.currencyLower.value
-  if (preferred === 'usd' || preferred === 'eur') {
-    intlCurrency.value = preferred
-  }
-})
+watch(
+  () => intl.countryCode.value,
+  (next) => {
+    const v = String(next || '').trim().toUpperCase()
+    if (intlCountryCode.value === v) return
+    intlCountryCode.value = v
+  },
+  { immediate: true }
+)
 
-const stripeLoading = ref(false)
-const intlError = ref('')
-const stripeClientSecret = ref<string | null>(null)
 const stripeOrderId = ref<string | null>(null)
 const stripeAmount = ref<number | null>(null)
 const stripeCurrency = ref<'usd' | 'eur'>('usd')
