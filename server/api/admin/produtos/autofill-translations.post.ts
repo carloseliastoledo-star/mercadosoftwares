@@ -44,14 +44,6 @@ async function mapWithConcurrency<T, R>(items: T[], concurrency: number, fn: (it
 }
 
 export default defineEventHandler(async (event) => {
-  const method = String(event.node.req.method || '').toUpperCase()
-  if (method && method !== 'POST') {
-    throw createError({
-      statusCode: 405,
-      statusMessage: 'Method Not Allowed'
-    })
-  }
-
   requireAdminSession(event)
 
   const body = (await readBody<Body>(event).catch(() => ({} as Body))) || ({} as Body)
