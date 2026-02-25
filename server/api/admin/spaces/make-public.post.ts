@@ -1,6 +1,7 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { requireAdminSession } from '../../../utils/adminSession'
 import {
+  CopyObjectCommand,
   ListObjectsV2Command,
   PutBucketPolicyCommand,
   PutObjectAclCommand,
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const body: any = await readBody(event)
   const prefix = String(body?.prefix || 'uploads/').trim() || 'uploads/'
   const dryRun = body?.dryRun !== false
-  const mode = String(body?.mode || 'policy').trim().toLowerCase() as 'policy' | 'acl'
+  const mode = String(body?.mode || 'policy').trim().toLowerCase() as 'policy' | 'acl' | 'copy'
   const maxKeys = Math.min(1000, Math.max(1, Number(body?.maxKeys || 1000)))
 
   const bucket = String(process.env.SPACES_BUCKET || '').trim()
@@ -97,6 +98,88 @@ export default defineEventHandler(async (event) => {
           err?.message
             ? `Falha ao aplicar Bucket Policy no Spaces: ${err.message} (code=${code || 'n/a'} http=${httpStatusCode || 'n/a'})`
             : `Falha ao aplicar Bucket Policy no Spaces (code=${code || 'n/a'} http=${httpStatusCode || 'n/a'})`,
+        data: {
+          code,
+          httpStatusCode
+        }
+      })
+    }
+  }
+
+  if (mode === 'copy') {
+    let continuationToken: string | undefined
+    let scanned = 0
+    let updated = 0
+    const updatedKeys: string[] = []
+
+    try {
+      while (true) {
+        const listRes = await client.send(
+          new ListObjectsV2Command({
+            Bucket: bucket,
+            Prefix: prefix,
+            ContinuationToken: continuationToken,
+            MaxKeys: maxKeys
+          })
+        )
+
+        const contents = listRes.Contents || []
+        for (const obj of contents) {
+          const key = obj.Key
+          if (!key) continue
+          scanned += 1
+
+          if (!dryRun) {
+            // Copy the object onto itself with public-read ACL
+            await client.send(
+              new CopyObjectCommand({
+                Bucket: bucket,
+                Key: key,
+                CopySource: `/${bucket}/${encodeURIComponent(key)}`,
+                ACL: 'public-read',
+                MetadataDirective: 'COPY'
+              })
+            )
+            updated += 1
+          }
+
+          if (updatedKeys.length < 50) updatedKeys.push(key)
+        }
+
+        if (!listRes.IsTruncated) break
+        continuationToken = listRes.NextContinuationToken
+        if (!continuationToken) break
+      }
+
+      return {
+        ok: true,
+        dryRun,
+        mode,
+        bucket,
+        prefix,
+        scanned,
+        updated: dryRun ? 0 : updated,
+        sampleKeys: updatedKeys
+      }
+    } catch (err: any) {
+      console.error('[admin][spaces][make-public][copy] failed', {
+        message: err?.message,
+        name: err?.name,
+        code: err?.Code || err?.code,
+        httpStatusCode: err?.$metadata?.httpStatusCode,
+        bucket,
+        prefix
+      })
+
+      const code = err?.Code || err?.code
+      const httpStatusCode = err?.$metadata?.httpStatusCode
+
+      throw createError({
+        statusCode: 500,
+        statusMessage:
+          err?.message
+            ? `Falha ao regravar objetos (CopyObject) no Spaces: ${err.message} (code=${code || 'n/a'} http=${httpStatusCode || 'n/a'})`
+            : `Falha ao regravar objetos (CopyObject) no Spaces (code=${code || 'n/a'} http=${httpStatusCode || 'n/a'})`,
         data: {
           code,
           httpStatusCode
