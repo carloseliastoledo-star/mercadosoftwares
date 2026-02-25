@@ -45,14 +45,17 @@ export default defineEventHandler(async (event) => {
     if (current.startsWith(spacesBaseUrl)) continue
 
     let isWpUploads = false
+    let isLocalUploads = false
     try {
       const u = new URL(current)
       isWpUploads = u.pathname.includes('/wp-content/uploads/')
+      isLocalUploads = u.pathname.startsWith('/uploads/')
     } catch {
       isWpUploads = current.includes('/wp-content/uploads/')
+      isLocalUploads = current.startsWith('/uploads/') || current.includes('://www.mercadosoftwares.com.br/uploads/') || current.includes('://mercadosoftwares.com.br/uploads/')
     }
 
-    if (!isWpUploads) continue
+    if (!isWpUploads && !isLocalUploads) continue
 
     const fileName = extractFileNameFromUrl(current)
     if (!fileName) continue
