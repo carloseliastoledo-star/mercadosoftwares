@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
       finalUrl: true,
       preco: true,
       precoAntigo: true,
+      imagem: true,
       precosLoja: {
         where: { storeSlug: storeSlug || undefined },
         select: { preco: true, precoAntigo: true }
