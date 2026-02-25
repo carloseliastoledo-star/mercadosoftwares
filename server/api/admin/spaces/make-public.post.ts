@@ -2,6 +2,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { requireAdminSession } from '../../../utils/adminSession'
 import {
   ListObjectsV2Command,
+  PutBucketPolicyCommand,
   PutObjectAclCommand,
   S3Client
 } from '@aws-sdk/client-s3'
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event) => {
   const body: any = await readBody(event)
   const prefix = String(body?.prefix || 'uploads/').trim() || 'uploads/'
   const dryRun = body?.dryRun !== false
+  const mode = String(body?.mode || 'policy').trim().toLowerCase() as 'policy' | 'acl'
   const maxKeys = Math.min(1000, Math.max(1, Number(body?.maxKeys || 1000)))
 
   const bucket = String(process.env.SPACES_BUCKET || '').trim()
@@ -32,6 +34,69 @@ export default defineEventHandler(async (event) => {
     forcePathStyle: true,
     credentials: { accessKeyId, secretAccessKey }
   })
+
+  if (mode === 'policy') {
+    if (dryRun) {
+      return {
+        ok: true,
+        dryRun,
+        mode,
+        bucket,
+        prefix,
+        message: 'Dry-run: nenhuma policy foi aplicada'
+      }
+    }
+
+    const resource = `arn:aws:s3:::${bucket}/${prefix}*`
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: 'PublicReadUploads',
+          Effect: 'Allow',
+          Principal: '*',
+          Action: ['s3:GetObject'],
+          Resource: [resource]
+        }
+      ]
+    }
+
+    try {
+      await client.send(
+        new PutBucketPolicyCommand({
+          Bucket: bucket,
+          Policy: JSON.stringify(policy)
+        })
+      )
+
+      return {
+        ok: true,
+        dryRun,
+        mode,
+        bucket,
+        prefix,
+        resource,
+        message: 'Bucket policy aplicada: leitura pública liberada para o prefixo'
+      }
+    } catch (err: any) {
+      console.error('[admin][spaces][make-public][policy] failed', {
+        message: err?.message,
+        name: err?.name,
+        code: err?.Code || err?.code,
+        httpStatusCode: err?.$metadata?.httpStatusCode,
+        bucket,
+        prefix
+      })
+
+      throw createError({
+        statusCode: 500,
+        statusMessage:
+          err?.message
+            ? `Falha ao aplicar Bucket Policy no Spaces: ${err.message}`
+            : 'Falha ao aplicar Bucket Policy no Spaces'
+      })
+    }
+  }
 
   let continuationToken: string | undefined
   let scanned = 0
@@ -78,6 +143,7 @@ export default defineEventHandler(async (event) => {
     return {
       ok: true,
       dryRun,
+      mode,
       bucket,
       prefix,
       scanned,
@@ -85,7 +151,7 @@ export default defineEventHandler(async (event) => {
       sampleKeys: updatedKeys
     }
   } catch (err: any) {
-    console.error('[admin][spaces][make-public] failed', {
+    console.error('[admin][spaces][make-public][acl] failed', {
       message: err?.message,
       name: err?.name,
       code: err?.Code || err?.code,
@@ -96,7 +162,10 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 500,
-      statusMessage: err?.message ? `Falha ao atualizar ACL no Spaces: ${err.message}` : 'Falha ao atualizar ACL no Spaces'
+      statusMessage:
+        err?.message
+          ? `Falha ao atualizar ACL no Spaces: ${err.message}`
+          : 'Falha ao atualizar ACL no Spaces. Tente modo policy: { mode: "policy" }'
     })
   }
 })
