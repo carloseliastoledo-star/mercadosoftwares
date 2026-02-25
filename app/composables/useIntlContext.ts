@@ -1,25 +1,14 @@
 type ClientIntl = {
-  language: 'pt' | 'en' | 'es' | 'it' | 'fr'
-  locale: 'pt-BR' | 'en-US' | 'es-ES' | 'it-IT' | 'fr-FR'
+  language: 'pt'
+  locale: 'pt-BR'
   currency: 'BRL' | 'USD' | 'EUR'
   currencyLower: 'brl' | 'usd' | 'eur'
   isIntl: boolean
   host: string
   countryCode: string
-  setLanguage: (next: 'pt' | 'en' | 'es' | 'it' | 'fr') => void
+  setLanguage: (next: 'pt') => void
   setCurrency: (next: 'brl' | 'usd' | 'eur') => void
   setCountry: (next: string) => void
-}
-
-function normalizeLanguage(input: unknown): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
-  const v = String(input || '').trim().toLowerCase()
-  if (!v) return null
-  if (v === 'pt' || v === 'pt-br' || v.startsWith('pt')) return 'pt'
-  if (v === 'en' || v === 'en-us' || v.startsWith('en')) return 'en'
-  if (v === 'es' || v === 'es-es' || v.startsWith('es')) return 'es'
-  if (v === 'it' || v === 'it-it' || v.startsWith('it')) return 'it'
-  if (v === 'fr' || v === 'fr-fr' || v.startsWith('fr')) return 'fr'
-  return null
 }
 
 function normalizeCurrency(input: unknown): 'brl' | 'usd' | 'eur' | null {
@@ -28,16 +17,6 @@ function normalizeCurrency(input: unknown): 'brl' | 'usd' | 'eur' | null {
   if (v === 'brl') return 'brl'
   if (v === 'usd') return 'usd'
   if (v === 'eur') return 'eur'
-  return null
-}
-
-function detectLanguageFromNavigator(): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
-  if (typeof window === 'undefined') return null
-  const list = Array.isArray(navigator.languages) ? navigator.languages : [navigator.language]
-  for (const raw of list) {
-    const lang = normalizeLanguage(raw)
-    if (lang) return lang
-  }
   return null
 }
 
@@ -56,38 +35,8 @@ function detectHost(): string {
   return String(window.location.host || '').toLowerCase()
 }
 
-function detectLanguageFromPath(pathname: string): 'pt' | 'en' | 'es' | 'it' | 'fr' | null {
-  try {
-    const path = String(pathname || '')
-    if (path === '/en' || path.startsWith('/en/')) return 'en'
-    if (path === '/es' || path.startsWith('/es/')) return 'es'
-    if (path === '/it' || path.startsWith('/it/')) return 'it'
-    if (path === '/fr' || path.startsWith('/fr/')) return 'fr'
-    return null
-  } catch {
-    return null
-  }
-}
-
 export function useIntlContext() {
   const host = computed(() => detectHost())
-
-  const i18n = useI18n()
-
-  const route = useRoute()
-
-  const pathname = computed(() => {
-    if (import.meta.server) {
-      try {
-        const url = useRequestURL()
-        return String(url?.pathname || '')
-      } catch {
-        return ''
-      }
-    }
-
-    return String(route.path || '')
-  })
 
   const langCookie = useCookie<string | null>('ld_lang', { sameSite: 'lax', path: '/' })
   const currencyCookie = useCookie<string | null>('ld_currency', { sameSite: 'lax', path: '/' })
@@ -95,35 +44,9 @@ export function useIntlContext() {
 
   const countryCode = computed(() => String(countryCookie.value || '').trim().toUpperCase())
 
-  const language = computed<ClientIntl['language']>(() => {
-    const fromI18n = normalizeLanguage(i18n?.locale?.value)
-    if (fromI18n) return fromI18n
+  const language = computed<ClientIntl['language']>(() => 'pt')
 
-    const fromPath = detectLanguageFromPath(pathname.value)
-    if (fromPath) return fromPath
-
-    const c = normalizeLanguage(langCookie.value)
-    if (c) return c
-
-    if (!import.meta.server) {
-      const n = detectLanguageFromNavigator()
-      if (n) return n
-    }
-
-    if (host.value.startsWith('en.')) return 'en'
-    if (host.value.startsWith('es.')) return 'es'
-    if (host.value.startsWith('it.')) return 'it'
-    if (host.value.startsWith('fr.')) return 'fr'
-    return 'pt'
-  })
-
-  const locale = computed<ClientIntl['locale']>(() => {
-    if (language.value === 'en') return 'en-US'
-    if (language.value === 'es') return 'es-ES'
-    if (language.value === 'it') return 'it-IT'
-    if (language.value === 'fr') return 'fr-FR'
-    return 'pt-BR'
-  })
+  const locale = computed<ClientIntl['locale']>(() => 'pt-BR')
 
   const currencyLower = computed<ClientIntl['currencyLower']>(() => {
     const country = String(countryCode.value || '').trim().toUpperCase()
