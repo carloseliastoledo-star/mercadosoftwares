@@ -1,6 +1,6 @@
 import prisma from '../../../db/prisma'
 import { requireAdminSession } from '../../../utils/adminSession'
-import { createError } from 'h3'
+import { createError, defineEventHandler, readBody } from 'h3'
 
 function extractFileNameFromUrl(url: string): string | null {
   try {
