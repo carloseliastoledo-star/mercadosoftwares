@@ -217,6 +217,23 @@ export default defineEventHandler(async (event) => {
     ? ((typeof dbTutorialContent === 'string' && dbTutorialContent.trim()) ? dbTutorialContent : (autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo))
     : null
 
+  const rawCardItems = typeof (product as any).cardItems === 'string' ? String((product as any).cardItems) : ''
+  const translatedCardItems = (() => {
+    const trimmed = rawCardItems.trim()
+    if (!trimmed) return null
+    if (lang === 'pt') return trimmed
+    const lines = trimmed
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+
+    if (!lines.length) return null
+
+    return lines
+      .map((line) => autoTranslateText(line, { lang }) || line)
+      .join('\n')
+  })()
+
   return {
     id: product.id,
     name: translatedName,
@@ -227,7 +244,7 @@ export default defineEventHandler(async (event) => {
     precoAntigo: effective.oldAmount ?? null,
     currency: effective.currency,
     image: normalizeImageUrl(product.imagem),
-    cardItems: product.cardItems,
+    cardItems: translatedCardItems,
     tutorialTitle: translatedTutorialTitle,
     tutorialSubtitle: translatedTutorialSubtitle,
     tutorialContent: translatedTutorialContent,

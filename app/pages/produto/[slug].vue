@@ -198,10 +198,10 @@
       >
         <h2 class="text-2xl font-bold mb-3">{{ t.whyPriceTitle }}</h2>
         <p class="text-gray-700 leading-relaxed">
-          Nossos preços são mais acessíveis porque trabalhamos com distribuição digital, sem custos de mídia física, logística ou intermediários.
+          {{ t.whyPriceP1 }}
         </p>
         <p class="text-gray-700 leading-relaxed mt-4">
-          Isso nos permite oferecer valores competitivos, mantendo suporte e envio imediato após confirmação.
+          {{ t.whyPriceP2 }}
         </p>
       </div>
 
@@ -821,25 +821,141 @@ const installments12 = computed(() => {
   })
 })
 
-const defaultIncludedItems = [
-  'Envio imediato após confirmação',
-  'Licença digital permanente',
-  'Suporte em horário comercial',
-  '1 PC',
-  'Versão profissional com recursos avançados',
-  'Compatível Windows 10 e 11',
-  'Ativação permanente',
-  'Sem renovação necessária'
-]
+const defaultIncludedItems = computed(() => {
+  if (intl.language.value === 'en') {
+    return [
+      'Fast delivery after confirmation',
+      'Permanent digital license',
+      'Business hours support',
+      '1 PC',
+      'Professional version with advanced features',
+      'Compatible with Windows 10 and 11',
+      'Permanent activation',
+      'No renewal required'
+    ]
+  }
+
+  if (intl.language.value === 'es') {
+    return [
+      'Envío rápido tras la confirmación',
+      'Licencia digital permanente',
+      'Soporte en horario comercial',
+      '1 PC',
+      'Versión profesional con funciones avanzadas',
+      'Compatible con Windows 10 y 11',
+      'Activación permanente',
+      'Sin renovación'
+    ]
+  }
+
+  if (intl.language.value === 'it') {
+    return [
+      'Consegna rapida dopo la conferma',
+      'Licenza digitale permanente',
+      'Supporto negli orari di ufficio',
+      '1 PC',
+      'Versione professionale con funzionalità avanzate',
+      'Compatibile con Windows 10 e 11',
+      'Attivazione permanente',
+      'Nessun rinnovo necessario'
+    ]
+  }
+
+  if (intl.language.value === 'fr') {
+    return [
+      'Livraison rapide après confirmation',
+      'Licence numérique permanente',
+      'Support pendant les heures ouvrées',
+      '1 PC',
+      'Version professionnelle avec fonctionnalités avancées',
+      'Compatible avec Windows 10 et 11',
+      'Activation permanente',
+      'Aucun renouvellement requis'
+    ]
+  }
+
+  return [
+    'Envio imediato após confirmação',
+    'Licença digital permanente',
+    'Suporte em horário comercial',
+    '1 PC',
+    'Versão profissional com recursos avançados',
+    'Compatível Windows 10 e 11',
+    'Ativação permanente',
+    'Sem renovação necessária'
+  ]
+})
 
 const includedItems = computed(() => {
   const raw = String((safeProduct.value as any)?.cardItems ?? '').trim()
-  if (!raw) return defaultIncludedItems
+  if (!raw) return defaultIncludedItems.value
   const items = raw
     .split(/\r?\n/)
     .map((s) => s.trim())
     .filter(Boolean)
-  return items.length ? items : defaultIncludedItems
+  if (!items.length) return defaultIncludedItems.value
+
+  if (intl.language.value === 'pt') return items
+
+  const dictEn: Record<string, string> = {
+    'Envio imediato após confirmação': 'Fast delivery after confirmation',
+    'Envio rápido após confirmação': 'Fast delivery after confirmation',
+    'Licença digital permanente': 'Permanent digital license',
+    'Licença digital': 'Digital license',
+    'Suporte 24/7': '24/7 support',
+    'Suporte em horário comercial': 'Business hours support',
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatible with Windows 10 and 11',
+    'Ativação permanente': 'Permanent activation',
+    'Sem renovação necessária': 'No renewal required',
+    'Sem renovação': 'No renewal required'
+  }
+
+  const dictEs: Record<string, string> = {
+    'Envio imediato após confirmação': 'Envío rápido tras la confirmación',
+    'Envio rápido após confirmação': 'Envío rápido tras la confirmación',
+    'Licença digital permanente': 'Licencia digital permanente',
+    'Licença digital': 'Licencia digital',
+    'Suporte 24/7': 'Soporte 24/7',
+    'Suporte em horário comercial': 'Soporte en horario comercial',
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatible con Windows 10 y 11',
+    'Ativação permanente': 'Activación permanente',
+    'Sem renovação necessária': 'Sin renovación',
+    'Sem renovação': 'Sin renovación'
+  }
+
+  const dictIt: Record<string, string> = {
+    'Envio imediato após confirmação': 'Consegna rapida dopo la conferma',
+    'Envio rápido após confirmação': 'Consegna rapida dopo la conferma',
+    'Licença digital permanente': 'Licenza digitale permanente',
+    'Licença digital': 'Licenza digitale',
+    'Suporte 24/7': 'Supporto 24/7',
+    'Suporte em horário comercial': 'Supporto negli orari di ufficio',
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatibile con Windows 10 e 11',
+    'Ativação permanente': 'Attivazione permanente',
+    'Sem renovação necessária': 'Nessun rinnovo necessario',
+    'Sem renovação': 'Nessun rinnovo necessario'
+  }
+
+  const dictFr: Record<string, string> = {
+    'Envio imediato após confirmação': 'Livraison rapide après confirmation',
+    'Envio rápido após confirmação': 'Livraison rapide après confirmation',
+    'Licença digital permanente': 'Licence numérique permanente',
+    'Licença digital': 'Licence numérique',
+    'Suporte 24/7': 'Support 24/7',
+    'Suporte em horário comercial': 'Support pendant les heures ouvrées',
+    '1 PC': '1 PC',
+    'Compatível Windows 10 e 11': 'Compatible avec Windows 10 et 11',
+    'Ativação permanente': 'Activation permanente',
+    'Sem renovação necessária': 'Aucun renouvellement requis',
+    'Sem renovação': 'Aucun renouvellement requis'
+  }
+
+  const lang = intl.language.value
+  const dict = lang === 'en' ? dictEn : lang === 'es' ? dictEs : lang === 'it' ? dictIt : dictFr
+  return items.map((it) => dict[it] || it)
 })
 
 const isMicrosoft365 = computed(() => {
@@ -873,6 +989,8 @@ const t = computed(() => {
       viewTutorial: 'View tutorial',
       detailedDescription: 'Detailed description',
       whyPriceTitle: 'Why is our price more affordable?',
+      whyPriceP1: 'Our prices are more affordable because we work with digital distribution, with no physical media, logistics, or middleman costs.',
+      whyPriceP2: 'This allows us to offer competitive prices while keeping support and fast delivery after payment confirmation.',
       ms365HowTitle: 'Microsoft 365 / Office 365 — how it works',
       ms365Bullet1: 'Annual subscription (12 months), as described in the product.',
       ms365Bullet2: 'Delivery via a provided account (login and password) after payment confirmation.',
@@ -900,6 +1018,8 @@ const t = computed(() => {
       viewTutorial: 'Ver tutorial',
       detailedDescription: 'Descripción detallada',
       whyPriceTitle: '¿Por qué nuestro precio es más accesible?',
+      whyPriceP1: 'Nuestros precios son más accesibles porque trabajamos con distribución digital, sin costos de medios físicos, logística ni intermediarios.',
+      whyPriceP2: 'Esto nos permite ofrecer valores competitivos, manteniendo soporte y entrega rápida tras la confirmación del pago.',
       ms365HowTitle: 'Microsoft 365 / Office 365 — cómo funciona',
       ms365Bullet1: 'Suscripción anual (12 meses), según se describe en el producto.',
       ms365Bullet2: 'Entrega mediante una cuenta proporcionada (usuario y contraseña) tras la confirmación del pago.',
@@ -927,6 +1047,8 @@ const t = computed(() => {
       viewTutorial: 'Vedi tutorial',
       detailedDescription: 'Descrizione dettagliata',
       whyPriceTitle: 'Perché il nostro prezzo è più conveniente?',
+      whyPriceP1: 'I nostri prezzi sono più convenienti perché lavoriamo con distribuzione digitale, senza costi di supporti fisici, logistica o intermediari.',
+      whyPriceP2: 'Questo ci permette di offrire prezzi competitivi, mantenendo supporto e consegna rapida dopo la conferma del pagamento.',
       ms365HowTitle: 'Microsoft 365 / Office 365 — come funziona',
       ms365Bullet1: 'Abbonamento annuale (12 mesi), come descritto nel prodotto.',
       ms365Bullet2: 'Consegna tramite un account fornito (login e password) dopo la conferma del pagamento.',
@@ -954,6 +1076,8 @@ const t = computed(() => {
       viewTutorial: 'Voir le tutoriel',
       detailedDescription: 'Description détaillée',
       whyPriceTitle: 'Pourquoi notre prix est-il plus abordable ?',
+      whyPriceP1: 'Nos prix sont plus abordables car nous travaillons avec une distribution numérique, sans coûts de support physique, de logistique ou d’intermédiaires.',
+      whyPriceP2: 'Cela nous permet de proposer des prix compétitifs tout en maintenant le support et une livraison rapide après confirmation du paiement.',
       ms365HowTitle: 'Microsoft 365 / Office 365 — comment ça marche',
       ms365Bullet1: 'Abonnement annuel (12 mois), comme décrit dans le produit.',
       ms365Bullet2: 'Livraison via un compte fourni (identifiant et mot de passe) après confirmation du paiement.',
@@ -980,6 +1104,8 @@ const t = computed(() => {
     viewTutorial: 'Ver Tutorial',
     detailedDescription: 'Descrição Detalhada',
     whyPriceTitle: 'Por que nosso preço é mais acessível?',
+    whyPriceP1: 'Nossos preços são mais acessíveis porque trabalhamos com distribuição digital, sem custos de mídia física, logística ou intermediários.',
+    whyPriceP2: 'Isso nos permite oferecer valores competitivos, mantendo suporte e envio imediato após confirmação.',
     ms365HowTitle: 'Microsoft 365 / Office 365 — como funciona',
     ms365Bullet1: 'Assinatura anual (12 meses), conforme descrito no produto.',
     ms365Bullet2: 'Entrega por conta fornecida (login e senha) após a confirmação do pagamento.',

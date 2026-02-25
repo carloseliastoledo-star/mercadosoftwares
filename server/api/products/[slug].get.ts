@@ -1,6 +1,6 @@
 import prisma from '#root/server/db/prisma'
 import { getDefaultProductDescription } from '#root/server/utils/productDescriptionTemplate'
-import { createError, getQuery } from 'h3'
+import { createError, getQuery, setHeader } from 'h3'
 import { getStoreContext } from '#root/server/utils/store'
 import { getIntlContext } from '#root/server/utils/intl'
 import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
@@ -47,6 +47,10 @@ function normalizeImageUrl(input: unknown): string | null {
 }
 
 export default defineEventHandler(async (event) => {
+  setHeader(event, 'cache-control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
+  setHeader(event, 'pragma', 'no-cache')
+  setHeader(event, 'expires', '0')
+
   const rawSlug = event.context.params?.slug
 
   const { storeSlug } = getStoreContext()
@@ -113,7 +117,8 @@ export default defineEventHandler(async (event) => {
         where: { storeSlug: storeSlug || undefined },
         select: { currency: true, amount: true, oldAmount: true }
       },
-      produtoCategorias: { select: { categoria: { select: { slug: true } } } }
+      produtoCategorias: { select: { categoria: { select: { slug: true } } } },
+      cardItems: true
     }
   })
 
@@ -196,6 +201,21 @@ export default defineEventHandler(async (event) => {
     ? ((typeof dbTutorialContent === 'string' && dbTutorialContent.trim()) ? dbTutorialContent : (autoTranslateText(product.tutorialConteudo, { lang }) || product.tutorialConteudo))
     : null
 
+  const rawCardItems = typeof (product as any).cardItems === 'string' ? String((product as any).cardItems) : ''
+  const translatedCardItems = (() => {
+    if (lang === 'pt' || !rawCardItems.trim()) return rawCardItems
+    const lines = rawCardItems
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+
+    if (!lines.length) return null
+
+    return lines
+      .map((line) => autoTranslateText(line, { lang }) || line)
+      .join('\n')
+  })()
+
   const override = (product as any).precosLoja?.[0] || null
 
   const effective = resolveEffectivePrice({
@@ -220,6 +240,7 @@ export default defineEventHandler(async (event) => {
     precoAntigo: effectiveOldPrice ?? null,
     currency: effective.currency,
     image: normalizeImageUrl(product.imagem),
+    cardItems: translatedCardItems,
     categories: (product.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
     tutorialTitle: translatedTutorialTitle,
     tutorialSubtitle: translatedTutorialSubtitle,

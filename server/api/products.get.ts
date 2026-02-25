@@ -1,5 +1,5 @@
 import prisma from '#root/server/db/prisma'
-import { createError } from 'h3'
+import { createError, getQuery, setHeader } from 'h3'
 import { getStoreContext } from '#root/server/utils/store'
 import { getIntlContext } from '#root/server/utils/intl'
 import { resolveEffectivePrice } from '#root/server/utils/productCurrencyPricing'
@@ -175,6 +175,23 @@ export default defineEventHandler(async (event) => {
         ? dbTutorialSubtitle
         : (autoTranslateText(p.tutorialSubtitulo, { lang }) || p.tutorialSubtitulo)
 
+      const rawCardItems = typeof (p as any).cardItems === 'string' ? String((p as any).cardItems) : ''
+      const translatedCardItems = (() => {
+        const trimmed = rawCardItems.trim()
+        if (!trimmed) return null
+        if (lang === 'pt') return trimmed
+        const lines = trimmed
+          .split(/\r?\n/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+
+        if (!lines.length) return null
+
+        return lines
+          .map((line) => autoTranslateText(line, { lang }) || line)
+          .join('\n')
+      })()
+
       return {
         id: p.id,
         name: translatedName,
@@ -184,7 +201,7 @@ export default defineEventHandler(async (event) => {
         precoAntigo: effectiveOldPrice,
         currency: effective.currency,
         image: normalizeImageUrl(p.imagem),
-        cardItems: p.cardItems,
+        cardItems: translatedCardItems,
         categories: (p.produtoCategorias || []).map((pc: any) => pc.categoria?.slug).filter(Boolean),
         tutorialTitle: translatedTutorialTitle,
         tutorialSubtitle: translatedTutorialSubtitle,
