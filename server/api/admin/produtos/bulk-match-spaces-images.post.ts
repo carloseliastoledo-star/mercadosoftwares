@@ -33,6 +33,22 @@ function safeSlug(s: unknown): string {
     .replace(/\s+/g, '-')
 }
 
+function extractFileNameFromUrl(url: string): string | null {
+  try {
+    const u = new URL(url)
+    const pathname = u.pathname || ''
+    const parts = pathname.split('/').filter(Boolean)
+    if (!parts.length) return null
+    return parts[parts.length - 1] || null
+  } catch {
+    const trimmed = String(url || '').trim()
+    if (!trimmed) return null
+    const parts = trimmed.split('/').filter(Boolean)
+    if (!parts.length) return null
+    return parts[parts.length - 1] || null
+  }
+}
+
 export default defineEventHandler(async (event) => {
   requireAdminSession(event)
 
@@ -94,12 +110,24 @@ export default defineEventHandler(async (event) => {
 
   // Build slug -> key map
   const keyBySlug = new Map<string, string>()
+  const keyByLowerFileName = new Map<string, string>()
   const collisions: Record<string, string[]> = {}
+  const fileNameCollisions: Record<string, string[]> = {}
 
   for (const key of allKeys) {
     if (!key.startsWith(prefix)) continue
     const file = key.split('/').pop() || ''
     const lower = file.toLowerCase()
+
+    if (lower) {
+      if (!keyByLowerFileName.has(lower)) {
+        keyByLowerFileName.set(lower, key)
+      } else {
+        const existing = keyByLowerFileName.get(lower)!
+        fileNameCollisions[lower] = fileNameCollisions[lower] || [existing]
+        fileNameCollisions[lower].push(key)
+      }
+    }
 
     // heuristic: keys like "<timestamp>-<slug>.<ext>"
     const match = lower.match(/-([a-z0-9-]{2,})\.(png|jpe?g|webp|gif|svg)$/i)
@@ -127,12 +155,19 @@ export default defineEventHandler(async (event) => {
 
   for (const p of products) {
     const slug = safeSlug(p.slug)
-    const key = slug ? keyBySlug.get(slug) : undefined
-
     const current = typeof p.imagem === 'string' ? p.imagem.trim() : ''
-    const alreadyOk = current && current.startsWith(spacesBaseUrl)
 
-    if (alreadyOk && !force) continue
+    let key: string | undefined
+
+    // 1) prefer explicit slug match if present
+    if (slug) key = keyBySlug.get(slug)
+
+    // 2) fallback: match by current filename (case-insensitive) against Spaces keys
+    if (!key && current) {
+      const currentFileName = extractFileNameFromUrl(current)
+      const lowerFile = (currentFileName || '').toLowerCase()
+      if (lowerFile) key = keyByLowerFileName.get(lowerFile)
+    }
 
     if (!key) {
       missing.push({ id: p.id, slug: p.slug, imagem: current || null })
@@ -163,6 +198,7 @@ export default defineEventHandler(async (event) => {
     keysFetched: allKeys.length,
     keysMatchedBySlug: keyBySlug.size,
     collisions,
+    fileNameCollisions,
     matched: changes.length,
     updated: dryRun ? 0 : changes.length,
     changes: changes.slice(0, 200),
