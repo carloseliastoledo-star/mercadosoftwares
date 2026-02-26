@@ -602,6 +602,7 @@ watch(
 const stripeOrderId = ref<string | null>(null)
 const stripeAmount = ref<number | null>(null)
 const stripeCurrency = ref<'usd' | 'eur'>('usd')
+const stripeLoading = ref(false)
 let stripeInstance: any = null
 let stripeElements: any = null
 let stripePaymentElement: any = null
