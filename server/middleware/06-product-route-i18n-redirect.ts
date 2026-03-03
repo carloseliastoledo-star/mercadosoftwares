@@ -36,4 +36,4 @@ export default defineEventHandler((event: H3Event) => {
   const targetPath = isEnHost ? `/product/${slug}` : `/producto/${slug}`
   const location = query ? `${targetPath}?${query}` : targetPath
   return sendRedirect(event, location, 301)
-}
+})
