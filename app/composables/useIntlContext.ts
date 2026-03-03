@@ -77,6 +77,21 @@ function defaultCurrencyForLanguage(lang: ClientIntl['language']): 'brl' | 'usd'
   return 'eur'
 }
 
+function detectLanguageFromPath(): ClientIntl['language'] | null {
+  try {
+    const path = import.meta.server
+      ? String(useRequestURL()?.pathname || '')
+      : String(window.location?.pathname || '')
+    if (path === '/en' || path.startsWith('/en/')) return 'en'
+    if (path === '/es' || path.startsWith('/es/')) return 'es'
+    if (path === '/fr' || path.startsWith('/fr/')) return 'fr'
+    if (path === '/it' || path.startsWith('/it/')) return 'it'
+    return null
+  } catch {
+    return null
+  }
+}
+
 export function useIntlContext() {
   const config = useRuntimeConfig()
   const subdomainMode = computed(() => Boolean((config.public as any)?.intlSubdomainMode))
@@ -89,10 +104,20 @@ export function useIntlContext() {
   const countryCode = computed(() => String(countryCookie.value || '').trim().toUpperCase())
 
   const language = computed<ClientIntl['language']>(() => {
+    const fromPath = detectLanguageFromPath()
+    if (fromPath) return fromPath
+
     const sub = detectSubdomainLanguage(host.value)
     if (sub) return sub
+
     const cookie = String(langCookie.value || '').trim()
     if (cookie) return normalizeLanguage(cookie)
+
+    if (!import.meta.server) {
+      const n = detectLanguageFromNavigator()
+      if (n) return n
+    }
+
     return 'pt'
   })
 
@@ -169,7 +194,7 @@ export function useIntlContext() {
     isIntl,
     countryCode,
     setLanguage: (next: ClientIntl['language']) => {
-      langCookie.value = normalizeLanguage(next)
+      langCookie.value = next
     },
     setCurrency: (next: 'brl' | 'usd' | 'eur') => {
       currencyCookie.value = next

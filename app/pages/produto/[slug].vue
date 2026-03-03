@@ -327,6 +327,14 @@ const isOffice365FiveLicenses = computed(() => {
   return s === 'microsoft-office-365-vitalicio-5-licencas-pc-mac-android-ou-ios-1-tb-one-drive'
 })
 
+const pageH1 = computed(() => {
+  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
+    if (intl.language.value === 'en') return 'Original Office 365 License for PC and Mac – Instant Delivery'
+    if (intl.language.value === 'es') return 'Licencia original de Office 365 para PC y Mac – Entrega inmediata'
+    return 'Licença Office 365 Original para PC e Mac – Entrega Instantânea'
+  }
+  return String(safeProduct.value.nome || '')
+})
 const baseUrl = useSiteUrl()
 
 const canonicalUrl = computed(() => {
@@ -406,13 +414,6 @@ watch(
   { immediate: true }
 )
 
-const pageH1 = computed(() => {
-  if (isCasaDoSoftware.value && isOffice365FiveLicenses.value) {
-    return 'Licença Office 365 Original para PC e Mac – Entrega Instantânea'
-  }
-  return String(safeProduct.value.nome || '')
-})
-
 const safeImage = computed(() => {
   const image = String((safeProduct.value as any)?.imagem || '')
   if (!image) return '/products/placeholder.svg'
@@ -445,6 +446,8 @@ const seoTitle = computed(() => {
     }
     if (slugValue.includes('office') && (slugValue.includes('365') || slugValue.includes('microsoft-365'))) {
       if (isOffice365FiveLicenses.value) {
+        if (intl.language.value === 'en') return 'Original Microsoft 365 License for PC and Mac | Instant delivery'
+        if (intl.language.value === 'es') return 'Licencia original de Microsoft 365 para PC y Mac | Entrega inmediata'
         return 'Licença Microsoft 365 Original PC e Mac | Entrega imediata'
       }
 

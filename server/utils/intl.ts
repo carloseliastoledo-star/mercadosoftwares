@@ -158,6 +158,7 @@ export function getIntlContext(event?: H3Event): IntlContext {
   const cookieCurrency = normalizeCurrency(getCookie(event as any, 'ld_currency'))
   const cookieCountry = String(getCookie(event as any, 'ld_country') || '').trim().toUpperCase()
 
+  const pathLang = detectLanguageFromPath(event)
   const acceptLang = detectLanguageFromAcceptLanguage(getRequestHeader(event as any, 'accept-language'))
   const pathLang = detectLanguageFromPath(event)
   const headerCountry = readCountryCode(event)
