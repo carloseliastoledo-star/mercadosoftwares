@@ -34,6 +34,21 @@ function normalizeCurrency(input: unknown): 'brl' | 'usd' | 'eur' | null {
   return null
 }
 
+function detectLanguageFromNavigator(): ClientIntl['language'] | null {
+  if (typeof window === 'undefined') return null
+  const list = Array.isArray(navigator.languages) ? navigator.languages : [navigator.language]
+  for (const raw of list) {
+    const v = String(raw || '').trim().toLowerCase()
+    if (!v) continue
+    if (v === 'en' || v.startsWith('en')) return 'en'
+    if (v === 'es' || v.startsWith('es')) return 'es'
+    if (v === 'fr' || v.startsWith('fr')) return 'fr'
+    if (v === 'it' || v.startsWith('it')) return 'it'
+    if (v === 'pt' || v.startsWith('pt')) return 'pt'
+  }
+  return null
+}
+
 function detectHost(): string {
   if (import.meta.server) {
     try {
