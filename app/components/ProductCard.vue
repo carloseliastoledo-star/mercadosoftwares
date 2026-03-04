@@ -57,7 +57,10 @@ function onImageError(e: Event) {
 }
 
 const productName = computed(() => {
-  return String((props.product as any)?.nome ?? (props.product as any)?.name ?? '')
+  const nomeRaw = String((props.product as any)?.nome ?? '')
+  const nameRaw = String((props.product as any)?.name ?? '')
+  const v = intl.language.value === 'pt' ? nomeRaw || nameRaw : nameRaw || nomeRaw
+  return String(v || '')
 })
 
 const productPrice = computed(() => {

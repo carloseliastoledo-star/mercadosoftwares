@@ -365,7 +365,9 @@ const safeProduct = computed(() => {
     }
   }
 
-  const nome = (p as any).nome ?? (p as any).name ?? ''
+  const nomeRaw = (p as any).nome ?? ''
+  const nameRaw = (p as any).name ?? ''
+  const nome = intl.language.value === 'pt' ? nomeRaw || nameRaw : nameRaw || nomeRaw
   const descricaoBase = (p as any).descricao ?? (p as any).description ?? ''
   const preco = Number((p as any).preco ?? (p as any).price ?? 0)
   const slugValue = (p as any).slug ?? ''
