@@ -162,6 +162,7 @@
             <NuxtLink to="/categoria/corel" class="hover:text-blue-600">Corel</NuxtLink>
             <NuxtLink to="/categoria/autodesk" class="hover:text-blue-600">Autodesk</NuxtLink>
             <NuxtLink to="/blog" class="hover:text-blue-600">Blog</NuxtLink>
+            <NuxtLink :to="affiliateMenuTo" class="hover:text-blue-600">{{ affiliateMenuLabel }}</NuxtLink>
           </nav>
 
           <div class="flex items-center gap-3">
@@ -275,21 +276,23 @@
 
           <div class="space-y-1">
             <NuxtLink
+              to="/"
+              class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
+              @click="mobileMenuOpen = false"
+            >
+              <span class="mr-2" aria-hidden="true">🏠</span>
+              {{ t.home }}
+            </NuxtLink>
+
+            <NuxtLink
               v-for="it in mainMenu"
               :key="it.label"
               :to="it.to"
               class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
               @click="mobileMenuOpen = false"
             >
+              <span class="mr-2" aria-hidden="true">{{ menuIcon(it.label) }}</span>
               {{ it.label }}
-            </NuxtLink>
-
-            <NuxtLink
-              to="/minha-conta/login"
-              class="block px-3 py-3 rounded-lg text-gray-800 font-semibold hover:bg-gray-50"
-              @click="mobileMenuOpen = false"
-            >
-              {{ t.myAccount }}
             </NuxtLink>
           </div>
         </nav>
@@ -619,18 +622,48 @@ const { data: categoriasData } = await useFetch<{ ok: true; categorias: Categori
 const paginas = computed(() => data.value?.paginas || [])
 const categorias = computed(() => categoriasData.value?.categorias || [])
 
+function detectLangForAffiliateMenu() {
+  const p = String(route?.path || '')
+  if (p === '/en' || p.startsWith('/en/')) return 'en'
+  if (p === '/es' || p.startsWith('/es/')) return 'es'
+  if (p === '/pt' || p.startsWith('/pt/')) return 'pt'
+  if (p === '/fr' || p.startsWith('/fr/')) return 'fr'
+  if (p === '/de' || p.startsWith('/de/')) return 'de'
+  return String((intl as any)?.language?.value || (intl as any)?.language || 'pt')
+}
+
+const affiliateMenuLabel = computed(() => {
+  const lang = detectLangForAffiliateMenu()
+  if (lang === 'en') return 'Partner Program'
+  if (lang === 'es') return 'Programa de Afiliados'
+  if (lang === 'fr') return "Programme d'affiliation"
+  if (lang === 'de') return 'Partnerprogramm'
+  return 'Programa de Afiliados'
+})
+
+const affiliateMenuTo = computed(() => {
+  const lang = detectLangForAffiliateMenu()
+  if (lang === 'en') return '/en/become-a-partner'
+  if (lang === 'es') return '/es/programa-afiliados'
+  if (lang === 'fr') return '/fr/programme-affiliation'
+  if (lang === 'de') return '/de/partner-program'
+  return '/pt/programa-afiliados'
+})
+
 const categoriasSet = computed(() => {
   return new Set(categorias.value.map((c) => String(c.slug || '').trim()).filter(Boolean))
 })
 
 const mainMenu = computed(() => {
-  return mainMenuBase.map((it) => {
+  const base = mainMenuBase.map((it) => {
     if ('to' in it) return it
     const slug = String(it.slug || '').trim()
     if (!slug) return { label: it.label, to: it.fallbackTo }
     if (categoriasSet.value.has(slug)) return { label: it.label, to: `/categoria/${slug}` }
     return { label: it.label, to: it.fallbackTo }
   })
+
+  return [...base, { label: affiliateMenuLabel.value, to: affiliateMenuTo.value }]
 })
 
 const cartCount = computed(() => (cart.value || []).length)

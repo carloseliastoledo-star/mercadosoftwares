@@ -1,0 +1,224 @@
+<template>
+  <div class="bg-white">
+    <main>
+      <section class="py-20">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-3xl text-center">
+            <h1 class="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+              Programa de Afiliados de Software Digital
+            </h1>
+            <p class="mt-6 text-lg leading-7 text-gray-600">
+              Gana hasta un 30% de comisión promoviendo soluciones de software digital en todo el mundo.
+            </p>
+            <div class="mt-10 flex items-center justify-center">
+              <NuxtLink
+                to="/partner-apply"
+                class="inline-flex items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              >
+                Conviértete en socio
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20 bg-gray-50">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-3xl text-center">
+            <h2 class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Cómo funciona</h2>
+            <p class="mt-4 text-base leading-7 text-gray-600">
+              Un proceso simple y transparente para que empieces a generar ingresos rápido.
+            </p>
+          </div>
+
+          <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">1. Regístrate</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Postúlate y cuéntanos sobre tu audiencia.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">2. Obtén tu enlace</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Recibe un enlace único para rastrear tus ventas.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">3. Comparte</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Promociona a tu audiencia con contenido relevante.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">4. Gana comisión</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Ganas por cada venta confirmada.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="grid gap-10 lg:grid-cols-2 lg:items-start">
+            <div>
+              <h2 class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Comisiones</h2>
+              <p class="mt-4 text-base leading-7 text-gray-600">
+                Gana más a medida que creces. Los niveles dependen de tu rendimiento.
+              </p>
+
+              <div class="mt-8 overflow-hidden rounded-xl shadow-sm ring-1 ring-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Nivel</th>
+                      <th scope="col" class="px-6 py-4 text-right text-sm font-semibold text-gray-900">Comisión</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200 bg-white">
+                    <tr>
+                      <td class="px-6 py-4 text-sm text-gray-900">Socio Estándar</td>
+                      <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900">20%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-sm text-gray-900">Socio Activo</td>
+                      <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900">25%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 text-sm text-gray-900">Socio Top</td>
+                      <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900">30%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <dl class="mt-8 grid gap-6 sm:grid-cols-2">
+                <div class="rounded-xl bg-gray-50 p-6 ring-1 ring-gray-200">
+                  <dt class="text-sm font-semibold text-gray-900">Duración de cookie</dt>
+                  <dd class="mt-2 text-sm text-gray-600">30 días</dd>
+                </div>
+                <div class="rounded-xl bg-gray-50 p-6 ring-1 ring-gray-200">
+                  <dt class="text-sm font-semibold text-gray-900">Pago</dt>
+                  <dd class="mt-2 text-sm text-gray-600">Mensual</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h2 class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Quién puede participar</h2>
+              <p class="mt-4 text-base leading-7 text-gray-600">
+                Si llegas a personas que compran o usan software, este programa es para ti.
+              </p>
+
+              <ul class="mt-8 grid gap-3">
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">YouTubers de tecnología</li>
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">Blogueros de software</li>
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">Consultores de TI</li>
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">Comunidades tech</li>
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">Desarrolladores</li>
+                <li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">Emprendedores</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20 bg-gray-50">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-3xl text-center">
+            <h2 class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Beneficios</h2>
+            <p class="mt-4 text-base leading-7 text-gray-600">
+              Promociona productos confiables con soporte de nuestro equipo.
+            </p>
+          </div>
+
+          <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">Productos con alta conversión</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Soluciones digitales con demanda probada.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">Audiencia global</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Alcance internacional con experiencia local.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">Pagos mensuales confiables</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Términos claros y pagos consistentes.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">Soporte técnico incluido</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Ayudamos a clientes post-compra.</div>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">Entrega digital rápida</div>
+              <div class="mt-2 text-sm leading-6 text-gray-600">Entrega instantánea y onboarding simple.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-3xl text-center">
+            <h2 class="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">FAQ</h2>
+            <p class="mt-4 text-base leading-7 text-gray-600">Preguntas frecuentes.</p>
+          </div>
+
+          <div class="mt-12 grid gap-6 lg:grid-cols-3">
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">¿Cómo hago seguimiento de mis ventas?</div>
+              <p class="mt-2 text-sm leading-6 text-gray-600">
+                Recibirás un enlace único y el seguimiento será automático.
+              </p>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">¿Cuándo se pagan las comisiones?</div>
+              <p class="mt-2 text-sm leading-6 text-gray-600">
+                Se pagan mensualmente después de confirmar los pagos.
+              </p>
+            </div>
+            <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+              <div class="text-sm font-semibold text-gray-900">¿Hay un pago mínimo?</div>
+              <p class="mt-2 text-sm leading-6 text-gray-600">
+                No. Si tienes comisiones, eres elegible para el pago.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-20 bg-gray-900">
+        <div class="container mx-auto max-w-6xl px-4">
+          <div class="mx-auto max-w-3xl text-center">
+            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Empieza a ganar con nuestro programa hoy.
+            </h2>
+            <p class="mt-4 text-base leading-7 text-gray-300">
+              Postúlate y recibe tu enlace de afiliado.
+            </p>
+            <div class="mt-10 flex items-center justify-center">
+              <NuxtLink
+                to="/partner-apply"
+                class="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+              >
+                Postular ahora
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</template>
+
+<script setup lang="ts">
+useHead({
+  title: 'Programa de Afiliados | Casa do Software',
+  meta: [
+    {
+      name: 'description',
+      content: 'Únete a nuestro programa de afiliados y gana hasta un 30% de comisión promoviendo software digital.',
+    },
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: 'https://casadosoftware.com.br/es/programa-afiliados',
+    },
+  ],
+})
+</script>
