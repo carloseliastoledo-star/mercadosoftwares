@@ -195,10 +195,142 @@
         </div>
       </div>
     </div>
+
+    <div class="bg-gray-50 border-t">
+      <div class="max-w-7xl mx-auto px-6 py-14">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div class="text-sm font-semibold text-blue-700">{{ affiliateCtaKicker }}</div>
+            <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">{{ affiliateCtaTitle }}</h2>
+            <p class="mt-3 text-gray-600 text-base leading-7">{{ affiliateCtaSubtitle }}</p>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+              <NuxtLink
+                :to="affiliateLandingTo"
+                class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 transition text-center"
+              >
+                {{ affiliateCtaButton }}
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div class="bg-white border rounded-3xl p-8">
+            <div class="text-sm font-semibold text-gray-900">{{ affiliateCtaAudienceTitle }}</div>
+            <ul class="mt-4 grid gap-3">
+              <li class="flex items-center gap-3 text-gray-700">
+                <span aria-hidden="true">▶</span>
+                <span>{{ affiliateCtaAudience1 }}</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <span aria-hidden="true">▶</span>
+                <span>{{ affiliateCtaAudience2 }}</span>
+              </li>
+              <li class="flex items-center gap-3 text-gray-700">
+                <span aria-hidden="true">▶</span>
+                <span>{{ affiliateCtaAudience3 }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
+
+function detectLangForAffiliateHome() {
+  const p = String(route?.path || '')
+  if (p === '/en' || p.startsWith('/en/')) return 'en'
+  if (p === '/es' || p.startsWith('/es/')) return 'es'
+  if (p === '/pt' || p.startsWith('/pt/')) return 'pt'
+  if (p === '/fr' || p.startsWith('/fr/')) return 'fr'
+  if (p === '/de' || p.startsWith('/de/')) return 'de'
+  return 'pt'
+}
+
+const affiliateLandingTo = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return '/en/become-a-partner'
+  if (lang === 'es') return '/es/programa-afiliados'
+  if (lang === 'fr') return '/fr/programme-affiliation'
+  if (lang === 'de') return '/de/partner-program'
+  return '/pt/programa-afiliados'
+})
+
+const affiliateCtaKicker = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Earn with us'
+  if (lang === 'es') return 'Gana con nosotros'
+  if (lang === 'fr') return 'Gagnez avec nous'
+  if (lang === 'de') return 'Verdienen Sie mit uns'
+  return 'Ganhe com a gente'
+})
+
+const affiliateCtaTitle = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Join our Partner Program'
+  if (lang === 'es') return 'Únete a nuestro programa'
+  if (lang === 'fr') return 'Rejoignez notre programme'
+  if (lang === 'de') return 'Werden Sie Partner'
+  return 'Participe do nosso programa'
+})
+
+const affiliateCtaSubtitle = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Earn up to 30% commission promoting digital software.'
+  if (lang === 'es') return 'Gana hasta un 30% de comisión promoviendo software digital.'
+  if (lang === 'fr') return "Gagnez jusqu’à 30% de commission en recommandant des logiciels numériques."
+  if (lang === 'de') return 'Verdienen Sie bis zu 30% Provision mit digitaler Software.'
+  return 'Ganhe até 30% de comissão promovendo software digital.'
+})
+
+const affiliateCtaButton = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Become a Partner'
+  if (lang === 'es') return 'Conviértete en socio'
+  if (lang === 'fr') return 'Devenir partenaire'
+  if (lang === 'de') return 'Partner werden'
+  return 'Seja um parceiro'
+})
+
+const affiliateCtaAudienceTitle = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Great for:'
+  if (lang === 'es') return 'Ideal para:'
+  if (lang === 'fr') return 'Idéal pour :'
+  if (lang === 'de') return 'Ideal für:'
+  return 'Ideal para:'
+})
+
+const affiliateCtaAudience1 = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'YouTubers'
+  if (lang === 'es') return 'YouTubers'
+  if (lang === 'fr') return 'YouTubeurs'
+  if (lang === 'de') return 'YouTuber'
+  return 'YouTubers'
+})
+
+const affiliateCtaAudience2 = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'Bloggers'
+  if (lang === 'es') return 'Blogueros'
+  if (lang === 'fr') return 'Blogueurs'
+  if (lang === 'de') return 'Blogger'
+  return 'Blogueiros'
+})
+
+const affiliateCtaAudience3 = computed(() => {
+  const lang = detectLangForAffiliateHome()
+  if (lang === 'en') return 'International affiliates'
+  if (lang === 'es') return 'Afiliados internacionales'
+  if (lang === 'fr') return 'Affiliés internationaux'
+  if (lang === 'de') return 'Internationale Affiliates'
+  return 'Afiliados internacionais'
+})
+
 const forwardedHeaders = import.meta.server
   ? useRequestHeaders(['x-forwarded-host', 'x-original-host', 'host'])
   : undefined

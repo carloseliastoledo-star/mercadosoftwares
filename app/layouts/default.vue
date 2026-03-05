@@ -426,6 +426,7 @@
             <li><NuxtLink to="/produtos" class="hover:text-blue-600">{{ t.footerProducts }}</NuxtLink></li>
             <li><NuxtLink to="/tutoriais" class="hover:text-blue-600">{{ t.footerTutorials }}</NuxtLink></li>
             <li><NuxtLink to="/blog" class="hover:text-blue-600">{{ t.footerBlog }}</NuxtLink></li>
+            <li><NuxtLink :to="affiliateMenuTo" class="hover:text-blue-600">{{ affiliateMenuLabel }}</NuxtLink></li>
             <li><NuxtLink to="/quem-somos" class="hover:text-blue-600">{{ t.footerAbout }}</NuxtLink></li>
             <li><NuxtLink to="/entrega-digital" class="hover:text-blue-600">{{ t.footerDigitalDelivery }}</NuxtLink></li>
             <li><NuxtLink to="/reembolso" class="hover:text-blue-600">{{ t.footerRefundPolicy }}</NuxtLink></li>

@@ -9,6 +9,16 @@
         {{ t.intro }}
       </p>
 
+      <div class="rounded-xl border bg-blue-50 p-5">
+        <h2 class="text-xl font-bold text-gray-900">{{ partnerCtaTitle }}</h2>
+        <p class="mt-2 text-sm text-gray-700">{{ partnerCtaBody }}</p>
+        <div class="mt-4">
+          <NuxtLink :to="partnerCtaTo" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 transition">
+            {{ partnerCtaButton }}
+          </NuxtLink>
+        </div>
+      </div>
+
       <div class="rounded-xl border bg-white p-5">
         <h2 class="text-xl font-bold text-gray-900">{{ t.companyDataTitle }}</h2>
         <div class="mt-3 space-y-1 text-sm text-gray-700">
@@ -116,6 +126,38 @@ const t = computed(() => {
 const mailtoSupport = computed(() => {
   const email = String(supportEmail || '').trim()
   return email ? `mailto:${email}` : 'mailto:'
+})
+
+const partnerCtaTo = computed(() => {
+  if (intl.language.value === 'en') return '/en/become-a-partner'
+  if (intl.language.value === 'es') return '/es/programa-afiliados'
+  if (intl.language.value === 'fr') return '/fr/programme-affiliation'
+  if (intl.language.value === 'de') return '/de/partner-program'
+  return '/pt/programa-afiliados'
+})
+
+const partnerCtaTitle = computed(() => {
+  if (intl.language.value === 'en') return 'Partner Program'
+  if (intl.language.value === 'es') return 'Programa de Afiliados'
+  if (intl.language.value === 'fr') return "Programme d'affiliation"
+  if (intl.language.value === 'de') return 'Partnerprogramm'
+  return 'Programa de Afiliados'
+})
+
+const partnerCtaBody = computed(() => {
+  if (intl.language.value === 'en') return 'Earn commission by recommending our digital products.'
+  if (intl.language.value === 'es') return 'Gana comisiones recomendando nuestros productos digitales.'
+  if (intl.language.value === 'fr') return 'Gagnez des commissions en recommandant nos produits numériques.'
+  if (intl.language.value === 'de') return 'Verdienen Sie Provisionen, indem Sie unsere digitalen Produkte empfehlen.'
+  return 'Ganhe comissões recomendando nossos produtos digitais.'
+})
+
+const partnerCtaButton = computed(() => {
+  if (intl.language.value === 'en') return 'Learn more'
+  if (intl.language.value === 'es') return 'Saber más'
+  if (intl.language.value === 'fr') return 'En savoir plus'
+  if (intl.language.value === 'de') return 'Mehr erfahren'
+  return 'Saiba mais'
 })
 
 const seoTitle = computed(() => `${t.value.title} | ${safeSiteName.value}`)
